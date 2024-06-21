@@ -1,0 +1,15 @@
+[package]
+name = "astrum"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies.iced]
+git = "https://github.com/pop-os/iced"
+default-features = false
+features = ["tokio", "wayland", "advanced", "wgpu"]
+
+
+
+# system dependencies:
+# xkbcommon - for keyboard support i think
