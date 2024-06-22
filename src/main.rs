@@ -1,84 +1,32 @@
-use iced::{
-    executor,
-    wayland::{
-        actions::layer_surface::SctkLayerSurfaceSettings,
-        layer_surface::{Anchor, KeyboardInteractivity, Layer},
-        InitialSurface,
-    },
-    widget::{
-        text
-    },
-    window::Id, Application, Command, Theme,
-    Font,
-    Settings,
-    Element
-};
+use std::path::Path;
+use clap::Parser;
 
-pub struct App;
+// TODO: make a better description
 
+/// a custom desktop shell
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    /// Path to the config folder. Default is ~/.config/astrum/
+    #[arg(short, long)]
+    config: Option<String>,
 
-pub enum Message {
-    None,
-
+    /// Initialize the default configuration
+    #[arg(short, long)]
+    init: bool,
 }
-impl Application for App {
-    type Executor = executor::Default;
-    type Flags = ();
-    type Message = ();
-    type Theme = Theme;
-    // application ID for window manager
-    // const APP_ID: &'static str = "vnuxa.astrum";
-    //
-    fn new(flags: Self::Flags) -> (Self, Command<Self::Message>) {
-        (Self, Command::none())
-    }
-
-    fn title(&self, id: Id) -> String {
-        String::from("astrum")
-    }
-
-    fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
-        Command::none() // TODO:  this is where application logic is at, make the user change these
-    }
-
-    fn view(&self, id: Id) -> Element<Self::Message> {
-        let content: Element<_> = text("wow this works!").into();
-        content
-    }
-}
-
-
-const HEIGHT: u32 = 34;
 
 fn main() {
+    let default_configuration: &str = "~/.config/astrum/";
+    let cli = Cli::parse();
 
+    // TODO: make it detect if there is already astrum running
+    // if yes then just dont run antyhing and just output "Astrum is already running!"
+    // if no, run astrum
 
-    // TODO: make most of these settings cusstomizable by user
-    App::run(Settings {
-        antialiasing: true,
-        exit_on_close_request: false,
-
-        // TODO: make the user change these settings!!
-        initial_surface: InitialSurface::LayerSurface(SctkLayerSurfaceSettings {
-            id: Id::MAIN,
-            keyboard_interactivity: KeyboardInteractivity::None, // TODO: make the user change this
-            namespace: "astrum".into(), // maybe user can change it?
-            layer: Layer::Top,
-            size: Some((None, Some(HEIGHT))), // make the user be able to change these, maybe make
-            // some presets like "Full" to make it automatically use the full monitors size?? would
-            exclusive_zone: HEIGHT as i32, // same as above ^
-            anchor: Anchor::TOP.union(Anchor::LEFT).union(Anchor::RIGHT), // anchors, maybe make it
-            // a function or something or a table of bools or a table of strings to know whcih ones
-            // to use
-            ..Default::default()
-            // also somehow import custom user settings too
-
-        }),
-        flags: (),
-        id: None,
-        fonts: Default::default(), // TODO: make it customizable by user
-        default_font: Font::default(),
-        default_text_size: 14.into(),
-    })
-    .unwrap();
+    if !Path::new(default_configuration).exists() && cli.config.is_none() {
+        unimplemented!(); // TODO: make it actually make a new template once i made one
+    }
+    println!("{}", Path::new(default_configuration).exists());
+    println!("also the init {} and the config {}", cli.init , cli.config.unwrap_or("none".to_string()));
 }
