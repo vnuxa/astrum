@@ -123,6 +123,8 @@ name = "astrum"
 version = "0.1.0"
 dependencies = [
  "iced",
+ "wayland-client",
+ "wayland-protocols",
 ]
 
 [[package]]

@@ -5,13 +5,22 @@ use iced::{
         layer_surface::{Anchor, KeyboardInteractivity, Layer},
         InitialSurface,
     },
-    window::Id, Application, Command, Executor, Font, Settings, Theme,
-    Message, Theme, Renderer, Element
+    widget::{
+        text
+    },
+    window::Id, Application, Command, Theme,
+    Font,
+    Settings,
+    Element
 };
 
 pub struct App;
 
 
+pub enum Message {
+    None,
+
+}
 impl Application for App {
     type Executor = executor::Default;
     type Flags = ();
@@ -32,9 +41,9 @@ impl Application for App {
         Command::none() // TODO:  this is where application logic is at, make the user change these
     }
 
-    fn view(&self) -> Element<Message> {
-        let content: Element<_> = text!("wow this works!").size(40).into();
-        center(content).into()
+    fn view(&self, id: Id) -> Element<Self::Message> {
+        let content: Element<_> = text("wow this works!").into();
+        content
     }
 }
 
