@@ -13,6 +13,8 @@ pkgs.mkShell rec {
     xorg.libXrandr
     wayland
     libxkbcommon
+    dbus
+    lua5_4_compat
   ];
 
   LD_LIBRARY_PATH =
