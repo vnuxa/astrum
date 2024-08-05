@@ -18,34 +18,27 @@ use std::collections::HashSet;
 pub struct AppModel {
     pub name: String,
 
-    pub icon_path: PathBuf,
-    pub executable: PathBuf,
-    pub desktop_path: PathBuf,
+    pub icon_path: String,
+    pub executable: String,
+    pub desktop_path: String,
 
     pub description: Option<String>
 }
 
-pub trait AppControls {
-    /// Launches the exectuable
-    fn launch(self);
-}
 
-impl AppControls for AppModel {
-    fn launch(self) {
-        Command::new(self.executable)
-            .output()
-            .expect("failed to execute app");
-    }
-}
 
 
 // make this async too
-pub fn parse_desktop_file(desktop_file_path: PathBuf) -> Option<AppModel> {
-    let mut app = AppModel { ..Default::default() };
-    app.desktop_path = desktop_file_path.clone();
+pub fn parse_desktop_file(desktop_file_path: PathBuf) -> Option<String> {
+    let desktop_path = desktop_file_path.clone();
     let desktop_file_path_str = desktop_file_path.to_str().unwrap();
     let map = ini!(desktop_file_path_str);
     let desktop_entry_exists = map.contains_key("desktop entry");
+    let mut executable = "".to_string();
+    let mut icon_path = "".to_string();
+    let mut app_name = "".to_string();
+    let mut description = "".to_string();
+
     if desktop_entry_exists {
         let desktop_entry = map["desktop entry"].clone();
         // if desktop_entry.contains_key("Terminal") {
@@ -59,27 +52,42 @@ pub fn parse_desktop_file(desktop_file_path: PathBuf) -> Option<AppModel> {
             desktop_entry.contains_key("name")
         {
             let exec = desktop_entry["exec"].clone();
-            app.executable = PathBuf::from(exec.unwrap());
+            executable = exec.unwrap();
 
             let icon = desktop_entry["icon"].clone();
-            app.icon_path = PathBuf::from(icon.unwrap());
+            icon_path = icon.unwrap();
 
             let name = desktop_entry["name"].clone();
-            app.name = name.unwrap();
+            app_name = name.unwrap();
         } else {
-            return None
+            return None;
         }
         if desktop_entry.contains_key("comment") {
-            let description = desktop_entry["comment"].clone();
-            app.description = description;
+            let app_description = desktop_entry["comment"].clone();
+            description = app_description.unwrap();
         }
+    }  else {
+        return None;
+    }
+    if app_name == "".to_string() || icon_path == "".to_string()  {
+        return None;
     }
 
-    Some(app)
+    Some(
+        format!(
+
+            "{{ \n name = '{name}',\n executable = '{executable}',\n icon = '{icon}',\n desktop_path = '{desktop}',\n description = '{description}' }},\n ",
+            name = app_name,
+            executable = executable,
+            icon = icon_path,
+            desktop = desktop_path.display(),
+            description = description
+        )
+    )
 }
 
 // maybe make it async
-pub fn get_all_apps() -> Result<Vec<AppModel>, String> {
+pub fn get_all_apps() -> Option<String> {
     // read XDG_DATA_DIRS env var
     let xdg_data_dirs = std::env::var("XDG_DATA_DIRS").unwrap_or("/usr/share".to_string());
     let xdg_data_dirs: Vec<&str> = xdg_data_dirs.split(':').collect();
@@ -95,7 +103,7 @@ pub fn get_all_apps() -> Result<Vec<AppModel>, String> {
     search_dirs.insert("/etc/xdg/autostart");
     search_dirs.insert("/var/lib/snapd/desktop/applications");
     // for each dir, search for .desktop files
-    let mut apps: Vec<AppModel> = Vec::new();
+    let mut apps: String = "{".to_string();
     for dir in search_dirs {
         let dir = PathBuf::from(dir);
         if !dir.exists() {
@@ -114,15 +122,23 @@ pub fn get_all_apps() -> Result<Vec<AppModel>, String> {
             if path.extension().unwrap() == "desktop" {
                 let app = parse_desktop_file(path.to_path_buf());
                 if let Some(app) = app {
-                    apps.push(app);
+                    apps.push_str(&app);
                 }
             }
         }
     }
-    Ok(apps)
+    apps.push_str("}");
+    Some(apps)
 }
 
-fn launch_app(app_path: PathBuf) {
+pub fn launch_app(app_path: String) {
+    // try making this into a PathBuf::from(app_path)
+    // if it doesnt work
+    Command::new("bash")
+        .arg("-c")
+        .arg(app_path)
+        .spawn()
+        .expect("failed to execute app");
 }
 // fn get_all_apps() -> Vec<AppModel> {
 //     let mut context = AppInfoContext::new();

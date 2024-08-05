@@ -1,7 +1,6 @@
 
 use std::{borrow::{Borrow, BorrowMut}, cell::RefCell, collections::HashMap, env::{self}, fmt::format, fs::File, io::{self, Read, Write}, ops::Deref, path::{Path, PathBuf}};
 
-use iced::{event::listen, subscription::{self, run}, wayland::layer_surface::Anchor, widget::{button, container, row, shader::wgpu::MaintainBase, text}, Application};
 use mlua::{Lua, OwnedFunction, OwnedTable, Value};
 use simple_home_dir::home_dir;
 use std::fs;
@@ -16,6 +15,7 @@ mod app;
 mod utils;
 mod widgets;
 mod services;
+mod style;
 
 
 
@@ -84,26 +84,46 @@ fn main() {
         "sockets"
     ]);
     if cli.call.is_some() {
-        for socket in fs::read_dir(format!("{}/.cache/astrum/sockets/", home_dir().unwrap().display())).unwrap().flatten()
+        let socket = format!("{}/.cache/astrum/sockets/calls", home_dir().unwrap().display());
+        let mut unix_stream = UnixStream::connect(socket).expect("Could not create stream");
 
-            // Path::new("./")).unwrap().flatten()
-        {
-            println!("Name: {}", socket.path().display());
+        unix_stream
+            .write_all(cli.call.clone().unwrap().as_bytes())
+            .expect("failed at writing calls to the listener");
 
-            let mut unix_stream =
-                UnixStream::connect(socket.path()).expect("Could not create stream");
-
-            unix_stream
-                .write_all(cli.call.clone().unwrap().as_bytes())
-                .expect("failed at writing calls to listeners");
-
-        }
+        // for socket in fs::read_dir(format!("{}/.cache/astrum/sockets/", home_dir().unwrap().display())).unwrap().flatten()
+        //
+        //     // Path::new("./")).unwrap().flatten()
+        // {
+        //     println!("Name: {}", socket.path().display());
+        //
+        //     let mut unix_stream =
+        //         UnixStream::connect(socket.path()).expect("Could not create stream");
+        //
+        //     unix_stream
+        //         .write_all(cli.call.clone().unwrap().as_bytes())
+        //         .expect("failed at writing calls to listeners");
+        //
+        // }
         return
     }
-    if !Path::new(config_path).exists() {
-        println!("config path doesnt exist");
-        run_command(&format!("mkdir {}", config_path));
-        let neoconf: String = format!("
+
+    let neoconf: String = format!("
+        {{
+            \"lspconfig\": {{
+                \"lua_ls\": {{
+                    \"Lua.workspace.library\": [
+                        \"{types_path}\"
+                    ]
+                }}
+            }}
+        }}",
+        types_path = type_path().unwrap().display()
+    );
+    // TODO: make this update every single run
+    let mut file = File::create(config_path.to_owned() + ".neoconf.json").expect("Failed to create .neoconf.json");
+    file.write_fmt(format_args!(
+        "
             {{
                 \"lspconfig\": {{
                     \"lua_ls\": {{
@@ -112,34 +132,15 @@ fn main() {
                         ]
                     }}
                 }}
-            }}",
-            types_path = type_path().unwrap().display()
-        );
-        // TODO: make this update every single run
-        let mut file = File::create(config_path.to_owned() + ".neoconf.json").expect("Failed to create .neoconf.json");
-        file.write_fmt(format_args!(
-            "
-                {{
-                    \"lspconfig\": {{
-                        \"lua_ls\": {{
-                            \"Lua.workspace.library\": [
-                                \"{types_path}\"
-                            ]
-                        }}
-                    }}
-                }}
-            ",
-            types_path = type_path().unwrap().display()
-        ));
+            }}
+        ",
+        types_path = type_path().unwrap().display()
+    ));
+    if !Path::new(config_path).exists() {
+        println!("config path doesnt exist");
+        run_command(&format!("mkdir {}", config_path));
         let lua_file = File::create(config_path.to_owned() + "config.lua").expect("Failed to create config.lua");
 
-        // run_command(
-        //     &format!(
-        //         "echo {neoconf_file} > {neoconf_path}.neoconf.json",
-        //         neoconf_file = neoconf,
-        //         neoconf_path = config_path
-        //     )
-        // );
         println!("types path: {}", type_path().unwrap().display())
 
     }

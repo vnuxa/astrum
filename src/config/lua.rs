@@ -4,7 +4,7 @@ use anyhow::{anyhow, Context, Ok, Result};
 use mlua::{ErrorContext, Lua, Table, UserData, Value};
 use ::mpris::{LoopStatus, Player};
 
-use crate::{config::HOME_DIR, services::{hyprland, mpris}};
+use crate::{config::HOME_DIR, services::{applications::{self, launch_app}, calls::call_windows_socket, hyprland, mpris}};
 
 pub fn get_or_create_module<'lua>
 (
@@ -80,6 +80,7 @@ pub fn make_lua_context(config_file: &Path) -> anyhow::Result<Lua> {
         let package_path: String = package.get("path").unwrap();
         let mut path_array: Vec<String> = package_path.split(";").map(|s| s.to_owned()).collect();
 
+
         // i think this is for lua modules and stuff??
         // include it if something is broken
         //
@@ -98,27 +99,14 @@ pub fn make_lua_context(config_file: &Path) -> anyhow::Result<Lua> {
         // prefix_path(&mut path_array, &current_dir.join("types").as_path());
 
         prefix_path(&mut path_array, &HOME_DIR.join(".config").join("astrum"));
-        // prefix_path(&mut path_array, )
-        // for dir in CONFIG_DIRS.iter() {
-        //     prefix_path(&mut path_array, dir);
-        // }
-        // path_array.insert(
-        //     2,
-        //     format!("{}/plugins/?/plugin/init.lua", DATA_DIR.display())
-        // );
 
-        // dont know if users need this!!
-        // if let Ok(executable) = std::env::current_exe() {
-        //     if let Some(parent) = executable.parent() {
-        //         astrum_mod
-        //             .set(
-        //                 "executable_dir",
-                        // parent.to_str()
-        //                     .ok_or_else(|| anyhow!("current_exe path isnt a UTF-8"))?,
-        //             )
-        //             .context("couldnt set exectuable_dir for astrum module");
-        //     }
-        // }
+        // TODO: document external packages, say that they use luarocks --local
+        // and that its onyl on luarocks_5.4 or something
+        if HOME_DIR.join(".luarocks").exists() {
+            println!("found luarocks");
+            prefix_path(&mut path_array, &HOME_DIR.join(".luarocks").join("share").join("lua").join("5.4"));
+        }
+
 
 
         let config_file_str = config_file
@@ -144,45 +132,14 @@ pub fn make_lua_context(config_file: &Path) -> anyhow::Result<Lua> {
         .set_name("=searcher")
         .eval()?;
 
-        // .context("error occured when replacing package.searchers");
-        // TODO: maybe you should actually read what ecah odule does before implementing becasue
-        // rightn ow your just adding theb ase of the actual astrum module
-        // i dont know even if this builder thing is nesscessary or not, would the structure that i
-        // want evn use such things?
-        // all the astrum module should do is return a table of configuration???
-        // figuere out strcuture tommorow
-        //
-        // a widget is essentailyl a table thats gets processed from lua to rust struct via a
-        // helper function exactly like yo udid with the astrum rust config thing
 
-        // astrum_mod.set(
-        //     "config_builder",
-        //     // IMPORTANT: not done
-        //     lua.create_function(|lua, _| {
-        //         let config = lua.create_table()?;
-        //         let mt = lua.create_table()?;
-        //         mt.set("__index", lua.create_function(config))
-        //     })
-        //
-        // );
-        //
-        // astrum_mod.set(
-        //     "reload_configuration",
-        //     lua.create_function(|| {
-        //         // TODO: NOT DONE
-        //         unimplemented!();
-        //         Ok(())
-        //     })?
-        // )?;
-        // astrum_utils.set(
-        //     "get_or_set_variable",
-        //     lua.create_function(|_, testing_table: mlua::Table| {
-        //         create_app(testing_table);
-        //         std::result::Result::Ok(())
-        //     }).unwrap(),
-        //
-        //
-        // ).unwrap();
+        astrum_utils.set(
+            "toggle_window_call",
+            lua.create_function(|_, window_name: mlua::String| {
+                call_windows_socket(window_name.to_str().unwrap().to_string());
+                std::result::Result::Ok(())
+            })?
+        )?;
         astrum_utils.set(
             "hyprland_set_workspace",
             lua.create_function(|_, workspace: i32| {
@@ -190,6 +147,13 @@ pub fn make_lua_context(config_file: &Path) -> anyhow::Result<Lua> {
                 std::result::Result::Ok(())
             })?
         )?;
+        astrum_utils.set(
+            "hyprland_get_active",
+            lua.create_function(|_, ()| {
+                std::result::Result::Ok(hyprland::get_active_workspace())
+            })?
+        )?;
+
 
         astrum_utils.set(
             "mpris_get_player",
@@ -278,6 +242,27 @@ pub fn make_lua_context(config_file: &Path) -> anyhow::Result<Lua> {
             })?
         )?;
 
+        astrum_utils.set(
+            "get_all_applications",
+            lua.create_function(move |lua: &Lua, ()| {
+                let signal_data = match lua.load(applications::get_all_apps().unwrap()).eval().expect("failed to evaluate signal_data") {
+                    Value::Table(table_data) => Some(table_data),
+                    _ => None,
+                };
+                std::result::Result::Ok(signal_data.unwrap())
+            })?
+        )?;
+
+        astrum_utils.set(
+            "launch_application",
+            lua.create_function(|_, executable: mlua::String| {
+                launch_app(executable.to_str().unwrap().to_string());
+                std::result::Result::Ok(())
+            })?
+        )?;
+
+        println!("package array!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        println!("{}", path_array.join(";"));
         package
             .set("path", path_array.join(";"))?;
             // .context("errored when assigning package.path")?;

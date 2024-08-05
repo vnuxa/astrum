@@ -16,8 +16,9 @@ mlua = { version = "0.9.9", features = ["lua54", "unstable"] }
 anyhow = "1.0.86"
 lazy_static = "1.5.0"
 clap = { version = "4.5.10", features = ["derive"] }
+notify = "6.1.1"
 
-[dependencies.iced]
-git = "https://github.com/pop-os/iced"
+[dependencies.libcosmic]
+git = "https://github.com/pop-os/libcosmic.git"
 default-features = false
-features = ["tokio", "wayland", "advanced", "wgpu", "multi-window"]
+features = ["tokio", "wayland", "wgpu", "multi-window"]

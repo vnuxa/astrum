@@ -7,7 +7,7 @@ use std::{borrow::BorrowMut, cell::RefCell, collections::HashMap, sync::Arc, thr
 use hyprland::ctl::output;
 use mpris::{Event, Metadata, Player, PlayerFinder};
 
-use iced::{advanced::graphics::{futures::MaybeSend, text::cosmic_text::ttf_parser::{math, trak::TrackData}}, futures::{channel::mpsc, stream, SinkExt, StreamExt}, subscription, Subscription};
+use cosmic::iced::{advanced::graphics::{futures::MaybeSend, text::cosmic_text::ttf_parser::{math, trak::TrackData}}, futures::{channel::mpsc, stream, SinkExt, StreamExt}, subscription, Subscription};
 use mpris::{DBusError, LoopStatus};
 use std::sync::{Mutex, MutexGuard};
 
@@ -242,7 +242,7 @@ pub fn listen_first_player(requested_signals: HashMap<String, bool>) -> Subscrip
         }).await.unwrap();
 
         loop {
-            iced::futures::pending!();
+            cosmic::iced::futures::pending!();
         }
     })
 

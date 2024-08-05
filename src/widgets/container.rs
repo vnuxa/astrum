@@ -1,9 +1,14 @@
 
-use iced::advanced::graphics::text::cosmic_text::ttf_parser::vorg::VerticalOriginMetrics;
-use iced::alignment::{Horizontal, Vertical};
-use iced::widget::{container, row, Container, Row};
-use iced::{Alignment, Element, Length, Theme};
-use iced::Renderer;
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::rc::Rc;
+
+use cosmic::iced::alignment::{Horizontal, Vertical};
+// use iced::widget::{container, row, Container, Row};
+use cosmic::widget::{container, Container};
+use cosmic::iced::{Alignment, Length};
+use cosmic::Element;
+use cosmic::Renderer;
 use mlua::Number;
 use mlua::Integer;
 
@@ -12,11 +17,12 @@ use crate::app::WindowMessages;
 use super::process_lua_element;
 
 
-pub fn lua_container_widget<'a>(
-    data: mlua::Table
-) -> Container<'a, WindowMessages> {
+pub fn lua_container_widget(
+    data: mlua::Table,
+    // mut identifiers: Rc<HashMap<String, String>>
+) -> Container<WindowMessages, cosmic::Theme> {
     let widget_child: mlua::Table = data.get("child").unwrap();
-    let mut container_widget = Container::new(process_lua_element(widget_child).unwrap());
+    let mut container_widget: Container<WindowMessages, cosmic::Theme> = Container::new(process_lua_element(widget_child).unwrap());
 
 
     // width and height

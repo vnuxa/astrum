@@ -6,6 +6,8 @@ local astrum = {
 	widgets = {},
 	---@module "services"
 	services = {},
+	---@module "style"
+	style = {},
 }
 
 ---@module "misc"
@@ -44,7 +46,7 @@ local astrum = {
 
 ---@alias CallsSignal string # Sends a signal when the call recieved matches the one specified
 
----@alias AstrumElement table
+---@alias AstrumElement table # An element that is generated from `astrum.widgets`
 
 ---@alias SignalNames # List of pre-defined signal names
 ---| string
@@ -58,11 +60,19 @@ local astrum = {
 
 ---@class (exact) ApplicationModel
 ---@field update_logic fun(signal_name: SignalNames, signal_data: table) # Logic that is sent when a signal needs to be processed
----@field view_logic fun(): AstrumElement # Logic that returns how the application should be rendered. Function gets run after processing update_logic
+---@field windows { [string]: table } # Logic that returns how the application should be rendered. Function gets run after processing update_logic
 ---@field requested_signals? Signals
+---@field style? fun(): ApplicationAppearance # Sets the style of the application
 
 --- ** TO BE DOCUMENTED**
 ---@param model ApplicationModel
-function astrum:Application(model) end
+function astrum:application(model) end
+
+-- INFO: dont know if i can make regular windows be invsiible
+-- but if i should try, let me know
+
+---Toggles the visibility of a popup window
+---@param window_name string
+function astrum:toggle_window(window_name) end
 
 return astrum

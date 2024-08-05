@@ -1,20 +1,25 @@
-use iced::{Element, Length, Theme};
+use cosmic::iced::{Length};
+use cosmic::Element;
 use mlua::Number;
 use core::panic;
+use std::cell::RefCell;
+use std::collections::HashMap;
 use std::convert::TryInto;
-use iced::Renderer;
+use std::rc::Rc;
+use cosmic::Renderer;
 
 use crate::app::WindowMessages;
 
 use super::{container::lua_container_widget, custom, process_lua_element};
 
 
-pub fn lua_button_widget<'a>(
+pub fn lua_button_widget(
     data: mlua::Table,
-) -> custom::button::Button<'a, WindowMessages, Theme, Renderer>
-where
-    Theme: 'a,
-    Renderer: iced::advanced::Renderer,
+    // mut identifiers: Rc<HashMap<String, String>>
+) -> custom::button::Button<WindowMessages>
+// where
+//     Theme: 'a,
+//     Renderer: cosmic::iced::advanced::Renderer,
 
 {
     let widget_child: mlua::Table = data.get("child").unwrap();
@@ -96,12 +101,32 @@ where
             )
         ));
     }
+
     if let Ok(on_scroll_up) = data.get::<_, mlua::String>("on_scroll_up") {
         button_widget = button_widget.on_scroll_up(WindowMessages::Msg((on_scroll_up.to_str().unwrap().to_string(), "{}".to_string())));
+    } else if let Ok(on_scroll_up) = data.get::<_, mlua::Table>("on_scroll_up") {
+        button_widget = button_widget.on_scroll_up(WindowMessages::Msg(
+            (
+                on_scroll_up.get::<_, mlua::String>("signal_name").unwrap().to_str().unwrap().to_string(),
+                on_scroll_up.get::<_, mlua::String>("signal_data").unwrap().to_str().unwrap().to_string(),
+
+            )
+        ));
     }
+
     if let Ok(on_scroll_down) = data.get::<_, mlua::String>("on_scroll_down") {
         button_widget = button_widget.on_scroll_down(WindowMessages::Msg((on_scroll_down.to_str().unwrap().to_string(), "{}".to_string())));
+    } else if let Ok(on_scroll_down) = data.get::<_, mlua::Table>("on_scroll_down") {
+        button_widget = button_widget.on_scroll_down(WindowMessages::Msg(
+            (
+                on_scroll_down.get::<_, mlua::String>("signal_name").unwrap().to_str().unwrap().to_string(),
+                on_scroll_down.get::<_, mlua::String>("signal_data").unwrap().to_str().unwrap().to_string(),
+
+            )
+        ));
     }
+
+
     button_widget
 
 }

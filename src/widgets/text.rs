@@ -1,12 +1,18 @@
-use iced::{Element, Length};
+use std::rc::Rc;
+
+use cosmic::iced::{Element, Length};
+use cosmic::Renderer;
+
+use crate::app::WindowMessages;
 
 
-pub fn lua_text_widget<'a>(
+pub fn lua_text_widget(
     data: mlua::Table
-) -> iced::widget::Text<'a> {
+) -> cosmic::widget::Text<cosmic::Theme>
+{
+    let widget_content: mlua::String = data.get::<&str, mlua::String>("content").unwrap();
 
-    let widget_content: mlua::String = data.get("content").unwrap();
-    let mut text_widget = iced::widget::text(widget_content.to_str().unwrap());
+    let mut text_widget: cosmic::widget::Text<cosmic::Theme, Renderer> = cosmic::widget::text(widget_content.to_str().unwrap().to_string());
 
 
     // covers Fill and Shrink
@@ -48,20 +54,19 @@ pub fn lua_text_widget<'a>(
 
     if let Ok(horizontal_alignment) = data.get::<_, mlua::String>("horizontal_alignment") {
         text_widget = text_widget.horizontal_alignment(match horizontal_alignment.to_str().unwrap() {
-            "center" => iced::alignment::Horizontal::Center,
-            "right" => iced::alignment::Horizontal::Right,
-            _ => iced::alignment::Horizontal::Left
+            "center" => cosmic::iced::alignment::Horizontal::Center,
+            "right" => cosmic::iced::alignment::Horizontal::Right,
+            _ => cosmic::iced::alignment::Horizontal::Left
         });
     }
 
     if let Ok(vertical_alignment) = data.get::<_, mlua::String>("vertical_alignment") {
         text_widget = text_widget.vertical_alignment(match vertical_alignment.to_str().unwrap() {
-            "center" => iced::alignment::Vertical::Center,
-            "bottom" => iced::alignment::Vertical::Bottom,
-            _ => iced::alignment::Vertical::Top,
+            "center" => cosmic::iced::alignment::Vertical::Center,
+            "bottom" => cosmic::iced::alignment::Vertical::Bottom,
+            _ => cosmic::iced::alignment::Vertical::Top,
         });
     }
-
 
     text_widget
 }

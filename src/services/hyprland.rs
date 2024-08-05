@@ -1,7 +1,7 @@
 use std::{borrow::BorrowMut, cell::RefCell, collections::HashMap, env::Args};
 
 use hyprland::{data::Workspace, event_listener::EventListener, shared::{HyprData, HyprDataActive, HyprDataVec, WorkspaceType}};
-use iced::{advanced::graphics::futures::{subscription, MaybeSend}, Subscription};
+use cosmic::iced::{advanced::graphics::futures::{subscription, MaybeSend}, Subscription};
 
 use crate::app::WindowMessages;
 // TODO: Document the structs

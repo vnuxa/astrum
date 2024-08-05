@@ -18,6 +18,10 @@ services.hyprland = {}
 ---@param workspace number
 function services.hyprland:set_workspace(workspace) end
 
+---Gets the current active workspace
+---@return integer
+function services.hyprland:get_active_workspace() end
+
 -- mpris service
 
 ---@class MprisService
@@ -79,5 +83,23 @@ function services.mpris:get_player(player_name) end
 
 ---@class CallsService
 services.calls = {}
+
+-- applications
+
+services.applications = {}
+
+---@class (exact) AppModel
+---@field name string # The name of the app
+---@field executable string # The apps executable binary path
+---@field icon string # The icon name of the app
+---@field description string # The description of the app, if it has one
+
+---Gets all applications within .desktop
+---@return AppModel[]
+function services.applications:get_all_apps() end
+
+---Launches an application, using the executable path
+---@param executable_path string
+function services.applications:launch_app(executable_path) end
 
 return services
