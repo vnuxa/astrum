@@ -62,7 +62,7 @@ local astrum = {
 ---@field update_logic fun(signal_name: SignalNames, signal_data: table) # Logic that is sent when a signal needs to be processed
 ---@field windows { [string]: table } # Logic that returns how the application should be rendered. Function gets run after processing update_logic
 ---@field requested_signals? Signals
----@field style? fun(): ApplicationAppearance # Sets the style of the application
+---@field style? ApplicationAppearance # Sets the style of the application
 
 --- ** TO BE DOCUMENTED**
 ---@param model ApplicationModel

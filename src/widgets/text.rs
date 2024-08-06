@@ -4,6 +4,7 @@ use cosmic::iced::{Element, Length};
 use cosmic::Renderer;
 
 use crate::app::WindowMessages;
+use crate::style::text::lua_text_style;
 
 
 pub fn lua_text_widget(
@@ -66,6 +67,10 @@ pub fn lua_text_widget(
             "bottom" => cosmic::iced::alignment::Vertical::Bottom,
             _ => cosmic::iced::alignment::Vertical::Top,
         });
+    }
+
+    if let Ok(style) = data.get::<_, mlua::Table>("style") {
+        text_widget = text_widget.style(lua_text_style(style.into_owned()))
     }
 
     text_widget

@@ -9,6 +9,7 @@ use std::rc::Rc;
 use cosmic::Renderer;
 
 use crate::app::WindowMessages;
+use crate::style::button::lua_button_style;
 
 use super::{container::lua_container_widget, custom, process_lua_element};
 
@@ -124,6 +125,10 @@ pub fn lua_button_widget(
 
             )
         ));
+    }
+
+    if let Ok(style) = data.get::<_, mlua::Table>("style") {
+        button_widget = button_widget.style(lua_button_style(style.into_owned()));
     }
 
 

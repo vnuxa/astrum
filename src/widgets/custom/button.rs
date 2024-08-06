@@ -321,7 +321,7 @@ impl<'a, Message: 'a + Clone> Widget<Message, cosmic::Theme, cosmic::Renderer>
 
         let mut headerbar_alpha = None;
 
-        let is_enabled = self.on_press.is_some() || self.on_press_down.is_some();
+        let is_enabled = self.on_press.is_some() || self.on_press_down.is_some() || self.on_scroll_up.is_some() || self.on_scroll_down.is_some();
         let is_mouse_over = cursor.position().is_some_and(|p| bounds.contains(p));
 
         let state = tree.state.downcast_ref::<State>();

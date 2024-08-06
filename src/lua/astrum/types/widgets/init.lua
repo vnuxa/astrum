@@ -46,6 +46,7 @@ function widgets:window(model) end
 
 ---@class (exact) TextModel: Element # to be documented
 ---@field content string # text to be displayed
+---@field style? TextAppearance # The style of the text
 
 ---comment
 ---@param model TextModel | string
@@ -60,6 +61,7 @@ function widgets:text(model) end
 ---@field on_press? CustomSignal | string # The name of the signal to be fired when a button is pressed
 ---@field on_scroll_up? CustomSignal | string # The name of the signal  to be fired when a button is scrolled up via the mouse wheel
 ---@field on_scroll_down? CustomSignal | string # The name of the signal  to be fired when a button is scrolled down via the mouse wheel
+---@field style? { active: ButtonAppearance, hovered: ButtonAppearance, pressed: ButtonAppearance, disabled: ButtonAppearance} # Declares the buttons appearance
 
 ---comment
 ---@param model ButtonModel

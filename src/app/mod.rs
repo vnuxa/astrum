@@ -254,11 +254,14 @@ impl cosmic::Application for MainWindow {
 
         if let Some(style) = &self.style {
             // let lua = self.lua.borrow();
-            let self_style = style.to_ref();
-            return Some(cosmic::style::Application::Custom(Box::new(
-
-                |theme| lua_application_style(self_style.clone())
-            )));
+            // return Some(
+            //     cosmic::style::Application::Custom(
+            //         Box::new(
+            //             |theme| lua_application_style(style.clone())
+            //         )
+            //     )
+            // );
+            return Some(lua_application_style(style.clone()))
 
         }
 

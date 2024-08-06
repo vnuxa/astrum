@@ -93,6 +93,8 @@ local lib = {
 				fill_optional("vertical_alignment")
 				fill_optional("horizontal_alignment")
 
+				fill_optional("style")
+
 				return text
 			end
 			return {}
@@ -129,6 +131,7 @@ local lib = {
 			fill_optional("height")
 
 			fill_optional("padding")
+			fill_optional("style")
 
 			optional_signal("on_press")
 			optional_signal("on_scroll_up")
@@ -421,14 +424,18 @@ local lib = {
 		local helper = {}
 
 		function helper:rgba(red, green, blue, alpha)
-			local color = {
+			return {
 				red = red,
 				green = green,
 				blue = blue,
 				alpha = alpha,
 			}
-
-			return color
+		end
+		function helper:vector(x, y)
+			return {
+				x = x,
+				y = y,
+			}
 		end
 
 		return helper
