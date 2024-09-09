@@ -60,25 +60,28 @@ pub fn lua_scrollable_widget(
     if let Ok(direction) = data.get::<_, mlua::Table>("direction") {
         if let Ok(scroll_type) = direction.get(1) {
             let scroll_type: mlua::String = scroll_type;
+            // println!("got scroll type {:?}", scroll_type);
 
             fn get_propreties(scroll_propreties: mlua::Table) -> Properties {
-                let propreties: Properties = Properties::new();
+                // println!("getting propreties now..");
+                let mut propreties: Properties = Properties::new();
 
                 if let Ok(width) = scroll_propreties.get::<_, mlua::Integer>("width") {
-                    propreties.width(width as f32);
+                    propreties = propreties.width(width as f32);
                 }
                 if let Ok(margin) = scroll_propreties.get::<_, mlua::Integer>("margin") {
-                    propreties.margin(margin as f32);
+                    propreties = propreties.margin(margin as f32);
                 }
                 if let Ok(scrollers_width) = scroll_propreties.get::<_, mlua::Integer>("scrollers_width") {
-                    propreties.scroller_width(scrollers_width as f32);
+                    propreties = propreties.scroller_width(scrollers_width as f32);
                 }
                 if let Ok(alignment) = scroll_propreties.get::<_, mlua::String>("alignment") {
-                    propreties.alignment(match alignment.to_str().unwrap() {
+                    propreties = propreties.alignment(match alignment.to_str().unwrap() {
                         "end" => cosmic::iced_widget::scrollable::Alignment::End,
                         _ => cosmic::iced_widget::scrollable::Alignment::Start,
                     });
                 }
+                // println!("propreties: {:?}", propreties);
 
                 propreties
             }

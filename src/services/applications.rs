@@ -2,7 +2,7 @@
 // cant really have many events
 // i mean maybe when an application is installed/uninstalled??
 
-use std::{path::PathBuf, process::Command};
+use std::{fs, path::PathBuf, process::Command};
 
 use ini::ini;
 use walkdir::WalkDir;
@@ -130,6 +130,7 @@ pub fn get_all_apps() -> Option<String> {
     apps.push_str("}");
     Some(apps)
 }
+
 
 pub fn launch_app(app_path: String) {
     // try making this into a PathBuf::from(app_path)

@@ -13,6 +13,7 @@ use mlua::Number;
 use mlua::Integer;
 
 use crate::app::WindowMessages;
+use crate::style::container::lua_container_style;
 
 use super::process_lua_element;
 
@@ -117,6 +118,10 @@ pub fn lua_container_widget(
             "bottom" => Vertical::Bottom,
             _ => unimplemented!("Container vertical alignment value not supported")
         });
+    }
+
+    if let Ok(style) = data.get::<_, mlua::Table>("style") {
+        container_widget = container_widget.style(lua_container_style(style.into_owned()));
     }
 
     container_widget

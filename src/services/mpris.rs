@@ -52,10 +52,10 @@ fn vec_to_table(data: Vec<&str>) -> String {
     for (key, value) in data.iter().enumerate() {
         if key == 0{
 
-            builder_string.push_str(&format!("'{}'", value));
+            builder_string.push_str(&format!("'{}'", value.replace("'", r"\'")));
         } else {
 
-            builder_string.push_str(&format!(", '{}'", value));
+            builder_string.push_str(&format!(", '{}'", value.replace("'", r"\'")));
         }
     }
     builder_string.push_str("}");
@@ -68,21 +68,23 @@ fn vec_to_table(data: Vec<&str>) -> String {
 // INFO: i dont know if more metadata is needed, but right now these are the essential
 // i can think up of, if you need more let me know
 fn track_metadata_to_string(track_data: Metadata) -> String {
-    // if track_data.is_empty() {
-    //     return "{ empty = true }".to_string();
-    // }
+    if track_data.is_empty() {
+        return "{ empty = true }".to_string();
+    }
 
     // maybe add track cover url
     format!(
         "{{
             album_name = '{album_name}',
             album_artists = {album_artists},
-            length = {length}
+            length = {length},
+            title = '{title}'
 
         }}",
-        album_name = track_data.album_name().unwrap(),
-        album_artists = vec_to_table(track_data.album_artists().unwrap()),
-        length = (track_data.length_in_microseconds().unwrap() / 1000), // rn making it in seconds
+        album_name = track_data.album_name().unwrap().replace("'", r"\'"),
+        album_artists = vec_to_table(track_data.album_artists().unwrap_or(Vec::new())),
+        length = (track_data.length_in_microseconds().unwrap_or(0) / 1000), // rn making it in seconds
+        title = track_data.title().unwrap_or("").replace("'", r"\'"),
     )
 }
 

@@ -16,6 +16,7 @@ mod utils;
 mod widgets;
 mod services;
 mod style;
+mod animations;
 
 
 
@@ -121,17 +122,33 @@ fn main() {
         types_path = type_path().unwrap().display()
     );
     // TODO: make this update every single run
-    let mut file = File::create(config_path.to_owned() + ".neoconf.json").expect("Failed to create .neoconf.json");
+    // let mut file = File::create(config_path.to_owned() + ".neoconf.json").expect("Failed to create .neoconf.json");
+    // file.write_fmt(format_args!(
+    //     "
+    //         {{
+    //             \"lspconfig\": {{
+    //                 \"lua_ls\": {{
+    //                     \"Lua.workspace.library\": [
+    //                         \"{types_path}\"
+    //                     ]
+    //                 }}
+    //             }}
+    //         }}
+    //     ",
+    //     types_path = type_path().unwrap().display()
+    // ));
+
+    // luarc for the lua-language-server
+    let mut file = File::create(config_path.to_owned() + ".luarc.json").expect("Failed to create .luarc.json");
     file.write_fmt(format_args!(
         "
             {{
-                \"lspconfig\": {{
-                    \"lua_ls\": {{
-                        \"Lua.workspace.library\": [
-                            \"{types_path}\"
-                        ]
-                    }}
-                }}
+                \"$schema\": \"https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json\",
+                \"workspace.library\": [
+                    \"{types_path}\"
+                ],
+
+                \"runtime.version\": \"Lua 5.1\",
             }}
         ",
         types_path = type_path().unwrap().display()

@@ -1,12 +1,18 @@
+use std::borrow::{Borrow, BorrowMut, Cow};
+use std::cell::RefCell;
 use std::rc::Rc;
 
-use cosmic::iced::{Element, Length};
-use cosmic::Renderer;
+use cosmic::iced::font::{Family, Stretch, Style, Weight};
+use cosmic::iced::{Element, Font, Length};
+use cosmic::widget::Widget;
+use cosmic::{font, Renderer};
 
 use crate::app::WindowMessages;
 use crate::style::text::lua_text_style;
 
-
+unsafe fn make_static_str<'a>(key: &'a str) -> &'static str {
+    std::mem::transmute::<&'a str, &'static str>(key)
+}
 pub fn lua_text_widget(
     data: mlua::Table
 ) -> cosmic::widget::Text<cosmic::Theme>
@@ -71,6 +77,57 @@ pub fn lua_text_widget(
 
     if let Ok(style) = data.get::<_, mlua::Table>("style") {
         text_widget = text_widget.style(lua_text_style(style.into_owned()))
+    }
+
+    if let Ok(font_settings) = data.get::<_, mlua::Table>("font") {
+        // let font_settings = Rc::new(font_settings);
+        // let mut current_font = Font::default();
+        let mut font_family: Option<Family> = None;
+        let mut font_weight: Option<Weight> = None;
+        let mut font_style: Option<Style> = None;
+
+        if let Ok(font_name) = font_settings.get::<_, mlua::String>("name") {
+            // let font_thing = RefCell::new(String::from(font_name.to_str().unwrap()));
+            // let font_thing: Cow<'static, str> = font_name.to_string_lossy();
+
+            // for some reason font name is static???
+            // and its either i leak memory or use unsafe code
+            unsafe {
+                font_family = Some(Family::Name(make_static_str(font_name.to_str().unwrap())));
+            }
+        }
+        if let Ok(weight) = font_settings.get::<_, mlua::String>("weight") {
+            font_weight = Some(match weight.to_str().unwrap() {
+                "thin" => Weight::Thin,
+                "extra_light" => Weight::ExtraLight,
+                "light" => Weight::Light,
+                "normal" => Weight::Normal,
+                "medium" => Weight::Medium,
+                "semibold" => Weight::Semibold,
+                "bold" => Weight::Bold,
+                "extrabold" => Weight::ExtraBold,
+                "black" => Weight::Black,
+                _ => Weight::Normal
+            });
+        }
+        if let Ok(style) = font_settings.get::<_, mlua::String>("style") {
+            font_style = Some(match style.to_str().unwrap() {
+                "normal" => Style::Normal,
+                "italic" => Style::Italic,
+                "oblique" => Style::Oblique,
+                _ => Style::Normal,
+            });
+        }
+
+        text_widget = text_widget.font(Font {
+            family: font_family.unwrap_or_default(),
+            weight: font_weight.unwrap_or_default(),
+            style: font_style.unwrap_or_default(),
+            ..Default::default()
+        });
+    }
+    if let Ok(size) = data.get::<_, mlua::Number>("size") {
+        text_widget = text_widget.size(size as f32);
     }
 
     text_widget

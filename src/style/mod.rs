@@ -1,9 +1,11 @@
 
-use cosmic::iced::{Color, Vector};
+use cosmic::{config::COSMIC_TK, iced::{Color, Vector}, icon_theme::set_default};
 
 pub mod application;
 pub mod button;
 pub mod text;
+pub mod container;
+pub mod text_input;
 
 
 pub fn from_colors(
@@ -23,5 +25,18 @@ pub fn get_vector(
     let x: f32 = data.get::<_, mlua::Number>("x").unwrap() as f32;
     let y: f32 = data.get::<_, mlua::Number>("y").unwrap() as f32;
 
-    Vector { x, y }
+    Vector::new(x, y)
+}
+
+unsafe fn make_static_str<'a>(key: &'a str) -> &'static str {
+    std::mem::transmute::<&'a str, &'static str>(key)
+}
+
+pub fn set_icon_theme(data: mlua::String) {
+    COSMIC_TK.lock().unwrap().set_icon_theme(&cosmic::cosmic_config::Config::libcosmic().unwrap(), data.to_str().unwrap().to_string());
+    unsafe {
+        println!("setting icon theme! {}", data.to_str().unwrap());
+        set_default(make_static_str(data.to_str().unwrap()));
+    }
+    println!("wow the icon theme is: {}",cosmic::config::icon_theme());
 }

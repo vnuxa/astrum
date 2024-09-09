@@ -12,6 +12,7 @@ use std::rc::Rc;
 use cosmic::Renderer;
 
 use crate::app::WindowMessages;
+use crate::style::text_input::lua_text_input_style;
 
 use super::{container::lua_container_widget, custom, process_lua_element};
 
@@ -81,26 +82,32 @@ pub fn lua_text_input_widget(
         });
     }
 
-    if let Ok(on_input) = data.get::<_, mlua::Function>("on_input") {
-        text_input_widget = text_input_widget.on_input(move |text| {
-            println!("got input in rust: {}", text.clone());
-            if let Ok(signal_name) = on_input.call::<_, mlua::String>(text.clone()) {
-                println!("lol on input is a strin");
-                // WindowMessages::WindowInputChanged(())
-                return WindowMessages::Msg((signal_name.to_str().unwrap().to_string(), "{}".to_string()));
-            } else if let Ok(signal_table) = on_input.call::<_, mlua::Table>(text.clone()) {
-                println!("text thingy is a table");
-                return WindowMessages::Msg(
-                    (
-                        signal_table.get::<_, mlua::String>("signal_name").unwrap().to_str().unwrap().to_string(),
-                        signal_table.get::<_, mlua::String>("signal_data").unwrap().to_str().unwrap().to_string(),
+    if let Ok(style) = data.get::<_, mlua::Table>("style") {
+        text_input_widget = text_input_widget.style(lua_text_input_style(style.into_owned()));
+    }
+    if let Ok(size) = data.get::<_, mlua::Number>("size") {
+        text_input_widget = text_input_widget.size(size as f32);
+    }
 
-                    )
-                );
-            } else {
-                unimplemented!();
-                return WindowMessages::Msg(("".to_string(), "{}".to_string()));
-            }
+    if let Ok(on_input) = data.get::<_, mlua::String>("on_input") {
+        text_input_widget = text_input_widget.on_input(move |text| {
+            return WindowMessages::Msg((on_input.to_str().unwrap().to_string(), format!("{{ text = '{text}' }}", text = text.replace("'", r"\'"))));
+            // if let Ok(signal_name) = on_input.call::<_, mlua::String>(text.clone()) {
+            //     println!("lol on input is a strin");
+            //     // WindowMessages::WindowInputChanged(())
+            // } else if let Ok(signal_table) = on_input.call::<_, mlua::Table>(text.clone()) {
+            //     println!("text thingy is a table");
+            //     return WindowMessages::Msg(
+            //         (
+            //             signal_table.get::<_, mlua::String>("signal_name").unwrap().to_str().unwrap().to_string(),
+            //             signal_table.get::<_, mlua::String>("signal_data").unwrap().to_str().unwrap().to_string(),
+            //
+            //         )
+            //     );
+            // } else {
+            //     unimplemented!();
+            //     return WindowMessages::Msg(("".to_string(), "{}".to_string()));
+            // }
         });
     }
 

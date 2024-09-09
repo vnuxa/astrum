@@ -74,3 +74,16 @@
 ---| '"fill"' # Distort the image so that the widget is 100% covered without cropping
 ---| '"none"' # Dont resize or scale the image at all
 ---| '"scale_down"' # Scale the image down, if its too big for the space, but never scale it up
+
+-- filter method
+
+---@alias FilterMethod # Image filtering strategy
+---| '"linear"' # Bilinear interpolation
+---| '"nearest"' # Nearest neighbor
+
+-- layer
+
+---@alias Layer
+---| '"top"'
+---| '"bottom"'
+---| '"background"'

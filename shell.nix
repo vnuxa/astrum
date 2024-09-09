@@ -14,9 +14,11 @@ pkgs.mkShell rec {
     wayland
     libxkbcommon
     dbus
-    lua5_4_compat
+    luajit
+    # lua5_4_compat
   ];
 
   LD_LIBRARY_PATH =
     builtins.foldl' (a: b: "${a}:${b}/lib") "${pkgs.vulkan-loader}/lib" buildInputs;
+  PKG_CONFIG_PATH = "${pkgs.luajit}/pkgconfig/";
 }

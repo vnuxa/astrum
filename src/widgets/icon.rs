@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
 use cosmic::iced::{ContentFit, Element, Length};
-use cosmic::widget::icon::{from_name, from_path, icon};
+use cosmic::widget::icon::{from_name, from_path, icon, IconFallback};
 use cosmic::Renderer;
 
 use crate::app::WindowMessages;
@@ -14,9 +14,9 @@ pub fn lua_icon_widget(
 ) -> cosmic::widget::Icon
 {
     let mut icon_widget: cosmic::widget::Icon;
-
     if let Ok(icon_path) = data.get::<_, mlua::String>("icon_path") {
         let mut path = PathBuf::from("/");
+        println!("got icon path! {:?}", icon_path);
         for text in icon_path.to_str().unwrap().split("/") {
             if text == "~" {
                 path.push(HOME_DIR.to_str().unwrap());
@@ -27,8 +27,27 @@ pub fn lua_icon_widget(
         icon_widget = icon(from_path(path));
 
     } else {
+        // let mut icon_path = lookup(data.get::<_, mlua::String>("icon_name").unwrap()).with_cache();
+        // if let Ok(size) = data.get::<_, mlua::Number>("size") {
+        //     icon_path = icon_path.with_size(size as u16);
+        // }
+
+
         let icon_name = data.get::<_, mlua::String>("icon_name").unwrap();
-        icon_widget = icon(from_name(icon_name.to_str().unwrap()).into());
+        let mut icon_thing = from_name(icon_name.to_str().unwrap());
+            // .fallback(Some(IconFallback::Names(vec![
+            //     "application-default".into(),
+            //     "application-x-executable".into(),
+            // ])));
+        let mut icon_size = 16;
+        if let Ok(size) = data.get::<_, mlua::Number>("size") {
+            icon_thing = icon_thing.size(size as u16);
+            icon_size = size as u16;
+        }
+
+        icon_widget = icon(
+            icon_thing.into()
+        ).size(icon_size);
     }
 
     // covers Fill and Shrink
@@ -68,9 +87,6 @@ pub fn lua_icon_widget(
         });
     }
 
-    if let Ok(size) = data.get::<_, mlua::Integer>("size") {
-        icon_widget = icon_widget.size(size as u16);
-    }
 
     if let Ok(content_fit) = data.get::<_, mlua::String>("content_fit") {
         icon_widget = icon_widget.content_fit(match content_fit.to_str().unwrap() {

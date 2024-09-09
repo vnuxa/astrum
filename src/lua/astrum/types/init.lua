@@ -8,29 +8,19 @@ local astrum = {
 	services = {},
 	---@module "style"
 	style = {},
+	---@module "animations"
+	animations = {},
+	---@module "utils"
+	utils = {},
 }
 
 ---@module "misc"
-
--- INFO:
--- ok so services should be redone this way
--- it will be a table of functions
--- each function is needed because it will tell process it from a subscribtion thing to a signal
--- signals are essentialy:
---   signal_name: string
---   signal_data: table (contents depend on the subscription, but it allows it ot be dynamic)
--- sooo a function would be like
--- astrum.services({
---      workspaces_changed = "something_like_workspaces_changed" -- the user tells the signal name btw!!!
---      -- and eveyrthing that is not included will be ignored
--- })
--- everything that is included will only tell that it shouldnt ignore this event
--- and then it sends a signal, with the signal name that the user defined and the data that is obtained through thr eservice
 
 ---@class (exact) Signals
 ---@field hyprland? HyprlandSignal[]
 ---@field mpris? MprisSignal[]
 ---@field calls? CallsSignal[]
+---@field time? number[] # The duration of time in seconds it should send a signal every time
 
 ---@alias HyprlandSignal
 ---| '"workspaces"' # Sends a signal whenever the workspaces get changed. Returns a `HyprlandWorkspaces` type
@@ -49,7 +39,6 @@ local astrum = {
 ---@alias AstrumElement table # An element that is generated from `astrum.widgets`
 
 ---@alias SignalNames # List of pre-defined signal names
----| string
 ---| '"hyprland_workspaces"'
 ---| '"mpris_playing"'
 ---| '"mpris_paused"'
@@ -57,16 +46,42 @@ local astrum = {
 ---| '"mpris_looping_changed"'
 ---| '"mpris_shuffle_toggled"'
 ---| '"mpris_track_changed"'
+---| '"time_changed"'
+---| string
+
+---@alias ServiceNames # List of available service names
+---| "hyprland"
+---| "mpris"
+---| "calls"
+---| "time"
 
 ---@class (exact) ApplicationModel
----@field update_logic fun(signal_name: SignalNames, signal_data: table) # Logic that is sent when a signal needs to be processed
----@field windows { [string]: table } # Logic that returns how the application should be rendered. Function gets run after processing update_logic
----@field requested_signals? Signals
----@field style? ApplicationAppearance # Sets the style of the application
+
+---@class (exact) WindowModel
+---@field view fun(): AstrumElement # Logic that dictates how the window should look.
+---@field signals? { [SignalNames]: fun(signal_data: table) } # A dictionary of signal names and the logic that will be processed when the signal will be fired
+---@field anchor? Anchor[]
+---@field is_popup? boolean
+---@field exclusive_zone? integer # How much space should the window reserve, set it to `-1` if you want to ignore other layers
+---@field keymode? Keymode
+---@field layer? Layer
 
 --- ** TO BE DOCUMENTED**
----@param model ApplicationModel
-function astrum:application(model) end
+function astrum:application()
+	local app = {}
+
+	--- Creates a toplevel widget that holds widgets and processes signals
+	---@param window_name string # The unique name of the window
+	---@param window_model WindowModel # The core of the window
+	function app:window(window_name, window_model) end
+
+	---Subscribes to a service, making it fire signals that windows will process
+	---@param service ServiceNames # The requested service
+	---@param model string[] | number[] # Which signals should it subscribe to
+	function app:subscribe(service, model) end
+
+	return app
+end
 
 -- INFO: dont know if i can make regular windows be invsiible
 -- but if i should try, let me know

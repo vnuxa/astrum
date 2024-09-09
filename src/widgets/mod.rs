@@ -9,8 +9,10 @@ use button::lua_button_widget;
 use centerbox::lua_centerbox_widget;
 use container::lua_container_widget;
 use icon::lua_icon_widget;
+use image::lua_image_widget;
 use row::lua_row_widget;
 use scrollable::lua_scrollable_widget;
+use space::lua_space_widget;
 use text::lua_text_widget;
 use text_input::lua_text_input_widget;
 
@@ -27,6 +29,8 @@ mod centerbox;
 mod scrollable;
 mod text_input;
 mod icon;
+mod image;
+mod space;
 
 pub fn process_lua_element(
     element: mlua::Table,
@@ -47,6 +51,8 @@ pub fn process_lua_element(
         "column" => Some(lua_column_widget(element).into()),
         "text_input" => Some(lua_text_input_widget(element).into()),
         "icon" => Some(lua_icon_widget(element).into()),
+        "image" => Some(lua_image_widget(element).into()),
+        "space" => Some(lua_space_widget(element).into()),
         _ => None,
     }
 }

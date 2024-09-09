@@ -31,12 +31,13 @@ services.mpris = {}
 ---@field player string # The players name
 
 ---@class (exact) MprisTrackChanged: MprisOutput
----@field track TrackMetadata
+---@field track TrackMetadata | { empty: boolean }
 
 ---@class (exact) TrackMetadata
----@field album_name string
----@field album_artists string[] list of artists
----@field length number the length of the song in seconds
+---@field title string # The title of the song playing
+---@field album_name string # The album name of the song playing
+---@field album_artists string[] # List of artists of the song
+---@field length number # The length of the song in seconds
 
 ---@class (exact) MprisVolumeChanged: MprisOutput
 ---@field volume number
@@ -101,5 +102,8 @@ function services.applications:get_all_apps() end
 ---Launches an application, using the executable path
 ---@param executable_path string
 function services.applications:launch_app(executable_path) end
+
+---@class TimeService
+services.time = {}
 
 return services

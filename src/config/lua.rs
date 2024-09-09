@@ -1,10 +1,10 @@
-use std::{borrow::Borrow, cell::RefCell, collections::HashSet, io::Read, path::{Path, PathBuf}, rc::Rc, sync::{Arc, Mutex}};
+use std::{borrow::Borrow, cell::RefCell, collections::HashSet, io::Read, path::{Path, PathBuf}, process::Command, rc::Rc, sync::{Arc, Mutex}};
 
 use anyhow::{anyhow, Context, Ok, Result};
-use mlua::{ErrorContext, Lua, Table, UserData, Value};
+use mlua::{ErrorContext, Lua, Table, UserData, Value, Variadic};
 use ::mpris::{LoopStatus, Player};
 
-use crate::{config::HOME_DIR, services::{applications::{self, launch_app}, calls::call_windows_socket, hyprland, mpris}};
+use crate::{animations::{animate_value, make_animation, set_anim, toggle_state_anim}, config::HOME_DIR, services::{applications::{self, launch_app}, calls::call_windows_socket, hyprland, mpris}, style::set_icon_theme};
 
 pub fn get_or_create_module<'lua>
 (
@@ -98,12 +98,12 @@ pub fn make_lua_context(config_file: &Path) -> anyhow::Result<Lua> {
         prefix_path(&mut path_array, &current_dir.join("astrum").as_path());
         // prefix_path(&mut path_array, &current_dir.join("types").as_path());
 
-        prefix_path(&mut path_array, &HOME_DIR.join(".config").join("astrum"));
+        // prefix_path(&mut path_array, &HOME_DIR.join(".config").join("astrum"));
+        prefix_path(&mut path_array, config_dir);
 
         // TODO: document external packages, say that they use luarocks --local
         // and that its onyl on luarocks_5.4 or something
         if HOME_DIR.join(".luarocks").exists() {
-            println!("found luarocks");
             prefix_path(&mut path_array, &HOME_DIR.join(".luarocks").join("share").join("lua").join("5.4"));
         }
 
@@ -117,20 +117,20 @@ pub fn make_lua_context(config_file: &Path) -> anyhow::Result<Lua> {
         // see lua 5.4 docs on globals > package.searchers
 
         // TODO: add "add_to_config_reload_watchlist(name)" thing
-        lua.load(
-            r#"
-                local orig = package.searchers[2]
-                package.searchers[2] = function(module)
-                    local name, err = package.searchpath(module, package.path)
-                    --if name then
-                        --package.loaded.add_to_config_reload_watchlist(name)
-                    --end
-                    return orig(module)
-                end
-            "#
-        )
-        .set_name("=searcher")
-        .eval()?;
+        // lua.load(
+        //     r#"
+        //         local orig = package.searchers[2]
+        //         package.searchers[2] = function(module)
+        //             local name, err = package.searchpath(module, package.path)
+        //             --if name then
+        //                 --package.loaded.add_to_config_reload_watchlist(name)
+        //             --end
+        //             return orig(module)
+        //         end
+        //     "#
+        // )
+        // .set_name("=searcher")
+        // .eval()?;
 
 
         astrum_utils.set(
@@ -261,8 +261,87 @@ pub fn make_lua_context(config_file: &Path) -> anyhow::Result<Lua> {
             })?
         )?;
 
-        println!("package array!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        println!("{}", path_array.join(";"));
+        astrum_utils.set(
+            "execute_command",
+            lua.create_function(|lua: &mlua::Lua, arguments: Variadic<mlua::String>, | {
+
+                let args_vec = arguments.to_vec();
+                let command = Command::new("bash")
+                    .arg("-c")
+                    .args(args_vec.iter().map(|val| val.to_str().unwrap()))
+                    .output()
+                    .expect("failed to execute command");
+
+                std::result::Result::Ok(
+                    lua.create_string(command.stdout)
+                )
+            })?
+        )?;
+
+        astrum_utils.set(
+            "make_animation",
+            lua.create_function(|_, animation_settings: mlua::Table| {
+                make_animation(animation_settings);
+                std::result::Result::Ok(())
+            })?
+        )?;
+
+        astrum_utils.set(
+            "animate_value",
+            lua.create_function(|_, data: mlua::Table| {
+                std::result::Result::Ok(
+                    animate_value(data.get("animation_id")?, data.get("from_value")?, data.get("to_value")?)
+                )
+            })?
+        )?;
+
+        astrum_utils.set(
+            "set_animation",
+            lua.create_function(|_, data: mlua::Table| {
+                std::result::Result::Ok(
+                    set_anim(
+                        data.get("animation_id")?,
+                        {
+                            // println!("does data contain key {:?}", data.get::<_, bool>("value"));
+                            if data.contains_key("value")? {
+                                Some(data.get("value")?)
+                            } else {
+                                None
+                            }
+                        }
+                    )
+                )
+            })?
+        )?;
+
+        astrum_utils.set(
+            "change_anim_state",
+            lua.create_function(|_, data: mlua::Table| {
+                std::result::Result::Ok(
+                    toggle_state_anim(
+                        data.get("animation_id")?,
+                        {
+                            // println!("does data contain key {:?}", data.get::<_, bool>("value"));
+                            if data.contains_key("value")? {
+                                Some(data.get("value")?)
+                            } else {
+                                None
+                            }
+                        }
+                    )
+                )
+            })?
+        )?;
+        astrum_utils.set(
+            "set_icon_theme",
+            lua.create_function(|_, icon_theme: mlua::String| {
+                set_icon_theme(icon_theme);
+                std::result::Result::Ok(())
+            })?
+        )?;
+
+        // println!("package array!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        // println!("{}", path_array.join(";"));
         package
             .set("path", path_array.join(";"))?;
             // .context("errored when assigning package.path")?;

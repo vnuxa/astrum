@@ -1,14 +1,15 @@
 // have lua contexts here as well!!!
 
 
-use std::{borrow::{Borrow, BorrowMut}, cell::RefCell, collections::HashMap, io::Read, ops::Deref, path::PathBuf};
+use std::{borrow::{Borrow, BorrowMut}, cell::RefCell, collections::HashMap, error::Error, fmt::Debug, io::Read, ops::Deref, path::PathBuf};
 
+use color_print::{cformat, cprintln, cstr};
 use cosmic::{app::Core, iced::Subscription, app::Command};
 // use iced::{event::listen, subscription::{self, run}, wayland::layer_surface::Anchor, widget::{button, container, row, shader::wgpu::MaintainBase, text}, Application, Command};
 use mlua::{Lua, OwnedFunction, OwnedTable, Value};
 use window::{close_window, process_lua_window, Window, WindowSettings};
 
-use crate::{config::lua::{get_or_create_module, make_lua_context}, services::{self, hyprland::{self, HyprlandListener}}, style::application::lua_application_style, widgets::process_lua_element};
+use crate::{animations, config::lua::{get_or_create_module, make_lua_context}, services::{self, hyprland::{self, HyprlandListener}}, style::application::lua_application_style, widgets::process_lua_element};
 use cosmic::iced_runtime::core::window::Id as SurfaceId;
 
 pub mod window;
@@ -17,7 +18,8 @@ pub mod window;
 pub enum WindowMessages {
     Msg((String, String)), // Signal_name and signal_data
     ToggleWindow(String), // window identifier/name
-    ReloadLua
+    ReloadLua,
+    AnimationTick
 }
 
 impl cosmic::Application for MainWindow {
@@ -41,9 +43,36 @@ impl cosmic::Application for MainWindow {
 
         {
             let config_binding = flags.0.borrow();
-            let config: mlua::Value = config_binding.load(flags.1)
+            let config: mlua::Value = match config_binding.load(flags.1).eval() {
+                Ok(conf) => conf,
+                Err(error) => {
+                    eprintln!("Lua error occured!");
+                    if let mlua::Error::RuntimeError(reason) = error {
+                        let formatted_error = reason.replace("\n", cstr!("<white>\n│\t</white>"));
+
+                        println!("┌────── Lua error ────────────");
+                        cprintln!("<w>│\t</><r>{}</>", formatted_error);
+                        println!("└─────────────────────────────");
+                    } else {
+
+                        let formatted_error = error.to_string().replace("\n", cstr!("<w>\n│\t</>"));
+
+                        // cprintln!("Error type: <r>{}</>", error.source().unwrap());
+                        println!("┌────── Lua error ────────────");
+                        cprintln!("<w>│\t</><r>{}</>", formatted_error);
+                        println!("└─────────────────────────────");
+                    }
+
+                    std::process::Command::new("pkill").arg("astrum").output().ok();
+                    panic!("Error while evaluating lua context");
+
+
+
+                    mlua::Value::Nil
+                }
+            };
                 // .set_name(path.display())
-                .eval().expect("evaluating the lua context failed");
+                //.expect("evaluating the lua context failed");
 
 
             match config {
@@ -122,6 +151,7 @@ impl cosmic::Application for MainWindow {
     //
 
     fn update(&mut self, message: Self::Message) -> Command<Self::Message> {
+        // println!("update logic ran!");
         match message {
             WindowMessages::Msg((signal_name, signal_data)) => {
                 let lua = self.lua.borrow();
@@ -168,9 +198,34 @@ impl cosmic::Application for MainWindow {
 
                 {
                     let config_binding = lua.borrow();
-                    let config: mlua::Value = config_binding.load(s)
-                        // .set_name(path.display())
-                        .eval().expect("evaluating the lua context failed");
+                    let config: mlua::Value = match config_binding.load(s).eval() {
+                        Ok(conf) => conf,
+                        Err(error) => {
+                            eprintln!("Lua error occured!");
+                            if let mlua::Error::RuntimeError(reason) = error {
+                                let formatted_error = reason.replace("\n", cstr!("<white>\n│\t</white>"));
+
+                                println!("┌────── Lua error ────────────");
+                                cprintln!("<w>│\t</><r>{}</>", formatted_error);
+                                println!("└─────────────────────────────");
+                            } else {
+
+                                let formatted_error = error.to_string().replace("\n", cstr!("<w>\n│\t</>"));
+
+                                // cprintln!("Error type: <r>{}</>", error.source().unwrap());
+                                println!("┌────── Lua error ────────────");
+                                cprintln!("<w>│\t</><r>{}</>", formatted_error);
+                                println!("└─────────────────────────────");
+                            }
+
+                            std::process::Command::new("pkill").arg("astrum").output().ok();
+                            panic!("Error while evaluating lua context");
+
+
+
+                            mlua::Value::Nil
+                        }
+                    };
 
 
                     match config {
@@ -210,7 +265,7 @@ impl cosmic::Application for MainWindow {
                             if let Ok(style) = table.get("style")  {
                                 let style: mlua::Table = style;
                                 app_style = Some(style.into_owned());
-                    }
+                            }
                         },
                         _ => {  }
                     }
@@ -224,6 +279,10 @@ impl cosmic::Application for MainWindow {
 
                 Command::batch(commands)
             }
+            WindowMessages::AnimationTick => {
+                // println!("animation tick!!");
+                Command::none()
+            }
             _ => Command::none()
         }
     }
@@ -235,8 +294,10 @@ impl cosmic::Application for MainWindow {
         &self,
         id: SurfaceId,
     ) -> cosmic::Element<Self::Message> {
+        // println!("view logic ran!");
         let windows: &HashMap<String, Window> = &self.windows;
         if id == SurfaceId::MAIN {
+            // println!("draw main window pls");
             return "".into();
         }
         for (window_name, window) in windows.iter() {
@@ -269,8 +330,48 @@ impl cosmic::Application for MainWindow {
     }
 
     fn subscription(&self) -> Subscription<Self::Message> {
+        // println!("subscription logic ran!");
         let mut services = Vec::new();
         let lua = self.lua.borrow();
+        if animations::any_animation_in_progress() {
+            println!("ik anim is in progress");
+
+            services.push(
+                cosmic::iced::window::frames().map(|(id, at)| {
+                    println!("wayland farmessss wow!!!!!!!!!!!!!!!1");
+                    WindowMessages::AnimationTick
+                }
+                )
+                // cosmic::iced_futures::event::listen_raw(|event, _status| {
+                //     println!("listening to the future :O");
+                //     match event {
+                //         cosmic::iced_core::Event::Window(id, cosmic::iced_core::window::Event::RedrawRequested(at))
+                //         | cosmic::iced_core::Event::PlatformSpecific(
+                //             cosmic::iced_core::event::PlatformSpecific::Wayland(
+                //                 cosmic::iced_core::event::wayland::Event::Frame(at, _, id),
+                //             ),
+                //         ) => {
+                //             println!("wayland framesss wow!!!!!!!!!!!!!1");
+                //             Some(WindowMessages::AnimationTick)
+                //
+                //         },
+                //         _ => None,
+                //     }
+                // })
+                // cosmic::iced_futures::event::listen_raw(|event, _status| match event {
+                //     cosmic::iced_core::Event::Window(id, cosmic::iced_core::window::Event::RedrawRequested(at)) => {
+                //         println!("wayland framesss wow!!!!!!!!!!!!!1");
+                //         Some(WindowMessages::AnimationTick)
+                //         // Some((id, at))
+                //     }
+                //     _ => {
+                //         println!("no wayland frames..........");
+                //         None
+                //     },
+                // })
+
+            );
+        }
 
         if let Some(requested) = &self.requested_signals {
             let signals = requested.to_ref();
@@ -329,6 +430,15 @@ impl cosmic::Application for MainWindow {
                     services::calls::listen_to_calls(listener_specifics)
                 );
             }
+            if let Ok(time_table) = signals.get::<_, mlua::Table>("time") {
+                for pair in time_table.pairs::<mlua::Integer, mlua::Number>() {
+                    let (key, value) = pair.unwrap();
+
+                    services.push(
+                        services::time::listen_to_time(value as u64)
+                    );
+                }
+            }
 
 
         }
@@ -345,7 +455,14 @@ impl cosmic::Application for MainWindow {
         services.push(
             services::hot_reload::hot_reload(self.config_path.clone())
         );
+        //     println!("animation in progress!!");
+        // cosmic::iced::window::f
+        // }
 
+        // for subscription in &services {
+        //
+        // println!("      services {:?}", subscription);
+        // }
         Subscription::batch(services)
     }
 }

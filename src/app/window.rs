@@ -1,5 +1,6 @@
 use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
+use color_print::{cprintln, cstr};
 // use iced::{wayland::{actions::layer_surface::SctkLayerSurfaceSettings, layer_surface::{Anchor, KeyboardInteractivity, Layer}}, window::Id};
 use mlua::OwnedFunction;
 
@@ -38,6 +39,7 @@ pub struct WindowSettings {
     pub anchors: Anchor,
     pub exclusive_zone: i32,
     pub keymode: KeyboardInteractivity,
+    pub layer: Option<Layer>
 
     // function controlled from update_logic
 }
@@ -49,6 +51,7 @@ impl Default for WindowSettings {
             anchors: Anchor::TOP.union(Anchor::LEFT).union(Anchor::RIGHT),
             exclusive_zone: 32,
             keymode: KeyboardInteractivity::None,
+            layer: None // use defualt layer
         }
     }
 }
@@ -95,6 +98,14 @@ pub fn process_lua_window<'a>(
             _ => KeyboardInteractivity::None,
         }
     }
+    if let Ok(layer) = lua_window.get::<_, mlua::String>("layer") {
+        settings.layer = Some(match layer.to_str().unwrap() {
+            "top" => Layer::Top,
+            "bottom" => Layer::Bottom,
+            "background" => Layer::Background,
+            &_ => unimplemented!("Window layer setting is not supported, are you sure its not a typo?")
+        })
+    }
 
     settings
 }
@@ -123,7 +134,7 @@ impl Window {
                     keyboard_interactivity: settings.keymode,
                     namespace: settings.namespace.clone(),
                     exclusive_zone: settings.exclusive_zone,
-                    layer: Layer::Top,
+                    layer: settings.layer.unwrap_or(Layer::Top),
                     anchor: settings.anchors,
                     ..Default::default()
                 });
@@ -182,7 +193,30 @@ impl Window {
 
     // maybe make predefined settings that somehow get processed and stuff??
     pub fn run_window(&self) -> Element<WindowMessages> {
-        let element_data = self.window_logic.call::<(), mlua::Table>(()).unwrap();
+        let element_data = match self.window_logic.call::<(), mlua::Table>(()) {
+            Ok(data) => { data },
+            Err(error) => {
+                eprintln!("Lua error occured!");
+                if let mlua::Error::RuntimeError(reason) = error {
+                    let formatted_error = reason.replace("\n", cstr!("<white>\n│\t</white>"));
+
+                    println!("┌────── Lua error ────────────");
+                    cprintln!("<w>│\t</><r>{}</>", formatted_error);
+                    println!("└─────────────────────────────");
+                } else {
+
+                    let formatted_error = error.to_string().replace("\n", cstr!("<w>\n│\t</>"));
+
+                    // cprintln!("Error type: <r>{}</>", error.source().unwrap());
+                    println!("┌────── Lua error ────────────");
+                    cprintln!("<w>│\t</><r>{}</>", formatted_error);
+                    println!("└─────────────────────────────");
+                }
+                std::process::Command::new("pkill").arg("astrum").output().ok();
+
+                panic!("Error while evaluating window logic");
+            }
+        };
         let lua_element = process_lua_element(element_data).expect("Could not process view logic, are you sure you are returning a widget?");
 
         return lua_element.into()
