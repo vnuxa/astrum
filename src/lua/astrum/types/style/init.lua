@@ -4,6 +4,11 @@ local style = {}
 
 -- colors
 
+---@class (exact) rgb
+---@field red number # Value ranging from 0-255
+---@field green number # Value ranging from 0-255
+---@field blue number # Value ranging from 0-255
+---
 ---@class (exact) rgba
 ---@field red number # Value ranging from 0-255
 ---@field green number # Value ranging from 0-255
@@ -22,6 +27,11 @@ function style:rgba(red, green, blue, alpha) end
 ---@param hex string # The `hex` string that will be converted to `rgba`
 ---@return rgba
 function style:hex_to_rgba(hex) end
+
+---Returns a `RGB8` value, used for defining colors, from a hex string.
+---@param hex string # The `hex` string that will be converted to `rgb`
+---@return rgb
+function style:hex_to_rgb(hex) end
 -- INFO: maybe i should make a style:hex that transforms it into an rgba value?
 
 -- application
@@ -91,14 +101,14 @@ function style:get_font(font_name, font_weight, font_style) end
 -- container
 
 ---@class (exact) Border
----@field color rgba # The color of the border
----@field width number # The width of the border
----@field radius number | [ number, number, number, number ] # The radius of the border
+---@field color? rgba # The color of the border
+---@field width? number # The width of the border
+---@field radius? number | [ number, number, number, number ] # The radius of the border
 
 ---@class (exact) Shadow
----@field color rgba # The color of the shadow
----@field offset Vector # The offset of the shadow
----@field blur_radius number # The blur radius of the shadow
+---@field color? rgba # The color of the shadow
+---@field offset? Vector # The offset of the shadow
+---@field blur_radius? number # The blur radius of the shadow
 
 -- TODO: add gradients to backgrounds
 

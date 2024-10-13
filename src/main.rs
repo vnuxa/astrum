@@ -6,7 +6,7 @@ use simple_home_dir::home_dir;
 use std::fs;
 use std::os::unix::net::UnixStream;
 
-use crate::{config::lua::make_lua_context, services::{hyprland::{self, HyprlandListener}}, widgets::process_lua_element};
+use crate::{config::lua::make_lua_context, widgets::process_lua_element};
 use clap::Parser;
 use std::process::Command;
 
@@ -121,23 +121,15 @@ fn main() {
         }}",
         types_path = type_path().unwrap().display()
     );
-    // TODO: make this update every single run
-    // let mut file = File::create(config_path.to_owned() + ".neoconf.json").expect("Failed to create .neoconf.json");
-    // file.write_fmt(format_args!(
-    //     "
-    //         {{
-    //             \"lspconfig\": {{
-    //                 \"lua_ls\": {{
-    //                     \"Lua.workspace.library\": [
-    //                         \"{types_path}\"
-    //                     ]
-    //                 }}
-    //             }}
-    //         }}
-    //     ",
-    //     types_path = type_path().unwrap().display()
-    // ));
 
+    if !Path::new(config_path).exists() {
+        println!("config path doesnt exist");
+        run_command(&format!("mkdir {}", config_path));
+        let lua_file = File::create(config_path.to_owned() + "config.lua").expect("Failed to create config.lua");
+
+        println!("types path: {}", type_path().unwrap().display())
+
+    }
     // luarc for the lua-language-server
     let mut file = File::create(config_path.to_owned() + ".luarc.json").expect("Failed to create .luarc.json");
     file.write_fmt(format_args!(
@@ -148,19 +140,11 @@ fn main() {
                     \"{types_path}\"
                 ],
 
-                \"runtime.version\": \"Lua 5.1\",
+                \"runtime.version\": \"LuaJIT\",
             }}
         ",
         types_path = type_path().unwrap().display()
     ));
-    if !Path::new(config_path).exists() {
-        println!("config path doesnt exist");
-        run_command(&format!("mkdir {}", config_path));
-        let lua_file = File::create(config_path.to_owned() + "config.lua").expect("Failed to create config.lua");
-
-        println!("types path: {}", type_path().unwrap().display())
-
-    }
 
     app::create_app(Path::new(config_path).join("config.lua"));
 

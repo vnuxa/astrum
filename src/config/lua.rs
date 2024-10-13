@@ -4,7 +4,7 @@ use anyhow::{anyhow, Context, Ok, Result};
 use mlua::{ErrorContext, Lua, Table, UserData, Value, Variadic};
 use ::mpris::{LoopStatus, Player};
 
-use crate::{animations::{animate_value, make_animation, set_anim, toggle_state_anim}, config::HOME_DIR, services::{applications::{self, launch_app}, calls::call_windows_socket, hyprland, mpris}, style::set_icon_theme};
+use crate::{animations::{animate_value, make_animation, set_anim, toggle_state_anim}, config::HOME_DIR, services::{applications::{self, launch_app}, calls::call_windows_socket, hyprland, mpris, niri, time::write_delay_call}, style::set_icon_theme};
 
 pub fn get_or_create_module<'lua>
 (
@@ -154,6 +154,51 @@ pub fn make_lua_context(config_file: &Path) -> anyhow::Result<Lua> {
             })?
         )?;
 
+        // IMPORTANT: this does not work!!!
+        //
+        astrum_utils.set(
+            "niri_get_active_workspace",
+            lua.create_function(|_, ()| {
+                std::result::Result::Ok(niri::niri_get_active())
+            })?
+        )?;
+        astrum_utils.set(
+            "niri_set_workspace",
+            lua.create_function(|_, workspace: u64| {
+                niri::niri_switch_to_workspace(workspace);
+                std::result::Result::Ok(())
+            })?
+        )?;
+        astrum_utils.set(
+            "niri_focus_workspace_up",
+            lua.create_function(|_, ()| {
+                niri::niri_focus_workspace_up();
+                std::result::Result::Ok(())
+            })?
+        )?;
+        astrum_utils.set(
+            "niri_focus_workspace_down",
+            lua.create_function(|_, ()| {
+                niri::niri_focus_workspace_down();
+                std::result::Result::Ok(())
+            })?
+        )?;
+
+        astrum_utils.set(
+            "niri_focus_window",
+            lua.create_function(|_, window: u64| {
+                niri::niri_focus_window(window);
+                std::result::Result::Ok(())
+            })?
+        )?;
+
+        astrum_utils.set(
+            "call_delayed",
+            lua.create_function(|_, data: (mlua::Number, mlua::Value)| {
+                write_delay_call(data.0, data.1);
+                std::result::Result::Ok(())
+            })?
+        )?;
 
         astrum_utils.set(
             "mpris_get_player",

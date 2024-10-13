@@ -16,6 +16,7 @@ pkgs.mkShell rec {
     dbus
     luajit
     # lua5_4_compat
+    dbus
   ];
 
   LD_LIBRARY_PATH =

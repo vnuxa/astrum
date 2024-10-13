@@ -417,6 +417,15 @@ local astrum_helper_init = {
 		function helper.hyprland:set_workspace(workspace) utils.hyprland_set_workspace(workspace) end
 		function helper.hyprland:get_active_workspace() return utils.hyprland_get_active() end
 
+		helper.niri = {}
+
+		function helper.niri:set_workspace(unique_workspace) utils.niri_set_workspace(unique_workspace) end
+		function helper.niri:get_active_workspace() return utils.niri_get_active_workspace() end
+		function helper.niri:focus_workspace_up() return utils.niri_focus_workspace_up() end
+		function helper.niri:focus_workspace_down() return utils.niri_focus_workspace_down() end
+
+		function helper.niri:focus_window(unique_window) return utils.niri_focus_window(unique_window) end
+
 		helper.mpris = {}
 
 		function helper.mpris:get_player(player_name)
@@ -444,6 +453,10 @@ local astrum_helper_init = {
 		end
 		function helper.applications:launch_app(executable_path) utils.launch_application(executable_path) end
 
+		helper.time = {}
+
+		function helper.time:delay(duration, signal) utils.call_delayed(duration, signal) end
+
 		return helper
 	end,
 
@@ -468,14 +481,33 @@ local astrum_helper_init = {
 			}
 		end
 
-		function helper:hex_to_rgba(hex)
+		function helper:hex_to_rgb(hex)
 			hex = hex:gsub("#", "")
 			return {
 				red = tonumber("0x" .. hex:sub(1, 2)),
 				green = tonumber("0x" .. hex:sub(3, 4)),
 				blue = tonumber("0x" .. hex:sub(5, 6)),
-				alpha = tonumber("0x" .. hex:sub(7, 8)) / 255,
 			}
+		end
+
+		function helper:hex_to_rgba(hex)
+			hex = hex:gsub("#", "")
+			print("hex length ", string.len(hex))
+			if string.len(hex) == 6 then
+				return {
+					red = tonumber("0x" .. hex:sub(1, 2)),
+					green = tonumber("0x" .. hex:sub(3, 4)),
+					blue = tonumber("0x" .. hex:sub(5, 6)),
+					alpha = 1,
+				}
+			else
+				return {
+					red = tonumber("0x" .. hex:sub(1, 2)),
+					green = tonumber("0x" .. hex:sub(3, 4)),
+					blue = tonumber("0x" .. hex:sub(5, 6)),
+					alpha = tonumber("0x" .. hex:sub(7, 8)) / 255,
+				}
+			end
 		end
 
 		function helper:add_style(class_name, style_settings)
@@ -616,6 +648,8 @@ local astrum_helper_init = {
 			function anim:toggle(value)
 				anim_info.value = utils.set_animation({ animation_id = anim_info.animation_id, value = value })
 			end
+
+			function anim:get_state() return anim_info.value end
 
 			function anim:play()
 				print("got play request...")

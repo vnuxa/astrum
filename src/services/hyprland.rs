@@ -1,77 +1,10 @@
-use std::{borrow::BorrowMut, cell::RefCell, collections::HashMap, env::Args};
+use std::{borrow::BorrowMut, cell::RefCell, collections::HashMap, env::Args, sync::{Arc, RwLock}};
 
-use hyprland::{data::Workspace, event_listener::EventListener, shared::{HyprData, HyprDataActive, HyprDataVec, WorkspaceType}};
+use color_print::cprintln;
+use hyprland::{data::Workspace, event_listener::{AsyncEventListener, EventListener}, shared::{HyprData, HyprDataActive, HyprDataVec, WorkspaceType}};
 use cosmic::iced::{advanced::graphics::futures::{subscription, MaybeSend}, Subscription};
 
 use crate::app::WindowMessages;
-// TODO: Document the structs
-
-pub struct ActiveWorkspace {
-    pub id: usize,
-    pub name: String
-}
-
-pub struct ActiveMonitor {
-    pub id: usize,
-    pub name: String
-}
-
-// maybe add initial title too??
-pub struct ActiveClient {
-    pub adress: String,
-    pub title: String,
-    pub class: String,
-}
-
-
-// TODO: Document this
-pub struct Active {
-    pub monitor: ActiveMonitor,
-    pub workspace: ActiveWorkspace,
-    pub client: ActiveClient,
-}
-
-// INFO: you dont need this hyprland model thing
-// the entire model si defined via functions and subscriptions (aka signals)
-// you use a function to get the active workspace
-// or use a ufnction to get the active workspaces
-// same with signals
-// you use a subscription function to get a signal then map it with a app message
-pub struct HyprlandModel<F>
-where
-        // F: Fn(Args),
-        F: Fn(WorkspaceType) + 'static
-    {
-        pub active: Active,
-        pub workspaces: Vec<Workspace>,
-        // signals
-        // TODO: Document
-        pub workspace_changed: Option<F>,
-        pub workspace_added: Option<F>,
-        pub workspace_removed: Option<F>,
-        pub workspace_moved: Option<F>,
-
-        pub active_monitor_changed: Option<F>,
-        pub active_window_changed: Option<F>
-    }
-
-// TODO: Document
-
-#[derive(Debug, Clone)]
-pub struct WorkspaceData {
-    pub id: i32,
-    pub active:  bool,
-    // maybe add monitor
-}
-
-pub enum HyprlandListener {
-    // WorkspacesChanged(Vec<WorkspaceData>),
-
-    WorkspacesChanged(String), // lua string
-
-    // ActiveWorkspaceChanged(i32),
-}
-
 
 pub fn get_workspaces() -> String {
     let active_workspace = get_active_workspace();
@@ -117,68 +50,77 @@ pub fn change_workspace(workspace_id: i32) {
 pub fn listen_workspaces(signals_requested: HashMap<String, bool>) -> Subscription<WindowMessages>
 {
     subscription::channel("workspaces-listener", 100, move |output| async move {
-        let output = RefCell::new(output); // INFO: probbaly should read what a refcell is
-        let mut listener = EventListener::new();
+        let output = Arc::new(RwLock::new(output));
+        loop {
+            let mut listener = AsyncEventListener::new();
+            if let Some(_bool) = signals_requested.get("workspaces") {
 
-        if let Some(_bool) = signals_requested.get("workspaces") {
-
-            listener.add_workspace_added_handler(
-                {
+                listener.add_workspace_added_handler({
                     let output = output.clone();
                     move |_| {
-                        output
-                            .borrow_mut()
-                            .try_send( WindowMessages::Msg(("hyprland_workspaces".to_string(), get_workspaces() )))
-                            .expect("hyprland workspaces listener failed sending signal");
-                        // if let Some(response_message) = response(HyprlandListener::WorkspacesChanged(get_workspaces())) {
-                        //
-                        //     output
-                        //         .borrow_mut()
-                        //         .try_send(response_message)
-                        //         .expect("write error message herel ater");
-                        // }
+                        let output = output.clone();
+                        Box::pin(async move {
+                            if let Ok(mut output) = output.write() {
+                                output
+                                    .try_send( WindowMessages::Msg(("hyprland_workspaces".to_string(), get_workspaces() )))
+                                    .expect("error getting workspaces: workspace added event");
+                            }
+                        })
                     }
+                });
+
+
+                listener.add_workspace_changed_handler({
+                    let output = output.clone();
+                    move |_| {
+                        let output = output.clone();
+                        Box::pin(async move {
+                            if let Ok(mut output) = output.write() {
+                                output
+                                    .try_send( WindowMessages::Msg(("hyprland_workspaces".to_string(), get_workspaces() )))
+                                    .expect("error getting workspaces: workspace change event");
+                            }
+                        })
+                    }
+                });
+
+                listener.add_workspace_deleted_handler({
+                    let output = output.clone();
+                    move |_| {
+                        let output = output.clone();
+                        Box::pin(async move {
+                            if let Ok(mut output) = output.write() {
+                                output
+                                    .try_send( WindowMessages::Msg(("hyprland_workspaces".to_string(), get_workspaces() )))
+                                    .expect("error getting workspaces: workspace destroy event");
+                            }
+                        })
+                    }
+                });
+
+                listener.add_workspace_moved_handler({
+                    let output = output.clone();
+                    move |_| {
+                        let output = output.clone();
+                        Box::pin(async move {
+                            if let Ok(mut output) = output.write() {
+                                output
+                                    .try_send( WindowMessages::Msg(("hyprland_workspaces".to_string(), get_workspaces() )))
+                                    .expect("error getting workspaces: workspace moved event");
+                            }
+                        })
+                    }
+                });
+
+                let res = listener.start_listener_async().await;
+
+                if let Err(e) = res {
+                    cprintln!("<r>restarting workspaces listener due to error: {:?}</r>", e);
                 }
 
-            );
+            }
 
-            listener.add_workspace_destroy_handler({
-                let output = output.clone();
-                move |_| {
-                    output
-                        .borrow_mut()
-                        .try_send( WindowMessages::Msg(("hyprland_workspaces".to_string(), get_workspaces() )))
-                        .expect("hyprland workspaces listener failed sending signal");
-                }
-            });
-
-            listener.add_workspace_moved_handler({
-                let output = output.clone();
-                move |_| {
-                    output
-                        .borrow_mut()
-                        .try_send( WindowMessages::Msg(("hyprland_workspaces".to_string(), get_workspaces() )))
-                        .expect("hyprland workspaces listener failed sending signal");
-                }
-            });
-
-            listener.add_workspace_change_handler({
-                let output = output.clone();
-                move |_| {
-                    output
-                        .borrow_mut()
-                        .try_send( WindowMessages::Msg(("hyprland_workspaces".to_string(), get_workspaces() )))
-                        .expect("hyprland workspaces listener failed sending signal");
-                }
-            });
         }
-
-
-
-        listener
-            .start_listener_async()
-            .await
-            .expect("failed to start workspaces listener");
 
         panic!("Hyprland workspaces listener failed! Exiting.");
         // loop {

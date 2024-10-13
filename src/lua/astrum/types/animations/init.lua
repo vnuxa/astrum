@@ -42,7 +42,6 @@ local animations = {}
 ---@param repeat_amount number | nil # The amount of times the animation will repeat itself, default is `nil`
 ---@param reverse boolean | nil # Will the animation reverse itself, default is `false`
 ---@param delay number | nil # The delay until the animation will start, in seconds. Default is `0`
----@return Animation
 function animations:new(starting_value, time, easing, repeat_amount, reverse, delay)
 	---@class Animation
 	---@field animation_id number # The animation's ID, used for internals.
@@ -60,11 +59,15 @@ function animations:new(starting_value, time, easing, repeat_amount, reverse, de
 	function animation:animate_table(false_table, true_table) end
 
 	---Toggles the animation state
-	---@param state boolean # If provided, toggle to a specific state
+	---@param state boolean? # If provided, toggle to a specific state
 	function animation:toggle(state) end
 
 	---Plays an animation, using the false values as `from` and true values to `to`
 	function animation:play() end
+
+	---Gets the current animation state
+	---@return boolean
+	function animation:get_state() end
 
 	return animation
 end

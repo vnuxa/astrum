@@ -1,5 +1,4 @@
 ---@meta
-
 ---@class Astrum
 local astrum = {
 	---@module "widgets"
@@ -18,12 +17,17 @@ local astrum = {
 
 ---@class (exact) Signals
 ---@field hyprland? HyprlandSignal[]
+---@field niri? NiriSignal[]
 ---@field mpris? MprisSignal[]
 ---@field calls? CallsSignal[]
 ---@field time? number[] # The duration of time in seconds it should send a signal every time
 
 ---@alias HyprlandSignal
 ---| '"workspaces"' # Sends a signal whenever the workspaces get changed. Returns a `HyprlandWorkspaces` type
+
+---@alias NiriSignal
+---| '"workspaces_changed"' # Sends a signal whenever the workspace fconfiguration was changed
+---| '"windows_changed"' # Sends a signal whenever the windows configuration was changed
 
 ---@alias MprisSignal
 ---| '"playing"' # Sends a signal when the first player is playing. Returns a `MprisOutput` class
@@ -40,6 +44,8 @@ local astrum = {
 
 ---@alias SignalNames # List of pre-defined signal names
 ---| '"hyprland_workspaces"'
+---| '"niri_workspaces_changed"'
+---| '"niri_windows_changed"'
 ---| '"mpris_playing"'
 ---| '"mpris_paused"'
 ---| '"mpris_volume_changed"'
@@ -47,22 +53,28 @@ local astrum = {
 ---| '"mpris_shuffle_toggled"'
 ---| '"mpris_track_changed"'
 ---| '"time_changed"'
----| string
+---| '"item_changed"'
+---| string # Used for calls
+---| number # Used for time
 
 ---@alias ServiceNames # List of available service names
 ---| "hyprland"
+---| '"niri"'
 ---| "mpris"
 ---| "calls"
 ---| "time"
+---| "system_tray"
 
 ---@class (exact) ApplicationModel
 
+---@alias WindowSignal { [SignalNames]: fun(signal_data: table) }
+
 ---@class (exact) WindowModel
 ---@field view fun(): AstrumElement # Logic that dictates how the window should look.
----@field signals? { [SignalNames]: fun(signal_data: table) } # A dictionary of signal names and the logic that will be processed when the signal will be fired
+---@field signals? WindowSignal | WindowSignal[] # A dictionary of signal names and the logic that will be processed when the signal will be fired. If there is a table value instead of a function, it will unpack it.
 ---@field anchor? Anchor[]
 ---@field is_popup? boolean
----@field exclusive_zone? integer # How much space should the window reserve, set it to `-1` if you want to ignore other layers
+---@field exclusive_zone? integer | "ignore" # How much space should the window reserve, set it to `"ignore"` if you want to ignore other layers
 ---@field keymode? Keymode
 ---@field layer? Layer
 

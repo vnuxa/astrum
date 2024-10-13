@@ -21,7 +21,7 @@ pub fn listen_to_calls(requested_signals: HashMap<String, bool>) -> Subscription
         // let binding = &("~/.cache/astrum/sockets/".to_owned() + &socket_name);
         // let socket_path = Path::new(binding);
 
-        println!("My pid is {}", process::id());
+        // println!("My pid is {}", process::id());
 
         // i dont know if i need it to be process id, right now users can only use 1 socket anyways
 
@@ -40,6 +40,7 @@ pub fn listen_to_calls(requested_signals: HashMap<String, bool>) -> Subscription
 
         tokio::task::spawn_blocking(move || {
             loop {
+                // println!("did call check!");
                 let (mut unix_stream, socket_address) = unix_listener
                     .accept() // waits for other proccesses to connect to socket
                     .expect("Failed at accepting a connection on the unix listener");
@@ -48,14 +49,14 @@ pub fn listen_to_calls(requested_signals: HashMap<String, bool>) -> Subscription
                 unix_stream
                     .read_to_string(&mut message)
                     .expect("failed at reading the unix listener");
-                if requested_signals.get::<String>(&message).is_some() {
+                let mut end_message = (message.clone(), "{}".to_string());
+                if let Some((str1, str2)) = message.split_once(" ") {
+                    end_message = (str1.to_string(), str2.to_string());
+                }
+
+                if requested_signals.get::<String>(&end_message.0).is_some() {
                     output
-                        .try_send(WindowMessages::Msg(
-                            (
-                                message,
-                                "{}".to_string()
-                            )
-                        ))
+                        .try_send(WindowMessages::Msg(end_message))
                         .expect("failed to send call as a signal!")
                 }
             }

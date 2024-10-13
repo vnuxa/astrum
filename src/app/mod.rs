@@ -1,7 +1,8 @@
 // have lua contexts here as well!!!
 
 
-use std::{borrow::{Borrow, BorrowMut}, cell::RefCell, collections::HashMap, error::Error, fmt::Debug, io::Read, ops::Deref, path::PathBuf};
+use std::{borrow::{Borrow, BorrowMut}, cell::RefCell, collections::HashMap, error::Error, fmt::Debug, io::Read, ops::Deref, path::PathBuf, time::Duration};
+use cosmic::iced::time;
 
 use color_print::{cformat, cprintln, cstr};
 use cosmic::{app::Core, iced::Subscription, app::Command};
@@ -9,7 +10,7 @@ use cosmic::{app::Core, iced::Subscription, app::Command};
 use mlua::{Lua, OwnedFunction, OwnedTable, Value};
 use window::{close_window, process_lua_window, Window, WindowSettings};
 
-use crate::{animations, config::lua::{get_or_create_module, make_lua_context}, services::{self, hyprland::{self, HyprlandListener}}, style::application::lua_application_style, widgets::process_lua_element};
+use crate::{animations, config::lua::{get_or_create_module, make_lua_context}, services::{self, hyprland, niri, system_tray}, style::application::lua_application_style, widgets::process_lua_element};
 use cosmic::iced_runtime::core::window::Id as SurfaceId;
 
 pub mod window;
@@ -21,6 +22,7 @@ pub enum WindowMessages {
     ReloadLua,
     AnimationTick
 }
+    use std::time::Instant;
 
 impl cosmic::Application for MainWindow {
     type Executor = cosmic::executor::Default;
@@ -294,7 +296,7 @@ impl cosmic::Application for MainWindow {
         &self,
         id: SurfaceId,
     ) -> cosmic::Element<Self::Message> {
-        // println!("view logic ran!");
+        println!("view logic ran!");
         let windows: &HashMap<String, Window> = &self.windows;
         if id == SurfaceId::MAIN {
             // println!("draw main window pls");
@@ -330,18 +332,28 @@ impl cosmic::Application for MainWindow {
     }
 
     fn subscription(&self) -> Subscription<Self::Message> {
-        // println!("subscription logic ran!");
+        println!("subscription logic ran!");
         let mut services = Vec::new();
         let lua = self.lua.borrow();
         if animations::any_animation_in_progress() {
             println!("ik anim is in progress");
 
             services.push(
-                cosmic::iced::window::frames().map(|(id, at)| {
-                    println!("wayland farmessss wow!!!!!!!!!!!!!!!1");
-                    WindowMessages::AnimationTick
-                }
-                )
+
+                time::every(Duration::from_millis(10)).map(|_| WindowMessages::AnimationTick)
+    // time::every(Duration::from_secs(requested_rate)).map(move |_| {
+    //     WindowMessages::Msg(
+    //         (
+    //             "time_changed".to_string(),
+    //             format!("{{ time_rate = {rate} }}", rate = requested_rate )
+    //         )
+    //     )
+    // })
+                // cosmic::iced::window::frames().map(|(id, at)| {
+                //     println!("wayland farmessss wow!!!!!!!!!!!!!!!1");
+                //     WindowMessages::AnimationTick
+                // }
+                // )
                 // cosmic::iced_futures::event::listen_raw(|event, _status| {
                 //     println!("listening to the future :O");
                 //     match event {
@@ -391,6 +403,42 @@ impl cosmic::Application for MainWindow {
 
                 services.push(
                     hyprland::listen_workspaces(listener_specifics)
+                );
+            }
+            if let Ok(signal_table) = signals.get::<mlua::String, mlua::Table>(lua.create_string("niri").unwrap()) {
+                let signal_table: mlua::Table = signal_table;
+
+                let mut listener_specifics: HashMap<String, bool> = HashMap::new();
+                for pair in signal_table.pairs::<mlua::Integer, mlua::String>() {
+                    let (key, value) = pair.unwrap();
+
+                    match value.to_str().unwrap() {
+                        "workspaces_changed" => listener_specifics.insert("workspaces_changed".to_string(), true),
+                        "windows_changed" => listener_specifics.insert("windows_changed".to_string(), true),
+                        &_ => { None },
+                    };
+                }
+
+                services.push(
+                    niri::listen_to_niri(listener_specifics)
+                );
+            }
+
+            if let Ok(signal_table) = signals.get::<mlua::String, mlua::Table>(lua.create_string("system_tray").unwrap()) {
+                let signal_table: mlua::Table = signal_table;
+
+                let mut listener_specifics: HashMap<String, bool> = HashMap::new();
+                for pair in signal_table.pairs::<mlua::Integer, mlua::String>() {
+                    let (key, value) = pair.unwrap();
+
+                    match value.to_str().unwrap() {
+                        "item_changed" => listener_specifics.insert("item_changed".to_string(), true),
+                        &_ => { None },
+                    };
+                }
+
+                services.push(
+                    system_tray::listen_to_tray(listener_specifics)
                 );
             }
             if let Ok(signal_table) = signals.get::<mlua::String, mlua::Table>(lua.create_string("mpris").unwrap()) {
@@ -451,6 +499,9 @@ impl cosmic::Application for MainWindow {
 
         services.push(
             services::calls::windows_socket(window_names)
+        );
+        services.push(
+            services::time::add_delay_calls()
         );
         services.push(
             services::hot_reload::hot_reload(self.config_path.clone())

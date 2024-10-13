@@ -9,6 +9,7 @@ use crate::widgets::process_lua_element;
 use super::WindowMessages;
 use cosmic::{iced::{wayland::{actions::layer_surface::SctkLayerSurfaceSettings, layer_surface::{Anchor, KeyboardInteractivity, Layer}}, window::Id}, app::Command, Element};
 
+    use std::time::Instant;
 
 pub fn open_window() -> (Id, Command<WindowMessages>) {
     let id = Id::unique();
@@ -193,6 +194,7 @@ impl Window {
 
     // maybe make predefined settings that somehow get processed and stuff??
     pub fn run_window(&self) -> Element<WindowMessages> {
+        let now = Instant::now();
         let element_data = match self.window_logic.call::<(), mlua::Table>(()) {
             Ok(data) => { data },
             Err(error) => {
@@ -219,6 +221,8 @@ impl Window {
         };
         let lua_element = process_lua_element(element_data).expect("Could not process view logic, are you sure you are returning a widget?");
 
+                    let elapsed = now.elapsed();
+                    println!("Elapsed on window: {:.2?}", elapsed);
         return lua_element.into()
     }
 

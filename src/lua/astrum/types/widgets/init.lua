@@ -54,7 +54,7 @@ function widgets:signal(signal_name, signal_data) end
 ---@field weight? FontWeight # The weight of the font
 ---@field style? FontStyle # The style of the font
 
----@class (exact) TextModel: Element # to be documented
+---@class (exact) TextModel: Element
 ---@field content? string # text to be displayed
 ---@field style? TextAppearance # The style of the text
 ---@field size? number # The font size of the text
@@ -75,7 +75,7 @@ function widgets:text(model) end
 ---@field on_scroll_down? CustomSignal | string # The name of the signal  to be fired when a button is scrolled down via the mouse wheel
 ---@field style? { active: ButtonAppearance, hovered: ButtonAppearance, pressed: ButtonAppearance, disabled: ButtonAppearance} # Declares the buttons appearance
 
----comment
+---A generic button that can send signals when pressed
 ---@param model ButtonModel
 ---@return ButtonModel
 function widgets:button(model) end
@@ -83,13 +83,13 @@ function widgets:button(model) end
 -- row
 
 ---@class (exact) RowModel: CommonContainerElement
----@field children? Element[] # List of elements to be rendered within the row
+---@field children? AstrumElement[] # List of elements to be rendered within the row
 ---@field spacing? number # The spacing of elements in pixels
 ---@field padding? Padding
 ---@field align_items? Alignment
 ---@field push? fun(self, widget: table) # Adds a widget that will be displayed in the `row`
 
---- to be doucmented
+--- A container that holds it's children horizontally
 ---@param model RowModel
 ---@return RowModel
 function widgets:row(model) end
@@ -105,7 +105,7 @@ function widgets:row(model) end
 ---@field align_items? Alignment
 ---@field push? fun(self, widget: table) # Adds a widget that will be displayed in the `column`
 
---- to be documented
+--- A container that hold's its children vertically
 ---@param model ColumnModel
 ---@return ColumnModel
 function widgets:column(model) end
@@ -117,13 +117,15 @@ function widgets:column(model) end
 ---@field padding? Padding
 ---@field max_width? number # Maximum width in pixels
 ---@field max_height? number # Maximum height in pixels
+---@field min_width? number # Minimum width in pixels
+---@field min_height? number # Minimum height in pixels
 ---@field center_x? boolean # Should the contents of the container be centered horizontally?
 ---@field center_y? boolean # Should the contents of the container be centered vertically?
 ---@field horizontal_alignment? Horizontal
 ---@field vertical_alignment? Vertical
 ---@field style? table # The appearance of the container
 
----to be documented
+--- A container that can be decorated or be used for alignment
 ---@param model ContainerModel
 ---@return ContainerModel
 function widgets:container(model) end
@@ -138,7 +140,7 @@ function widgets:container(model) end
 ---@field spacing? number # The spacing of elements in pixels
 ---@field align_items? Alignment
 
---- to be documented
+--- A container that can place it's children on the left, middle and right sides
 ---@param model CenterboxModel
 ---@return CenterboxModel
 function widgets:centerbox(model) end
@@ -149,7 +151,7 @@ function widgets:centerbox(model) end
 ---@field child? table # Infinite amount of content to be displayed within the scrollable
 ---@field direction? Direction # The direction where the content will be scrolled
 
---- to be documented
+--- A container that can vertically display an infinite amount of content with a scrollbar
 ---@param model ScrollableModel
 ---@return ScrollableModel
 function widgets:scrollable(model) end
@@ -169,7 +171,7 @@ function widgets:scrollable(model) end
 ---@field size? number # Sets the text size of the text input
 ---@field style? table # The appearance of the text input model. Only the default field is nesscessary as any field that is not declared will inherit the default
 
---- to be documented
+--- A field which can be filled with text.
 ---@param model TextInputModel
 ---@return TextInputModel
 function widgets:text_input(model) end
@@ -190,7 +192,7 @@ function widgets:text_input(model) end
 ---@field content_fit? ContentFit
 ---@field change_icon? fun(self, new_icon: string) # Changes the icon to the new icon. Can be either a icon name or path to the image
 
----to be documented
+--- A lazily-generated generic icon
 ---@param model IconModel | string
 ---@return IconModel
 function widgets:icon(model) end
@@ -201,16 +203,16 @@ function widgets:icon(model) end
 ---@field filter_method? FilterMethod
 ---@field border_radius? number | [ number, number, number, number ] # The border radius of the image
 
----to be documented
+--- A frame that displays an image while keeping specified aspect ratio
 ---@param model ImageModel | string
 ---@return ImageModel
 function widgets:image(model) end
 
 ---@class (exact) SpaceModel: CommonContainerElement # An empty amount of space
 
---- to be documented
----@param width Length | nil  # The width of the empty amount of space. Defaults to `"shrink"`
----@param height Length | nil # The height of the empty emount of space. Defaults to `"shrink"`
+--- An empty amount of space, useful for when you want to fill an area with nothing
+---@param width? Length  # The width of the empty amount of space. Defaults to `"shrink"`
+---@param height? Length # The height of the empty emount of space. Defaults to `"shrink"`
 function widgets:space(width, height) end
 
 return widgets

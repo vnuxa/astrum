@@ -14,18 +14,6 @@ use std::collections::HashSet;
 // that just implements functions on apps like
 // app.launch()
 
-#[derive(Debug, Clone, Default)]
-pub struct AppModel {
-    pub name: String,
-
-    pub icon_path: String,
-    pub executable: String,
-    pub desktop_path: String,
-
-    pub description: Option<String>
-}
-
-
 
 
 // make this async too
@@ -90,18 +78,19 @@ pub fn parse_desktop_file(desktop_file_path: PathBuf) -> Option<String> {
 pub fn get_all_apps() -> Option<String> {
     // read XDG_DATA_DIRS env var
     let xdg_data_dirs = std::env::var("XDG_DATA_DIRS").unwrap_or("/usr/share".to_string());
-    let xdg_data_dirs: Vec<&str> = xdg_data_dirs.split(':').collect();
+    let xdg_data_dirs: Vec<String> = xdg_data_dirs.split(':').map(|str| format!("{}{}",str, "/applications")).collect();
     // make a string sett from xdg_data_dirs
-    let mut search_dirs: HashSet<&str> = xdg_data_dirs.iter().cloned().collect();
-    search_dirs.insert("/usr/share/applications");
+    let mut search_dirs: HashSet<String> = xdg_data_dirs.iter().cloned().collect();
+    println!("searching ||| {:?}", search_dirs);
+    // search_dirs.insert("/usr/share/applications");
     // get home dir of current user
-    let home_dir = std::env::var("HOME").unwrap();
-    let home_path = PathBuf::from(home_dir);
-    let local_share_apps = home_path.join(".local/share/applications");
-    search_dirs.insert(local_share_apps.to_str().unwrap());
-    search_dirs.insert("/usr/share/xsessions");
-    search_dirs.insert("/etc/xdg/autostart");
-    search_dirs.insert("/var/lib/snapd/desktop/applications");
+    // let home_dir = std::env::var("HOME").unwrap();
+    // let home_path = PathBuf::from(home_dir);
+    // let local_share_apps = home_path.join(".local/share/applications");
+    // search_dirs.insert(local_share_apps.to_str().unwrap());
+    // search_dirs.insert("/usr/share/xsessions");
+    // search_dirs.insert("/etc/xdg/autostart");
+    // search_dirs.insert("/var/lib/snapd/desktop/applications");
     // for each dir, search for .desktop files
     let mut apps: String = "{".to_string();
     for dir in search_dirs {

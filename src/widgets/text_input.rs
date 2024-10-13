@@ -1,4 +1,5 @@
-use cosmic::iced::{Length};
+use cosmic::iced::font::{Family, Style, Weight};
+use cosmic::iced::{Font, Length};
 use cosmic::iced_core::text::LineHeight;
 use cosmic::Element;
 use mlua::Number;
@@ -16,14 +17,21 @@ use crate::style::text_input::lua_text_input_style;
 
 use super::{container::lua_container_widget, custom, process_lua_element};
 
+    // use std::time::Instant;
+
 thread_local!(static IDENTIFIERS: RefCell<HashMap<String, String>> = RefCell::new(HashMap::new()));
 
+unsafe fn make_static_str<'a>(key: &'a str) -> &'static str {
+    std::mem::transmute::<&'a str, &'static str>(key)
+}
 pub fn lua_text_input_widget(
     data: mlua::Table,
     // mut identifiers: RefCell<HashMap<String, String>>
 ) -> cosmic::widget::TextInput<WindowMessages> {
 
     // IDENTIFIERS.with_borrow_mut(|identifiers|{
+    //
+    // let now = Instant::now();
 
 
     let widget_placeholder: mlua::String = data.get::<&str, mlua::String>("placeholder").unwrap();
@@ -33,6 +41,12 @@ pub fn lua_text_input_widget(
         widget_value.to_str().unwrap().to_string()
         // identifiers.get(widget_id.to_str().unwrap()).unwrap()
     );
+    if let Ok(on_input) = data.get::<_, mlua::String>("on_input") {
+        text_input_widget = text_input_widget.on_input(move |text| {
+            println!("rust on input: {:?}", text);
+            return WindowMessages::Msg((on_input.to_str().unwrap().to_string(), format!("{{ text = '{text}' }}", text = text.replace("'", r"\'"))));
+        });
+    }
 
 
     if let Ok(width) = data.get::<_, mlua::String>("width") {
@@ -89,29 +103,58 @@ pub fn lua_text_input_widget(
         text_input_widget = text_input_widget.size(size as f32);
     }
 
-    if let Ok(on_input) = data.get::<_, mlua::String>("on_input") {
-        text_input_widget = text_input_widget.on_input(move |text| {
-            return WindowMessages::Msg((on_input.to_str().unwrap().to_string(), format!("{{ text = '{text}' }}", text = text.replace("'", r"\'"))));
-            // if let Ok(signal_name) = on_input.call::<_, mlua::String>(text.clone()) {
-            //     println!("lol on input is a strin");
-            //     // WindowMessages::WindowInputChanged(())
-            // } else if let Ok(signal_table) = on_input.call::<_, mlua::Table>(text.clone()) {
-            //     println!("text thingy is a table");
-            //     return WindowMessages::Msg(
-            //         (
-            //             signal_table.get::<_, mlua::String>("signal_name").unwrap().to_str().unwrap().to_string(),
-            //             signal_table.get::<_, mlua::String>("signal_data").unwrap().to_str().unwrap().to_string(),
-            //
-            //         )
-            //     );
-            // } else {
-            //     unimplemented!();
-            //     return WindowMessages::Msg(("".to_string(), "{}".to_string()));
-            // }
+
+
+    if let Ok(font_settings) = data.get::<_, mlua::Table>("font") {
+        // let font_settings = Rc::new(font_settings);
+        // let mut current_font = Font::default();
+        let mut font_family: Option<Family> = None;
+        let mut font_weight: Option<Weight> = None;
+        let mut font_style: Option<Style> = None;
+
+        if let Ok(font_name) = font_settings.get::<_, mlua::String>("name") {
+            // let font_thing = RefCell::new(String::from(font_name.to_str().unwrap()));
+            // let font_thing: Cow<'static, str> = font_name.to_string_lossy();
+
+            // for some reason font name is static???
+            // and its either i leak memory or use unsafe code
+            unsafe {
+                font_family = Some(Family::Name(make_static_str(font_name.to_str().unwrap())));
+            }
+        }
+        if let Ok(weight) = font_settings.get::<_, mlua::String>("weight") {
+            font_weight = Some(match weight.to_str().unwrap() {
+                "thin" => Weight::Thin,
+                "extra_light" => Weight::ExtraLight,
+                "light" => Weight::Light,
+                "normal" => Weight::Normal,
+                "medium" => Weight::Medium,
+                "semibold" => Weight::Semibold,
+                "bold" => Weight::Bold,
+                "extrabold" => Weight::ExtraBold,
+                "black" => Weight::Black,
+                _ => Weight::Normal
+            });
+        }
+        if let Ok(style) = font_settings.get::<_, mlua::String>("style") {
+            font_style = Some(match style.to_str().unwrap() {
+                "normal" => Style::Normal,
+                "italic" => Style::Italic,
+                "oblique" => Style::Oblique,
+                _ => Style::Normal,
+            });
+        }
+
+        text_input_widget= text_input_widget.font(Font {
+            family: font_family.unwrap_or_default(),
+            weight: font_weight.unwrap_or_default(),
+            style: font_style.unwrap_or_default(),
+            ..Default::default()
         });
     }
 
-
+    // let elapsed = now.elapsed();
+    // println!("Elapsed: {:.2?}", elapsed);
 
     text_input_widget
 

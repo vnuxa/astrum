@@ -90,10 +90,17 @@ pub fn lua_container_widget(
 
 
     if let Ok(max_width) = data.get::<_, mlua::Number>("max_width")  {
-        container_widget = container_widget.max_width(max_width as f32)
+        container_widget = container_widget.max_width(max_width as f32);
     }
     if let Ok(max_height) = data.get::<_, mlua::Number>("max_height")  {
-        container_widget = container_widget.max_height(max_height as f32)
+        container_widget = container_widget.max_height(max_height as f32);
+    }
+
+    if let Ok(min_width) = data.get::<_, mlua::Number>("min_width") {
+        container_widget = container_widget.min_width(min_width as f32);
+    }
+    if let Ok(min_height) = data.get::<_, mlua::Number>("min_height") {
+        container_widget = container_widget.min_height(min_height as f32);
     }
 
     if let Ok(_center) = data.get::<_, bool>("center_x")  {
@@ -102,6 +109,7 @@ pub fn lua_container_widget(
     if let Ok(_center) = data.get::<_, bool>("center_y")  {
         container_widget = container_widget.center_y();
     }
+    // println!("min width is {}", container_widget.min_width);
 
     if let Ok(horizontal_alignment) = data.get::<_, mlua::String>("horizontal_alignment") {
         container_widget = container_widget.align_x(match horizontal_alignment.to_str().unwrap() {

@@ -48,13 +48,31 @@ function astrum:application()
 		windows = {},
 		requested_signals = {},
 	}
+
 	app.update_logic = function(signal_name, signal_data)
 		for _, window in pairs(app.windows) do
-			if window.signals[signal_name] then window.signals[signal_name](signal_data) end
+			if window.main_signals[signal_name] then window.main_signals[signal_name](signal_data) end
 		end
 	end
 
-	function app:window(window_name, window_data) app.windows[window_name] = window_data end
+	function app:window(window_name, window_data)
+		local window_result = window_data
+		if window_result.exclusive_zone == "ignore" then window_result.exclusive_zone = -1 end
+		window_result.main_signals = {}
+		if window_result.signals then
+			for signal_name, signal_data in pairs(window_result.signals) do
+				if type(signal_data) == "table" then
+					for key, value in pairs(signal_data) do
+						window_result.main_signals[key] = value
+					end
+				elseif type(signal_data) == "function" then
+					window_result.main_signals[signal_name] = signal_data
+				end
+			end
+		end
+
+		app.windows[window_name] = window_result
+	end
 	function app:subscribe(service, request) app.requested_signals[service] = request end
 
 	-- if model.style then

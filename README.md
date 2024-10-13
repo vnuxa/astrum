@@ -1,11 +1,8 @@
 # astrum
-a desktop shell that depends on libcosmic
+a desktop shell that depends on libcosmic for widgets
 
 ---
 to run it, run `nix-shell` first then `cargo run`
 
 that should make a configuration file `~/.config/astrum/config.lua`
-
-within the lua configuration it depends on [`neoconf`](https://github.com/folke/neoconf.nvim) to automatically add `lua_ls` bindings
-you probably can do it within vscode manually too, i dont use vscode so i dont know how hard it is
-
+the configuration file will also add `lua_ls` types for ease of use

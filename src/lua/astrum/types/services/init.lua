@@ -22,6 +22,48 @@ function services.hyprland:set_workspace(workspace) end
 ---@return integer
 function services.hyprland:get_active_workspace() end
 
+-- niri service
+
+---@class NiriService
+services.niri = {}
+
+---@alias NiriWorkspaces NiriWorkspace[]
+
+---@class (exact) NiriWorkspace
+---@field id number # Id of the workspace. Do not use this when trying to interract with niri
+---@field unique_id number # The unique id of the workspace, used for interracting with niri
+---@field active boolean # Whether the workspace is currently active. Every output can only have 1 active workspace
+---@field focused boolean  # Whether the workspace is currently focused. Theres only 1 focused workspace across all outputs
+---@field name? string # The name of the workspace, if it has one
+---@field active_window_id? number # The id of the active window in this workspace.
+
+---@alias NiriWindows NiriWindow[]
+
+---@class (exact) NiriWindow
+---@field id number # Unique id of the window, it remains constant while the window is opened.
+---@field is_focused boolean # Whether this window is currently focused. There can only be 1 or 0 focused windows.
+---@field title? string # Title of the window, if there is one
+---@field app_id? string # Application ID, if there is one
+---@field workspace_id? number # The id of the workspace this window is on, if any.
+
+---Focuses on the specified workspace based on its unique id
+---@param unique_workspace number # Unique id of the workspace to focus on
+function services.niri:set_workspace(unique_workspace) end
+
+---Gets the current active workspace
+---@return integer
+function services.niri:get_active_workspace() end
+
+---Focuses on the workspace that is above the current one
+function services.niri:focus_workspace_up() end
+
+---Focuses on the workspace that is below the current one
+function services.niri:focus_workspace_down() end
+
+---Focuses on the specified window based on its unique id
+---@param unique_window number # Unique id of the window to focus on
+function services.niri:focus_window(unique_window) end
+
 -- mpris service
 
 ---@class MprisService
@@ -105,5 +147,32 @@ function services.applications:launch_app(executable_path) end
 
 ---@class TimeService
 services.time = {}
+
+---Fires a signal after a set amount of delay
+---@param duration number # The amount of seconds to wait
+---@param signal CustomSignal | string # The signal name or custom signal to fire after the delay ends
+function services.time:delay(duration, signal) end
+
+---@class SystemTrayService
+services.system_tray = {}
+
+---@alias TrayCategory
+---| '"application_status"'
+---| '"communications"'
+---| '"system_services"'
+---| '"hardware"'
+
+---@alias TrayStatus
+---| '"active"'
+---| '"passive"'
+---| '"needs_attention"'
+---| '"unknown"'
+
+---@class (exact) SystemTrayItem
+---@field id string # A name that is unique for this application
+---@field category TrayCategory # The category for this item
+---@field status TrayStatus # Describes the status for this item or of the associated application
+---@field title? string # A name that describes the application, can be more descriptive than `id`, but it is also not nesscessary.
+---@field icon_name? string # The name of the icon that should visualise the tray item
 
 return services
