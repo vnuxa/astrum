@@ -1,1 +1,0 @@
-/home/vnuxa/Documents/Programming/astrum/niri_ipc/target/debug/libniri_ipc.rlib: /home/vnuxa/Documents/Programming/astrum/niri_ipc/src/lib.rs /home/vnuxa/Documents/Programming/astrum/niri_ipc/src/socket.rs /home/vnuxa/Documents/Programming/astrum/niri_ipc/src/state.rs
