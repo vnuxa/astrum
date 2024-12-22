@@ -71,6 +71,7 @@
 
         nativeBuildInputs = with pkgs; [
           pkg-config
+          wayland
         ];
         #
         preConfigure =
