@@ -69,6 +69,8 @@
           pkg-config
           wayland
           lld
+
+          libxkbcommon
         ];
 
         nativeBuildInputs = with pkgs; [
@@ -90,7 +92,8 @@
           #bash
           ''
             export LD_LIBRARY_PATH="${library_path}"
-            export RUST_BACKTRACE=1
+            # export PKG_CONFIG_PATH="${pkgs.luajit}/pkgconfig/"
+            export RUST_BACKTRACE=full
           '';
         #
         # unpackPhase =
