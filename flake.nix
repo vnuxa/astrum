@@ -32,6 +32,7 @@
       fontconfig
       freetype
       libxkbcommon
+      openssl
     ];
     rustToolchain = pkgs.rust-bin.stable.latest.default;
     library_path = builtins.foldl' (a: b: "${a}:${b}/lib") "${pkgs.vulkan-loader}/lib" libraries;
@@ -64,6 +65,7 @@
         };
         buildInputs = libraries;
 
+        runtimeDependencies = libraries;
         buildTools = with pkgs; [
           rustToolchain
           pkg-config
@@ -80,6 +82,7 @@
           xorg.libXcursor
           xorg.libXi
           xorg.libXrandr
+          openssl
         ];
 
         nativeBuildInputs = with pkgs; [
