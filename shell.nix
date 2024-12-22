@@ -1,22 +1,21 @@
 {pkgs ? import <nixpkgs> {}}:
 pkgs.mkShell rec {
   buildInputs = with pkgs; [
-    expat
-    fontconfig
-    freetype
-    freetype.dev
-    libGL
+    # expat
+    # fontconfig
+    # freetype
+    # # freetype.dev
+    # libGL
     pkg-config
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXi
-    xorg.libXrandr
+    # # xorg.libX11
+    # # xorg.libXcursor
+    # # xorg.libXi
+    # # xorg.libXrandr
     wayland
-    libxkbcommon
-    dbus
+    # libxkbcommon
+    # dbus
     luajit
     # lua5_4_compat
-    dbus
   ];
 
   LD_LIBRARY_PATH =

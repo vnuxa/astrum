@@ -6,3 +6,7 @@ to run it, run `nix-shell` first then `cargo run`
 
 that should make a configuration file `~/.config/astrum/config.lua`
 the configuration file will also add `lua_ls` types for ease of use
+
+---
+
+the guide for astrum is [here](https://vnuxa.github.io/astrum_docs/)
