@@ -69,8 +69,17 @@
           pkg-config
           wayland
           lld
-
+          luajit
+          libGL
+          dbus
+          expat
+          fontconfig
+          freetype
           libxkbcommon
+          xorg.libX11
+          xorg.libXcursor
+          xorg.libXi
+          xorg.libXrandr
         ];
 
         nativeBuildInputs = with pkgs; [
