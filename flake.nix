@@ -67,6 +67,7 @@
         buildTools = with pkgs; [
           rustToolchain
           pkg-config
+          wayland
         ];
 
         nativeBuildInputs = with pkgs; [
@@ -81,6 +82,8 @@
             # export PKG_CONFIG_PATH="${pkgs.luajit}/pkgconfig/"
             export LOLMAN="${self}"
             export OKLOL="${./.}"
+            export RUST_BACKTRACE=1
+            echo ${self}
           '';
         #
         # unpackPhase =
