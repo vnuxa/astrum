@@ -68,6 +68,7 @@
           rustToolchain
           pkg-config
           wayland
+          lld
         ];
 
         nativeBuildInputs = with pkgs; [
