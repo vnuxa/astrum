@@ -85,6 +85,12 @@
             export RUST_BACKTRACE=1
             echo ${self}
           '';
+        buildPhase =
+          #bash
+          ''
+            export LD_LIBRARY_PATH="${library_path}"
+            export RUST_BACKTRACE=1
+          '';
         #
         # unpackPhase =
         #   #bash
