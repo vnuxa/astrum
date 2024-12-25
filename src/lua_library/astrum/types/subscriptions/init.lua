@@ -9,6 +9,8 @@ local subscriptions = {}
 
 ---@class (exact) HyprlandSubscription
 ---@field workspaces? string # Sends an signal whenever hyprland workspaces change (e.g. workspace is added, workspace is moved, workspace is destroyed). All of the workspaces are provided
+---@field clients? string # Sends a signal whenever a hyprland client (window) was changed (for example: window closed, window opened, window moved). All of the clients ordered by their workspace is provided
+---@field active_client? string # Sends a signal whenever the active hyprland client (window) was changed (e.g. active window focus has changed). Outputs a singular `HyprlandClient` or `nil` if there is no focus
 
 ---@class (exact) MprisSubscription
 ---@field playing? string # Sends a signal whenever the player started playing

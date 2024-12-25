@@ -10,6 +10,19 @@ services.hyprland = {}
 
 ---@alias HyprlandWorkspaces HyprlandWorkspace[]
 
+---@class (exact) HyprlandClient
+---@field workspace_id number # The id of the workspace that the client/window is on
+---@field at { x: number, y: number } # The x and y position where the client is on
+---@field size { x: number, y: number } # the x and y size of the client
+---@field initial_title string # The `initial_title` of the client
+---@field initial_class string # The `initial_title` of the client
+---@field class string # The class name of the client
+---@field title string # The title of the client
+---@field process_id number # The process id of the client
+---@field floating boolean # Is this window floating or not
+
+---@alias HyprlandClients table<number, HyprlandClient> # The exact type you get from a client update signal within hyprland
+
 ---Sets the active workspace to the one specified within hyprland
 ---@param workspace number
 function services.hyprland:set_workspace(workspace) end
@@ -18,6 +31,9 @@ function services.hyprland:set_workspace(workspace) end
 ---@return integer
 function services.hyprland:get_active_workspace() end
 
+---Gets the current active client
+---@return HyprlandClient
+function services.hyprland:get_active_client() end
 -- mpris
 
 ---@class MprisService

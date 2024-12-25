@@ -12,9 +12,15 @@ pub fn bind<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table ) -> anyho
         })?
     )?;
     astrum_utils.set(
-        "hyprland_get_active",
+        "hyprland_get_active_workspace",
         lua.create_function(|_, ()| {
             std::result::Result::Ok(hyprland::get_active_workspace())
+        })?
+    )?;
+    astrum_utils.set(
+        "hyprland_get_active_client",
+        lua.create_function(|_, ()| {
+            std::result::Result::Ok(hyprland::get_active_client())
         })?
     )?;
 

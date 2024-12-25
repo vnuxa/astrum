@@ -6,7 +6,8 @@ local service = {
 }
 
 function service.hyprland:set_workspace(workspace) utils.hyprland_set_workspace(workspace) end
-function service.hyprland:get_active_workspace() return utils.hyprland_get_active() end
+function service.hyprland:get_active_workspace() return utils.hyprland_get_active_workspace() end
+function service.hyprland:get_active_client() return utils.hyprland_get_active_client() end
 
 function service.mpris:get_player(player_name)
 	local player = utils.mpris_get_player(player_name)

@@ -106,16 +106,13 @@
     };
 
     devShells.${system}.default = pkgs.mkShell {
-      buildinputs = libraries;
+      buildInputs = libraries;
 
-      LD_LIBRARY_PATH =
-        builtins.foldl' (a: b: "${a}:${b}/lib") "${pkgs.vulkan-loader}/lib" libraries;
-
-      # shellHook = ''
-      #   export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:${pkgs.luajit}/lib/pkgconfig/"
-      #   export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:${pkgs.dbus}/lib/pkgconfig/"
-      # '';
-      PKG_CONFIG_PATH = "$PKG_CONFIG_PATH:${pkgs.luajit}/pkgconfig/";
+      LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath (with pkgs; [
+        wayland
+        libGL
+        libxkbcommon
+      ])}";
     };
   };
 }

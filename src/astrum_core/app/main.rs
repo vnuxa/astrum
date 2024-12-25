@@ -374,7 +374,7 @@ impl cosmic::Application for AstrumApp {
                 }
             };
 
-            make_subscribtion("hyprland", vec!["workspaces"], hyprland_service_channel);
+            make_subscribtion("hyprland", vec!["workspaces", "clients", "active_client"], hyprland_service_channel);
             // make_subscribtion("niri", vec!["workspace_changed"])
             make_subscribtion(
                 "mpris",
