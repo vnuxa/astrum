@@ -281,7 +281,7 @@ pub fn get_active_client() -> String {
                 process_id = {pid},
                 floating = {floating}
             }}, ",
-            workspace_id = workspace_id,
+            workspace_id = client.workspace.id,
             at_x = client.at.0,
             at_y = client.at.1,
             size_x = client.size.0,

@@ -340,6 +340,7 @@ dependencies = [
  "clap",
  "color-print",
  "freedesktop_entry_parser",
+ "greetd_ipc",
  "hyprland",
  "lazy_static",
  "libcosmic",
@@ -2223,6 +2224,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fdf242682df893b86f33a73828fb09ca4b2d3bb6cc95249707fc684d27484b91"
 dependencies = [
  "bitflags 2.6.0",
+]
+
+[[package]]
+name = "greetd_ipc"
+version = "0.10.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "700d2e5bfc91a042d1d531b46de245085c6a179debedf149aa97c7ca71492078"
+dependencies = [
+ "serde",
+ "serde_json",
+ "thiserror",
 ]
 
 [[package]]

@@ -9,6 +9,7 @@ mod hyprland;
 mod mpris;
 mod animations;
 mod applications;
+mod greetd;
 // mod animations;
 // mod styling;
 
@@ -22,6 +23,7 @@ pub fn add_util_binds<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table)
     mpris::bind(lua, astrum_utils);
     applications::bind(lua, astrum_utils);
     animations::bind(lua, astrum_utils);
+    greetd::bind(lua, astrum_utils);
     // styling::bind(lua, astrum_utils);
 
     // other misc utils

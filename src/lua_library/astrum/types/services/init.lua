@@ -111,4 +111,14 @@ function services.applications:get_all_apps() end
 ---@param executable_path string
 function services.applications:launch_app(executable_path) end
 
+---@class Greetd
+services.greetd = {}
+
+---Attempts to login via greetd
+---@param username string # The username to log in with
+---@param attempt string # The password you need to loog in with
+---@param command string # The command to run if login was successfull
+---@return "login_success" | "login_failure"
+function services.greetd:login(username, attempt, command) end
+
 return services
