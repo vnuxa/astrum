@@ -26,7 +26,7 @@ pub fn greetd_log_in(username: String, attempt: String, command: String) -> Stri
     let mut success = false;
     loop {
         if success {
-            std::process::exit(ExitCode::SUCCESS);
+            std::process::exit(0);
         }
         match Response::read_from(&mut stream).expect("Response couldnt connect to greetd stream") {
             Response::AuthMessage { auth_message_type, auth_message } => {
