@@ -22,7 +22,6 @@ pub fn greetd_log_in(username: String, attempt: String, command: String) -> Stri
 
     let mut session = Request::CreateSession { username };
 
-    session.write_to(&mut stream);
 
     let mut starting = false;
     let mut success = false;
@@ -30,6 +29,8 @@ pub fn greetd_log_in(username: String, attempt: String, command: String) -> Stri
         if success {
             std::process::exit(0);
         }
+        session.write_to(&mut stream);
+
         info!("looping greetd");
         match Response::read_from(&mut stream).expect("Response couldnt connect to greetd stream") {
             Response::AuthMessage { auth_message_type, auth_message } => {
