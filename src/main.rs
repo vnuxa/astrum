@@ -71,7 +71,7 @@ fn main() {
 
     if cli.log_std {
         Ftail::new()
-            .console(LevelFilter::Off)
+            .console(LevelFilter::Trace)
             .init().unwrap();
     } else {
         let log_dir = env::var("XDG_RUNTIME_DIR").unwrap() + "/astrum/";
@@ -82,7 +82,7 @@ fn main() {
         }
 
         Ftail::new()
-            .daily_file(&log_dir, LevelFilter::Off)
+            .daily_file(&log_dir, LevelFilter::Trace)
             .init().unwrap();
     }
 
