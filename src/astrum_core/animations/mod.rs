@@ -60,7 +60,7 @@ pub fn make_animation(
         animation = animation.repeat(repeat as u32);
     }
 
-    if data.get::<_, bool>("reverse").is_ok() {
+    if data.get::<_, bool>("reverse").unwrap_or(false) {
         animation = animation.auto_reverse();
     }
 

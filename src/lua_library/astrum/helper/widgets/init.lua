@@ -138,8 +138,12 @@ function widgets:text_input(content, placeholder, model)
 		text_input.value = content or ""
 		text_input.placeholder = placeholder or ""
 	end
-	text_input.widget_name = "text"
+	text_input.widget_name = "text_input"
 
+	print("got text input thing")
+	for key, value in pairs(text_input) do
+		print("     ", key, " and", value)
+	end
 	if default_font then
 	end
 	return text_input

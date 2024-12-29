@@ -25,6 +25,16 @@ pub fn make_text_input_widget(
         text_input_widget = text_input_widget.on_submit(AstrumMessages::Msg((on_submit.to_str().unwrap().to_string(), "{}".to_string())));
     }
 
+    if let Ok(on_submit) = data.get::<_, mlua::String>("on_submit") {
+        text_input_widget = text_input_widget.on_submit(AstrumMessages::Msg((on_submit.to_str().unwrap().to_string(), "{}".to_string())));
+    } else if let Ok(on_submit) = data.get::<_, mlua::Table>("on_submit") {
+        text_input_widget = text_input_widget.on_submit(AstrumMessages::Msg(
+            (
+                on_submit.get::<_, mlua::String>("signal_name").unwrap().to_str().unwrap().to_string(),
+                on_submit.get::<_, mlua::String>("signal_data").unwrap().to_str().unwrap().to_string(),
+            )
+        ));
+    }
     if let Ok(id) = data.get::<_, mlua::String>("id") {
         unsafe {
             text_input_widget = text_input_widget.id(Id::new(make_static_str(&id.to_str().unwrap().to_string())));
@@ -72,11 +82,12 @@ pub fn make_text_input_widget(
     }
 
 
-    if let Ok(active) = data.get::<_, bool>("always_active") {
+    if data.get::<_, bool>("always_active").unwrap_or(false) {
         text_input_widget = text_input_widget.always_active();
     }
 
-    if let Ok(password) = data.get::<_, bool>("password") {
+    if data.get::<_, bool>("password").unwrap_or(false) {
+        println!("making password");
         text_input_widget = text_input_widget.password();
     }
 

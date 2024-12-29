@@ -39,7 +39,7 @@ pub fn process_lua_element(
         "column" => Some(make_column_widget(element).into()),
         "image" => Some(make_image_widget(element).into()),
         "icon" => Some(make_icon_widget(element).into()),
-        "text_input_widget" => Some(make_text_input_widget(element).into()),
+        "text_input" => Some(make_text_input_widget(element).into()),
         &_ => None,
     }
 }

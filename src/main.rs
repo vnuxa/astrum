@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{self, Write};
 use std::os::unix::net::UnixStream;
 use std::path::{Path, PathBuf};
@@ -40,14 +40,12 @@ fn make_cache(cache_names: Vec<&str>) {
     }
 }
 fn type_path() -> io::Result<PathBuf> {
-    let mut dir = env::current_exe()?;
-    dir.pop();
-    dir.pop();
-    dir.pop();
-    dir.push("src/");
-    dir.push("lua_library/");
-    dir.push("astrum/");
-    dir.push("types");
+    let mut dir = Path::new(&env::var("CARGO_MANIFEST_DIR").expect("Couldnt find CARGO_MANIFEST_DIR"))
+        .join("src")
+        .join("lua_library")
+        .join("astrum")
+        .join("types");
+
     // dir.push("lib")/* ; */
     Ok(dir)
 }
@@ -78,20 +76,29 @@ fn main() {
     }
 
     // luarc file for the lua-language-server
-    let mut file = File::create(config_path.to_owned() + ".luarc.json").expect("Failed to create .luarc.json");
-    file.write_fmt(format_args!(
-        "
-            {{
-                \"$schema\": \"https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json\",
-                \"workspace.library\": [
-                    \"{types_path}\"
-                ],
 
-                \"runtime.version\": \"LuaJIT\",
-            }}
-        ",
-        types_path = type_path().unwrap().display()
-    ));
+    if let Ok(md) = fs::metadata(config_path.to_owned()) {
+        let permissions = md.permissions();
+        let readonly = permissions.readonly();
+        if readonly {
+            println!("No write permission for .luarc, skipping");
+        } else {
+            let mut file = File::create(config_path.to_owned() + ".luarc.json").expect("Failed to create .luarc.json");
+            file.write_fmt(format_args!(
+                "
+                    {{
+                    \"$schema\": \"https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json\",
+                    \"workspace.library\": [
+                    \"{types_path}\"
+                    ],
+
+                    \"runtime.version\": \"LuaJIT\",
+                    }}
+                    ",
+                types_path = type_path().unwrap().display()
+            ));
+        }
+    }
 
     start_application(Path::new(config_path).join("config.lua"));
 }

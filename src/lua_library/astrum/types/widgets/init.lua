@@ -37,6 +37,24 @@ function widgets:text(content_or_model, extra_model) end
 ---@return Widget
 function widgets:button(content_or_model, extra_model) end
 
+---@class TextInputModel
+---@field value? string # The text of the text input. Needs an external variable paired with `on_input` in order to change
+---@field placeholder? string # Placeholder text for the text input
+---@field always_active? boolean # If enabled, makes it behave as if it were always focused
+---@field width? Length
+---@field line_height? LineHeight # Sets the line height of the
+---@field password? boolean # If the text input should be a secure password input
+---@field on_input? string  # Runs a signal when some text is typed in the text input, sends `text` in the signal data which contains the new text. Cannot pass through custom signals
+---@field on_submit? string | CustomSignal # Sends a custom signal when the text input is focused and the enter key is pressed
+---@field size? number # Sets the text size of the text input
+
+--- A field which can be filled with text.
+---@param content_or_model TextInputModel | string
+---@param placeholder? string
+---@param model? TextInputModel
+---@return Widget
+function widgets:text_input(content_or_model, placeholder, model) end
+
 ---@class CustomSignal
 ---@field signal_name string
 ---@field signal_data table

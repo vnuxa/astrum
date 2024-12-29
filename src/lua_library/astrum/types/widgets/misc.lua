@@ -64,3 +64,9 @@
 ---@alias FilterMethod # Image filtering strategy
 ---| '"linear"' # Bilinear interpolation
 ---| '"nearest"' # Nearest neighbor
+
+-- line height
+
+---@alias LineHeight
+---| [ "relative", number ] # A factor of size of the text
+---| [ "absolute", number ] # An absolute height in pixels
