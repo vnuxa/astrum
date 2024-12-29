@@ -1,3 +1,4 @@
+use std::process::ExitCode;
 use std::{clone, env};
 use std::{borrow::Borrow, collections::HashSet, os::unix::net::UnixStream, path::PathBuf, process::Command};
 
@@ -22,7 +23,11 @@ pub fn greetd_log_in(username: String, attempt: String, command: String) -> Stri
     session.write_to(&mut stream);
 
     let mut starting = false;
+    let mut success = false;
     loop {
+        if success {
+            std::process::exit(ExitCode::SUCCESS);
+        }
         match Response::read_from(&mut stream).expect("Response couldnt connect to greetd stream") {
             Response::AuthMessage { auth_message_type, auth_message } => {
                 let response = match auth_message_type {
@@ -42,6 +47,7 @@ pub fn greetd_log_in(username: String, attempt: String, command: String) -> Stri
             },
             Response::Success => {
                 if starting {
+                    success = true;
                     return "login_success".to_string();
                 } else {
                     starting = true;
