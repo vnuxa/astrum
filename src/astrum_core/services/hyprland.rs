@@ -3,6 +3,7 @@ use std::{collections::HashMap, sync::{Arc, RwLock}};
 use color_print::cprintln;
 use cosmic::{app::Message, iced::{advanced::subscription, stream, Subscription}};
 use hyprland::{data::{Client, Clients, Workspace, Workspaces}, event_listener::AsyncEventListener, shared::{HyprData, HyprDataActive, HyprDataActiveOptional, HyprDataVec}};
+use log::{debug, info};
 
 use crate::astrum_core::app::main::{AstrumMessages, StringOrNum};
 
@@ -353,7 +354,7 @@ fn get_clients() -> String {
     }
     builder_string.push_str("}");
 
-    println!("builder string is\n {}", builder_string);
+    debug!("builder string is\n {}", builder_string);
     builder_string
 }
 

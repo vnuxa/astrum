@@ -1,4 +1,5 @@
 use cosmic::{config::COSMIC_TK,  iced::Vector};
+use log::{debug, info};
 
 use crate::astrum_binds::widgets::make_static_str;
 
@@ -26,8 +27,8 @@ pub fn get_vector(
 
 pub fn set_icon_theme(data: mlua::String) {
     unsafe {
-        println!("setting icon theme! {}", data.to_str().unwrap());
+        debug!("setting icon theme! {}", data.to_str().unwrap());
         cosmic::icon_theme::set_default(make_static_str(data.to_str().unwrap()));
     }
-    println!("wow the icon theme is: {}",cosmic::config::icon_theme());
+    debug!("wow the icon theme is: {}",cosmic::config::icon_theme());
 }

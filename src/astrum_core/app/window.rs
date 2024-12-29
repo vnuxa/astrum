@@ -1,4 +1,5 @@
 use cosmic::{app::{command::message, Message}, cctk::sctk::shell::wlr_layer::{Anchor, KeyboardInteractivity, Layer}, iced::window::Id, iced_runtime::platform_specific::wayland::layer_surface::SctkLayerSurfaceSettings, iced_winit::commands::layer_surface::{destroy_layer_surface, get_layer_surface}, Element, Task};
+use log::debug;
 use mlua::OwnedFunction;
 
 use crate::astrum_binds::widgets::process_lua_element;
@@ -100,7 +101,7 @@ pub fn make_window_settings<'a>(
     let mut settings = WindowSettings::default();
     settings.namespace = window_name;
 
-    println!("got a window request");
+    debug!("got a window request");
     if let Ok(anchors) = lua_window.get::<_, mlua::Table>("anchor") {
         let mut anchor_settings: Option<Anchor> = None;
 
@@ -149,7 +150,7 @@ pub fn make_window_settings<'a>(
         });
     }
 
-    println!("output window settings: {:?}", settings);
+    debug!("output window settings: {:?}", settings);
     settings
 }
 

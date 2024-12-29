@@ -7,6 +7,8 @@ use std::env::{self, home_dir};
 
 use astrum_core::app::main::start_application;
 use clap::Parser;
+use ftail::Ftail;
+use log::{info, Level, LevelFilter};
 mod astrum_core;
 mod astrum_binds;
 
@@ -18,7 +20,11 @@ struct Cli {
 
     /// Sends a specified call to a running process of astrum
     #[arg(long)]
-    call: Option<String>
+    call: Option<String>,
+
+    /// Instead of logging to a file, will log into
+    #[arg(short, long)]
+    log_std: bool
 }
 fn run_command(command: &str) {
 
@@ -63,13 +69,32 @@ fn main() {
         return
     }
 
+    if cli.log_std {
+        Ftail::new()
+            .console(LevelFilter::Off)
+            .init().unwrap();
+    } else {
+        let log_dir = env::var("XDG_RUNTIME_DIR").unwrap() + "/astrum/";
+        println!("log dir {}", log_dir);
+        if !Path::new(&log_dir).exists() {
+            println!("log dir doesnt exist");
+            run_command(&format!("mkdir {}", log_dir));
+        }
+
+        Ftail::new()
+            .daily_file(&log_dir, LevelFilter::Off)
+            .init().unwrap();
+    }
+
+
+
     let config_path: &str = &cli.config
         .unwrap_or("~/.config/astrum/".to_string())
         .replace("~", home_dir().unwrap().to_str().unwrap());
 
     // check if config path exists, if not then make it
     if !Path::new(config_path).exists() {
-        println!("config path does not exist, making one now");
+        info!("config path does not exist, making one now");
         run_command(&format!("mkdir {}", config_path));
 
         let lua_file = File::create(config_path.to_owned() + "config.lua").expect("Failed to create config.lua");
@@ -81,7 +106,7 @@ fn main() {
         let permissions = md.permissions();
         let readonly = permissions.readonly();
         if readonly {
-            println!("No write permission for .luarc, skipping");
+            info!("No write permission for .luarc, skipping");
         } else {
             let mut file = File::create(config_path.to_owned() + ".luarc.json").expect("Failed to create .luarc.json");
             file.write_fmt(format_args!(

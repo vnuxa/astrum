@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use cosmic::{cosmic_theme::palette::{Alpha, Srgba}, iced::{color, font::{Family, Style, Weight}, ContentFit, Font, Length, Radians, Rotation}, widget::image::FilterMethod};
 use cosmic::widget::image;
+use log::debug;
 
 use crate::astrum_core::HOME_DIR;
 
@@ -85,7 +86,7 @@ pub fn make_image_widget(
 
     if let Ok(border_radius) = data.get::<_, mlua::Number>("border_radius") {
         image_widget = image_widget.border_radius([border_radius as f32; 4]);
-        println!("set border raidus to {:?}", [border_radius as f32; 4]);
+        debug!("set border raidus to {:?}", [border_radius as f32; 4]);
     } else if let Ok(border_radius) = data.get::<_, mlua::Table>("border_radius") {
         image_widget = image_widget.border_radius([
             border_radius.get::<_, mlua::Number>(1).unwrap() as f32,

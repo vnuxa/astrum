@@ -2,6 +2,7 @@
 use std::{env::home_dir, io::Read, os::unix::net::UnixListener};
 
 use cosmic::{app::Message, iced::{advanced::subscription, stream, Subscription}};
+use log::info;
 
 use crate::astrum_core::app::main::{AstrumMessages, StringOrNum};
 
@@ -10,7 +11,7 @@ pub fn calls_service_channel(requests: Vec<String>) -> Subscription<AstrumMessag
         let socket_path = &(home_dir().unwrap().display().to_string() + "/.cache/astrum/sockets/calls");
 
         if std::fs::metadata(socket_path).is_ok() {
-            println!("A socket is already present. Deleting...");
+            info!("A socket is already present. Deleting...");
             std::fs::remove_file(socket_path).expect("could not delete previous socket");
         }
         let unix_listener =

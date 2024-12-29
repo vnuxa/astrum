@@ -1,5 +1,6 @@
 use std::{env::current_exe, path::Path};
 use binds::add_util_binds;
+use log::{debug, info};
 use mlua::{Lua, Table, Value};
 
         use std::env;
@@ -60,7 +61,7 @@ pub fn make_lua_context(config_path: &Path) -> anyhow::Result<Lua> {
             array.insert(1, format!("{}/?/init.lua", path.display()));
         }
 
-        println!("cargo manifest dir: {:?}", env::var("CARGO_MANIFEST_DIR"));
+        debug!("cargo manifest dir: {:?}", env::var("CARGO_MANIFEST_DIR"));
         let current_dir = Path::new(&env::var("CARGO_MANIFEST_DIR").expect("Expected cargo manifest dir to astrum")).join("src").join("lua_library");
 
         prefix_path(&mut path_array, &current_dir.as_path()); // add the astrum lua library to the package list

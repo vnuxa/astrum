@@ -3,6 +3,7 @@ use std::{borrow::Borrow, cell::RefCell, collections::HashMap, io::Read, path::P
 use crate::astrum_core::{animations::any_animation_in_progress, lua_context::make_lua_context, services::{self, calls, hyprland::hyprland_service_channel, mpris::mpris_service_channel, system_tray::system_tray_service_channel, time::time_service_channel}};
 use color_print::{cprintln, cstr};
 use cosmic::{app::{Message, Settings}, iced::{self, window::frames, Subscription}, Element, Task};
+use log::debug;
 use mlua::{OwnedFunction, OwnedTable, Value};
 
 use super::window::{close_window, make_window_settings, Window};
@@ -213,7 +214,7 @@ impl cosmic::Application for AstrumApp {
 
     fn view_window(&self, id: iced::window::Id) -> Element<Self::Message> {
 
-        println!("view logic ran! {:?}", id);
+        debug!("view logic ran! {:?}", id);
         let windows: &HashMap<String, Window> = &self.windows;
         // if id == SurfaceId::MAIN {
             // println!("draw main window pls");
@@ -329,7 +330,7 @@ impl cosmic::Application for AstrumApp {
                 Task::batch(commands)
             },
             AstrumMessages::AnimationTick => {
-                println!("animation tick!");
+                debug!("animation tick!");
                 Task::none()
             }
         }

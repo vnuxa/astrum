@@ -87,7 +87,6 @@ pub fn make_text_input_widget(
     }
 
     if data.get::<_, bool>("password").unwrap_or(false) {
-        println!("making password");
         text_input_widget = text_input_widget.password();
     }
 
