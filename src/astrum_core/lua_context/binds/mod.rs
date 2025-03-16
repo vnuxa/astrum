@@ -10,6 +10,7 @@ mod mpris;
 mod animations;
 mod applications;
 mod greetd;
+mod calls;
 // mod animations;
 // mod styling;
 
@@ -24,6 +25,7 @@ pub fn add_util_binds<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table)
     applications::bind(lua, astrum_utils);
     animations::bind(lua, astrum_utils);
     greetd::bind(lua, astrum_utils);
+    calls::bind(lua, astrum_utils);
     // styling::bind(lua, astrum_utils);
 
     // other misc utils
@@ -35,15 +37,15 @@ pub fn add_util_binds<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table)
             let args_vec = arguments.to_vec();
             let command = Command::new("bash")
                 .arg("-c")
-                .args(args_vec.iter().map(|val| val.to_str().unwrap()))
+                .args(args_vec.iter().map(|val| val.to_string_lossy()))
                 .output()
                 .expect("failed to execute command");
 
             std::result::Result::Ok(
                 lua.create_string(command.stdout)
             )
-        })?
-    )?;
+        }).unwrap()
+    ).unwrap();
 
     Ok(())
 }

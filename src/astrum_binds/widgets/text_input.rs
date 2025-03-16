@@ -4,47 +4,52 @@ use crate::astrum_core::app::main::AstrumMessages;
 
 use super::make_static_str;
 
-pub fn make_text_input_widget(
+pub fn make_text_input_widget<'a>(
     data: mlua::Table
-) -> cosmic::widget::TextInput<AstrumMessages> {
+) -> cosmic::widget::TextInput<'a, AstrumMessages> {
     let placeholder_text: mlua::String = data.get("placeholder").expect("text input does not have placeholder text");
     let value_text: mlua::String = data.get("value").expect("text input does not have value text");
 
-    let mut text_input_widget: cosmic::widget::TextInput<AstrumMessages> = cosmic::widget::text_input(placeholder_text.to_str().unwrap().to_string(), value_text.to_str().unwrap().to_string());
+    let mut text_input_widget: cosmic::widget::TextInput<AstrumMessages> = cosmic::widget::text_input(placeholder_text.to_string_lossy(), value_text.to_string_lossy());
 
-    if let Ok(on_input) = data.get::<_, mlua::String>("on_input") {
+    if let Ok(on_input) = data.get::<mlua::String>("on_input") {
         text_input_widget = text_input_widget.on_input(move |text| {
             return AstrumMessages::Msg((
-                on_input.to_str().unwrap().to_string(),
+                on_input.to_string_lossy(),
                 format!("{{ text = '{text}' }}", text = text)
             ));
         });
     }
 
-    if let Ok(on_submit) = data.get::<_, mlua::String>("on_submit") {
-        text_input_widget = text_input_widget.on_submit(AstrumMessages::Msg((on_submit.to_str().unwrap().to_string(), "{}".to_string())));
+    if let Ok(on_toggle_edit) = data.get::<mlua::String>("on_toggle_edit") {
+        text_input_widget = text_input_widget.on_toggle_edit(move |focus| {
+            return AstrumMessages::Msg((
+                on_toggle_edit.to_string_lossy(),
+                format!("{{ focused = '{boolean}' }}", boolean = focus)
+            ));
+        });
     }
 
-    if let Ok(on_submit) = data.get::<_, mlua::String>("on_submit") {
-        text_input_widget = text_input_widget.on_submit(AstrumMessages::Msg((on_submit.to_str().unwrap().to_string(), "{}".to_string())));
-    } else if let Ok(on_submit) = data.get::<_, mlua::Table>("on_submit") {
+    if let Ok(on_submit) = data.get::<mlua::String>("on_submit") {
+        text_input_widget = text_input_widget.on_submit(AstrumMessages::Msg((on_submit.to_string_lossy(), "{}".to_string())));
+    } else if let Ok(on_submit) = data.get::<mlua::Table>("on_submit") {
         text_input_widget = text_input_widget.on_submit(AstrumMessages::Msg(
             (
-                on_submit.get::<_, mlua::String>("signal_name").unwrap().to_str().unwrap().to_string(),
-                on_submit.get::<_, mlua::String>("signal_data").unwrap().to_str().unwrap().to_string(),
+                on_submit.get::<mlua::String>("signal_name").unwrap().to_string_lossy(),
+                on_submit.get::<mlua::String>("signal_data").unwrap().to_string_lossy(),
             )
         ));
     }
-    if let Ok(id) = data.get::<_, mlua::String>("id") {
+    if let Ok(id) = data.get::<mlua::String>("id") {
         unsafe {
-            text_input_widget = text_input_widget.id(Id::new(make_static_str(&id.to_str().unwrap().to_string())));
+            text_input_widget = text_input_widget.id(Id::new(make_static_str(&id.to_string_lossy())));
         }
     }
 
 
-    if let Ok(padding) = data.get::<_, mlua::Number>("padding") {
+    if let Ok(padding) = data.get::<mlua::Number>("padding") {
         text_input_widget = text_input_widget.padding(padding as f32);
-    } else  if let Ok(padding) = data.get::<_, mlua::Table>("padding") {
+    } else  if let Ok(padding) = data.get::<mlua::Table>("padding") {
         let mut padding_list: Vec<f32> = Vec::new();
         for pair in padding.pairs::<mlua::Number, f32>() {
             let (_key, value): (mlua::Number, f32) = pair.unwrap();
@@ -63,18 +68,18 @@ pub fn make_text_input_widget(
         };
     }
 
-    if let Ok(width) = data.get::<_, mlua::String>("width") {
-        text_input_widget = text_input_widget.width(match width.to_str().unwrap() {
+    if let Ok(width) = data.get::<mlua::String>("width") {
+        text_input_widget = text_input_widget.width(match width.to_string_lossy().as_str() {
             "fill" => Length::Fill,
             _ => Length::Shrink, // since shrink is default
         });
 
-    } else if let Ok(width) = data.get::<_, mlua::Table>("width") {
+    } else if let Ok(width) = data.get::<mlua::Table>("width") {
         // covers FillPortion(i32) and Fixed(u32)
         let width_type: mlua::String = width.get(1).unwrap();
         let width_contents: mlua::Number = width.get(2).unwrap();
 
-        text_input_widget = text_input_widget.width(match width_type.to_str().unwrap() {
+        text_input_widget = text_input_widget.width(match width_type.to_string_lossy().as_str() {
             "fill_portion" => Length::FillPortion(width_contents as u16),
             "fixed" => Length::Fixed(width_contents as f32),
             _ => Length::Shrink
@@ -82,19 +87,19 @@ pub fn make_text_input_widget(
     }
 
 
-    if data.get::<_, bool>("always_active").unwrap_or(false) {
+    if data.get::<bool>("always_active").unwrap_or(false) {
         text_input_widget = text_input_widget.always_active();
     }
 
-    if data.get::<_, bool>("password").unwrap_or(false) {
+    if data.get::<bool>("password").unwrap_or(false) {
         text_input_widget = text_input_widget.password();
     }
 
-    if let Ok(line_height) = data.get::<_, mlua::Table>("line_height") {
+    if let Ok(line_height) = data.get::<mlua::Table>("line_height") {
         let first_param: mlua::String = line_height.get(1).unwrap();
         let second_param: mlua::Number = line_height.get(2).unwrap();
 
-        text_input_widget = text_input_widget.line_height(match first_param.to_str().unwrap() {
+        text_input_widget = text_input_widget.line_height(match first_param.to_string_lossy().as_str() {
             "relative" => {
                 LineHeight::Relative(second_param as f32)
             },
@@ -105,29 +110,29 @@ pub fn make_text_input_widget(
         });
     }
 
-    if let Ok(size) = data.get::<_, mlua::Number>("size") {
+    if let Ok(size) = data.get::<mlua::Number>("size") {
         text_input_widget = text_input_widget.size(size as f32);
     }
 
-        if let Ok(font_settings) = data.get::<_, mlua::Table>("font") {
+        if let Ok(font_settings) = data.get::<mlua::Table>("font") {
         // let font_settings = Rc::new(font_settings);
         // let mut current_font = Font::default();
         let mut font_family: Option<Family> = None;
         let mut font_weight: Option<Weight> = None;
         let mut font_style: Option<Style> = None;
 
-        if let Ok(font_name) = font_settings.get::<_, mlua::String>("name") {
-            // let font_thing = RefCell::new(String::from(font_name.to_str().unwrap()));
+        if let Ok(font_name) = font_settings.get::<mlua::String>("name") {
+            // let font_thing = RefCell::new(String::from(font_name.to_string_lossy().as_str()));
             // let font_thing: Cow<'static, str> = font_name.to_string_lossy();
 
             // for some reason font name is static???
             // and its either i leak memory or use unsafe code
             unsafe {
-                font_family = Some(Family::Name(make_static_str(font_name.to_str().unwrap())));
+                font_family = Some(Family::Name(make_static_str(font_name.to_string_lossy().as_str())));
             }
         }
-        if let Ok(weight) = font_settings.get::<_, mlua::String>("weight") {
-            font_weight = Some(match weight.to_str().unwrap() {
+        if let Ok(weight) = font_settings.get::<mlua::String>("weight") {
+            font_weight = Some(match weight.to_string_lossy().as_str() {
                 "thin" => Weight::Thin,
                 "extra_light" => Weight::ExtraLight,
                 "light" => Weight::Light,
@@ -140,8 +145,8 @@ pub fn make_text_input_widget(
                 _ => Weight::Normal
             });
         }
-        if let Ok(style) = font_settings.get::<_, mlua::String>("style") {
-            font_style = Some(match style.to_str().unwrap() {
+        if let Ok(style) = font_settings.get::<mlua::String>("style") {
+            font_style = Some(match style.to_string_lossy().as_str() {
                 "normal" => Style::Normal,
                 "italic" => Style::Italic,
                 "oblique" => Style::Oblique,

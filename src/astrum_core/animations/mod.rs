@@ -17,10 +17,10 @@ pub fn make_animation(
 
     let state: bool = data.get("value").unwrap_or(false);
     let mut animation = Animated::new(state)
-        .duration(data.get::<_, mlua::Number>("time").unwrap_or(1.0) as f32 * 1000.0);
+        .duration(data.get::<mlua::Number>("time").unwrap_or(1.0) as f32 * 1000.0);
 
-    if let Ok(easing) = data.get::<_, mlua::String>("easing") {
-        animation = animation.easing(match easing.to_str().unwrap() {
+    if let Ok(easing) = data.get::<mlua::String>("easing") {
+        animation = animation.easing(match easing.to_string_lossy().as_str() {
             "linear" => Easing::Linear,
             "ease_in" => Easing::EaseIn,
             "ease_out" => Easing::EaseOut,
@@ -56,19 +56,19 @@ pub fn make_animation(
         });
     }
 
-    if let Ok(repeat) = data.get::<_, mlua::Number>("repeat_count") {
+    if let Ok(repeat) = data.get::<mlua::Number>("repeat_count") {
         animation = animation.repeat(repeat as u32);
     }
 
-    if data.get::<_, bool>("reverse").unwrap_or(false) {
+    if data.get::<bool>("reverse").unwrap_or(false) {
         animation = animation.auto_reverse();
     }
 
-    if let Ok(delay) = data.get::<_, mlua::Number>("delay") {
+    if let Ok(delay) = data.get::<mlua::Number>("delay") {
         animation = animation.delay(delay as f32 * 1000.0);
     }
 
-    animation_storage.insert(data.get::<_, mlua::Number>("animation_id").unwrap() as u32, animation);
+    animation_storage.insert(data.get::<mlua::Number>("animation_id").unwrap() as u32, animation);
 }
 
 pub fn any_animation_in_progress() -> bool {

@@ -4,6 +4,7 @@ local service = {
 	mpris = {},
 	applications = {},
 	greetd = {},
+	time = {},
 }
 
 function service.hyprland:set_workspace(workspace) utils.hyprland_set_workspace(workspace) end
@@ -30,5 +31,7 @@ function service.applications:get_all_apps() return utils.get_all_applications()
 function service.applications:launch_app(exec) utils.launch_application(exec) end
 
 function service.greetd:login(username, attempt, command) utils.greetd_login(username, attempt, command) end
+
+function service.time:delay(duration, signal) utils.call_delayed(duration, signal) end
 
 return service

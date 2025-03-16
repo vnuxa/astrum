@@ -121,4 +121,12 @@ services.greetd = {}
 ---@return "login_success" | "login_failure"
 function services.greetd:login(username, attempt, command) end
 
+---@class TimeService
+services.time = {}
+
+---Sends a signal after a specificed amount of time
+---@param duration number # How much time (in seconds) needs to pass until sending the signal
+---@param signal CustomSignal # The signal to send once the specified amount of time has passed
+function services.time:delay(duration, signal) end
+
 return services

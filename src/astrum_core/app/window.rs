@@ -1,6 +1,6 @@
 use cosmic::{app::{command::message, Message}, cctk::sctk::shell::wlr_layer::{Anchor, KeyboardInteractivity, Layer}, iced::window::Id, iced_runtime::platform_specific::wayland::layer_surface::SctkLayerSurfaceSettings, iced_winit::commands::layer_surface::{destroy_layer_surface, get_layer_surface}, Element, Task};
 use log::debug;
-use mlua::OwnedFunction;
+use mlua::Function;
 
 use crate::astrum_binds::widgets::process_lua_element;
 
@@ -9,7 +9,7 @@ use super::main::{lua_runtime_error, AstrumMessages};
 #[derive(Clone)]
 pub struct Window {
     id: Option<Id>,
-    window_logic: OwnedFunction, //view logic
+    window_logic: Function, //view logic
     internal_id: String,
     settings: WindowSettings,
     // pub input_values: HashMap<String, String> // identifier and the text input value itself
@@ -26,7 +26,7 @@ pub struct WindowSettings {
 }
 
 impl Window {
-    pub fn init(settings: WindowSettings, window_logic: OwnedFunction) -> (Self, Task<Message<AstrumMessages>>) {
+    pub fn init(settings: WindowSettings, window_logic: Function) -> (Self, Task<Message<AstrumMessages>>) {
         let mut id: Option<Id> = None;
         let mut task: Task<Message<AstrumMessages>> = Task::none();
         {
@@ -61,7 +61,7 @@ impl Window {
     }
 
     pub fn run_window(&self) -> Element<AstrumMessages> {
-        let element_data = match self.window_logic.call::<(), mlua::Table>(()) {
+        let element_data = match self.window_logic.call::<mlua::Table>(()) {
             Ok(data) => Some(data),
             Err(error) => {
                 lua_runtime_error(error);
@@ -102,13 +102,13 @@ pub fn make_window_settings<'a>(
     settings.namespace = window_name;
 
     debug!("got a window request");
-    if let Ok(anchors) = lua_window.get::<_, mlua::Table>("anchor") {
+    if let Ok(anchors) = lua_window.get::<mlua::Table>("anchor") {
         let mut anchor_settings: Option<Anchor> = None;
 
         for pairs in anchors.pairs::<mlua::Integer, mlua::String>() {
             let (key, value) = pairs.unwrap();
 
-            let output = match value.to_str().unwrap() {
+            let output = match value.to_string_lossy().as_str() {
                 "bottom" => Anchor::BOTTOM,
                 "left" => Anchor::LEFT,
                 "right" => Anchor::RIGHT,
@@ -125,24 +125,24 @@ pub fn make_window_settings<'a>(
         settings.anchors = anchor_settings.unwrap();
     }
 
-    if let Ok(is_popup) = lua_window.get::<_, bool>("is_popup") {
+    if let Ok(is_popup) = lua_window.get::<bool>("is_popup") {
         settings.popup = is_popup;
     }
 
-    if let Ok(exclusive_zone) = lua_window.get::<_, mlua::Integer>("exclusive_zone") {
+    if let Ok(exclusive_zone) = lua_window.get::<mlua::Integer>("exclusive_zone") {
         settings.exclusion_zone = exclusive_zone as i32;
     }
 
-    if let Ok(keymode) = lua_window.get::<_, mlua::String>("keymode") {
-        settings.keymode = match keymode.to_str().unwrap() {
+    if let Ok(keymode) = lua_window.get::<mlua::String>("keymode") {
+        settings.keymode = match keymode.to_string_lossy().as_str() {
             "on_demand" => KeyboardInteractivity::OnDemand,
             "exclusive" => KeyboardInteractivity::Exclusive,
             _ => KeyboardInteractivity::None,
         };
     }
 
-    if let Ok(layer) = lua_window.get::<_, mlua::String>("layer") {
-        settings.layer = Some(match layer.to_str().unwrap() {
+    if let Ok(layer) = lua_window.get::<mlua::String>("layer") {
+        settings.layer = Some(match layer.to_string_lossy().as_str() {
             "top" => Layer::Top,
             "bottom" => Layer::Bottom,
             "background" => Layer::Background,

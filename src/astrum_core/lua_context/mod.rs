@@ -10,19 +10,19 @@ pub fn get_or_create_module<'lua>
 (
     lua: &'lua Lua,
     name: &str
-) -> anyhow::Result<mlua::Table<'lua>> {
+) -> anyhow::Result<mlua::Table> {
     let globals = lua.globals();
 
-    let package: Table = globals.get("package")?;
-    let loaded: Table = package.get("loaded")?;
+    let package: Table = globals.get("package").unwrap();
+    let loaded: Table = package.get("loaded").unwrap();
 
-    let module = loaded.get(name)?;
+    let module = loaded.get(name).unwrap();
 
     match module {
         // no module was found, make a new one
         Value::Nil => {
-            let module = lua.create_table()?;
-            loaded.set(name, module.clone())?;
+            let module = lua.create_table().unwrap();
+            loaded.set(name, module.clone()).unwrap();
             Ok(module)
         },
 
@@ -70,7 +70,7 @@ pub fn make_lua_context(config_path: &Path) -> anyhow::Result<Lua> {
         add_util_binds(&lua, &astrum_utils);
 
         package
-            .set("path", path_array.join(";"))?;
+            .set("path", path_array.join(";")).unwrap();
 
     }
 

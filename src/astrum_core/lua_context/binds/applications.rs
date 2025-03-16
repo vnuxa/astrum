@@ -11,16 +11,16 @@ pub fn bind<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table ) -> anyho
                 _ => None,
             };
             std::result::Result::Ok(signal_data.unwrap())
-        })?
-    )?;
+        }).unwrap()
+    ).unwrap();
 
     astrum_utils.set(
         "launch_application",
         lua.create_function(|_, executable: mlua::String| {
-            launch_app(executable.to_str().unwrap().to_string());
+            launch_app(executable.to_string_lossy());
             std::result::Result::Ok(())
-        })?
-    )?;
+        }).unwrap()
+    ).unwrap();
 
     Ok(())
 }

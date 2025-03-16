@@ -8,8 +8,8 @@ pub fn bind<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table ) -> anyho
         lua.create_function(|_, animation_settings: mlua::Table| {
             make_animation(animation_settings);
             std::result::Result::Ok(())
-        })?
-    )?;
+        }).unwrap()
+    ).unwrap();
 
     astrum_utils.set(
         "animate_value",
@@ -17,8 +17,8 @@ pub fn bind<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table ) -> anyho
             std::result::Result::Ok(
                 animate_value(data.get("animation_id")?, data.get("from_value")?, data.get("to_value")?)
             )
-        })?
-    )?;
+        }).unwrap()
+    ).unwrap();
 
     astrum_utils.set(
         "set_animation",
@@ -36,8 +36,8 @@ pub fn bind<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table ) -> anyho
                     }
                 )
             )
-        })?
-    )?;
+        }).unwrap()
+    ).unwrap();
 
     astrum_utils.set(
         "change_anim_state",
@@ -55,8 +55,8 @@ pub fn bind<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table ) -> anyho
                     }
                 )
             )
-        })?
-    )?;
+        }).unwrap()
+    ).unwrap();
 
     Ok(())
 }

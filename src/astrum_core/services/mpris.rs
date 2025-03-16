@@ -6,15 +6,15 @@ use mpris::LoopStatus;
 use crate::astrum_core::app::main::{AstrumMessages, StringOrNum};
 
 
-pub fn get_player_by_name(player_identity: String) -> Player {
+pub fn get_player_by_name(player_identity: &String) -> Player {
     PlayerFinder::new()
         .expect("Could not connect to dbus")
-        .find_by_name(&player_identity)
+        .find_by_name(player_identity)
         .expect("Could not find the specified player")
     // might have to do an option instead of an expect
 }
 
-fn vec_to_table(data: Vec<&str>) -> String {
+pub fn vec_to_table(data: Vec<&str>) -> String {
     let mut builder_string = "{".to_string();
     for (key, value) in data.iter().enumerate() {
         if key == 0{

@@ -1,5 +1,6 @@
 ---@meta
 
+---@class Animations
 local animations = {}
 
 ---@alias EasingStyle

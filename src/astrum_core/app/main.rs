@@ -1,10 +1,10 @@
 use std::{borrow::Borrow, cell::RefCell, collections::HashMap, io::Read, path::PathBuf};
 
-use crate::astrum_core::{animations::any_animation_in_progress, lua_context::make_lua_context, services::{self, calls, hyprland::hyprland_service_channel, mpris::mpris_service_channel, system_tray::system_tray_service_channel, time::time_service_channel}};
+use crate::{astrum_core::{animations::any_animation_in_progress, lua_context::make_lua_context, services::{self, calls, hyprland::hyprland_service_channel, keybinds::{keybinds_service_channel, LuaKeybind, ALL_KEYBINDS}, mpris::mpris_service_channel, notifcations::notifications_service_channel, system_tray::system_tray_service_channel, time::{delay_call_service_channel, time_service_channel}}}};
 use color_print::{cprintln, cstr};
 use cosmic::{app::{Message, Settings}, iced::{self, window::frames, Subscription}, Element, Task};
 use log::debug;
-use mlua::{OwnedFunction, OwnedTable, Value};
+use mlua::{Function, Integer, ObjectLike, Table, Value};
 
 use super::window::{close_window, make_window_settings, Window};
 
@@ -12,11 +12,12 @@ use super::window::{close_window, make_window_settings, Window};
 struct AstrumApp {
     windows: HashMap<String, Window>,
     core: cosmic::app::Core,
-    update_logic: Option<OwnedFunction>,
-    subscription_logic: Option<OwnedFunction>,
-    subscription_data: Option<OwnedTable>,
+    update_logic: Option<Function>,
+    subscription_logic: Option<Function>,
+    subscription_data: Option<Table>,
     lua: RefCell<mlua::Lua>,
     config_path: PathBuf,
+    keybinds: Vec<LuaKeybind>,
 }
 
 #[derive(Debug, Clone)]
@@ -63,7 +64,6 @@ pub fn start_application(config_path: PathBuf) -> anyhow::Result<()> {
 
     Ok(())
 }
-
 pub fn lua_runtime_error(error: mlua::Error) {
     eprintln!("Lua error occured!");
     if let mlua::Error::RuntimeError(reason) = error {
@@ -90,20 +90,22 @@ fn configure_app(
     lua_context: RefCell<mlua::Lua>,
     source: String,
 ) -> (
-    Option<OwnedFunction>, // update_logic
-    Option<OwnedFunction>, // subscription_logic
-    Option<OwnedTable>, // subscription_data,
-    Option<OwnedTable>, // app_style
+    Option<Function>, // update_logic
+    Option<Function>, // subscription_logic
+    Option<Table>, // subscription_data,
+    Option<Table>, // app_style
     HashMap<String, Window>, // windows
     Vec<Task<Message<AstrumMessages>>>, // commands
-    RefCell<mlua::Lua>
+    RefCell<mlua::Lua>,
+    Vec<LuaKeybind>, // keybinds
 ) {
-    let mut update_logic: Option<OwnedFunction> = None;
-    let mut subscription_logic: Option<OwnedFunction> = None;
-    let mut subscription_data: Option<OwnedTable> = None;
-    let mut app_style: Option<OwnedTable> = None;
+    let mut update_logic: Option<Function> = None;
+    let mut subscription_logic: Option<Function> = None;
+    let mut subscription_data: Option<Table> = None;
+    let mut app_style: Option<Table> = None;
     let mut windows: HashMap<String, Window> = HashMap::new();
     let mut commands: Vec<Task<Message<AstrumMessages>>> = Vec::new();
+    let mut keybinds: Vec<LuaKeybind> = Vec::new();
 
 
     {
@@ -121,9 +123,7 @@ fn configure_app(
         match config {
             mlua::Value::Table(table) => {
                 if let Ok(logic) = table.get("update_logic") {
-                    let logic: mlua::Function = logic;
-
-                    update_logic = Some(logic.into_owned());
+                    update_logic = Some(logic);
                 }
                 if let Ok(logic) = table.get("windows") {
                     let table_of_windows: mlua::Table = logic;
@@ -135,7 +135,7 @@ fn configure_app(
 
                         let (window, command) = Window::init(
                             make_window_settings(id.clone(), value.clone()),
-                            value.get::<_, mlua::Function>("view").unwrap().into_owned(),
+                            value.get::<mlua::Function>("view").unwrap(),
                         );
 
                         windows.insert(
@@ -148,22 +148,42 @@ fn configure_app(
                     }
                 }
                 if let Ok(logic) = table.get("subscription_logic") {
-                    let logic: mlua::Function = logic;
-
-                    subscription_logic = Some(logic.into_owned());
+                    subscription_logic = Some(logic);
                 }
                 if let Ok(subscriptions) = table.get("subscription_messages")  {
-                    let subscriptions: mlua::Table = subscriptions;
-                    subscription_data = Some(subscriptions.into_owned());
+                    let subscriptions: Table = subscriptions;
+                    // each window has a kyebind field, use this field
+                    if let Ok(data) = subscriptions.get("keybinds") {
+                        let keybind_table: mlua::Table = data;
+                        for pair in keybind_table.pairs() {
+                            let (key_name, key_data): (String, Table) = pair.unwrap();
+
+                            for pair in key_data.pairs::<Integer, Table>() {
+                                let (key, value): (Integer, Table) = pair.unwrap();
+                                keybinds.push(
+                                    LuaKeybind {
+                                        signal_name: key_name.to_string(),
+                                        modifiers: value.get::<String>(1).unwrap().to_string(),
+                                        key: value.get::<String>(2).unwrap().to_string(),
+                                    }
+                                );
+                                // println!("wow key: {:?} and the type {:?} || value: {:?}, value type {:?} ", kn.to_string(), kd.as_str(), kd.type_name(), kd.as_str());
+                            }
+                        }
+                    }
+
+                    subscription_data = Some(subscriptions);
                 }
                 if let Ok(style) = table.get("style")  {
-                    let style: mlua::Table = style;
-                    app_style = Some(style.into_owned());
+                    app_style = Some(style);
                 }
             },
             _ => {  }
         }
     }
+    let mut all_keys = ALL_KEYBINDS.lock().unwrap();
+
+    *all_keys = keybinds.clone();
 
     (
         update_logic,
@@ -172,10 +192,12 @@ fn configure_app(
         app_style,
         windows,
         commands,
-        lua_context
+        lua_context,
+        keybinds
     )
 
 }
+
 
 impl cosmic::Application for AstrumApp {
     type Executor = cosmic::executor::Default;
@@ -185,7 +207,7 @@ impl cosmic::Application for AstrumApp {
     const APP_ID: &'static str = "astrum_unstable";
 
     fn init(core: cosmic::app::Core, flags: Self::Flags) -> (AstrumApp, Task<Message<AstrumMessages>>) {
-        let ( update_logic, subscription_logic, subscription_data, style, windows, commands, lua ) = configure_app(flags.0, flags.1);
+        let ( update_logic, subscription_logic, subscription_data, style, windows, commands, lua, keybinds ) = configure_app(flags.0, flags.1);
         (
             Self {
                 core,
@@ -195,6 +217,7 @@ impl cosmic::Application for AstrumApp {
                 subscription_data,
                 lua,
                 config_path: flags.2,
+                keybinds,
 
                 // lua: flags.0,
                 // update_logic,
@@ -253,6 +276,7 @@ impl cosmic::Application for AstrumApp {
         // }
         match message {
             AstrumMessages::Msg((name, data)) => {
+                // println!("hey i got a request for msg: '{:?}' with data: {:?}", name, data);
                 let lua = self.lua.borrow();
 
                 if let Some(logic) = &self.update_logic {
@@ -261,7 +285,7 @@ impl cosmic::Application for AstrumApp {
                         _ => None,
                     };
 
-                    logic.call::<_, (mlua::String, mlua::Table)>(
+                    logic.call::<(mlua::String, mlua::Table)>(
                         (
                             lua.create_string(&name).expect("failed to create string"),
                             data_evaled.expect("signal msg data is not a table!")
@@ -283,7 +307,7 @@ impl cosmic::Application for AstrumApp {
                     // string, i split it into 2 variants
                     match name {
                         StringOrNum::String(name) => {
-                            logic.call::<_, (mlua::String, mlua::String, mlua::Table)>(
+                            logic.call::<(mlua::String, mlua::String, mlua::Table)>(
                                 (
                                     lua.create_string(&service).expect("failed to create string"),
                                     lua.create_string(&name).expect("failed to create string"),
@@ -292,7 +316,7 @@ impl cosmic::Application for AstrumApp {
                             );
                         },
                         StringOrNum::Num(name) => {
-                            logic.call::<_, (mlua::String, mlua::Integer, mlua::Table)>(
+                            logic.call::<(mlua::String, mlua::Integer, mlua::Table)>(
                                 (
                                     lua.create_string(&service).expect("failed to create string"),
                                     name,
@@ -312,7 +336,7 @@ impl cosmic::Application for AstrumApp {
                 file.read_to_string(&mut source).expect("reading to file failed");
                 let mut lua = RefCell::new(make_lua_context(path).expect("making the lua context failed"));
 
-                let ( update_logic, subscription_logic, subscription_data, style, windows, mut commands, lua ) = configure_app(lua, source);
+                let ( update_logic, subscription_logic, subscription_data, style, windows, mut commands, lua, keybinds ) = configure_app(lua, source);
 
                 for (id, window) in &self.windows {
                     if let Some(window_id) = window.get_id() {
@@ -326,6 +350,7 @@ impl cosmic::Application for AstrumApp {
                 self.subscription_data = subscription_data;
                 // self.style = style;
                 self.windows = windows;
+                self.keybinds = keybinds;
 
                 Task::batch(commands)
             },
@@ -345,9 +370,7 @@ impl cosmic::Application for AstrumApp {
             services.push(frames().map(|_| AstrumMessages::AnimationTick));
         }
 
-        if let Some(requested_signals) = &self.subscription_data {
-            let subscription_data = requested_signals.to_ref();
-
+        if let Some(subscription_data) = &self.subscription_data {
             // below is searching for what to provide to each service
             //
             // TODO: make iomplementations of services that use less memory
@@ -359,15 +382,14 @@ impl cosmic::Application for AstrumApp {
             // signals, ofc not every service will use this exact function
             let mut make_subscribtion = |subscribtion_name: &str, requests_list: Vec<&str>, service_function: fn(Vec<String>) -> Subscription<AstrumMessages>|
                 {
-                if let Ok(subscribtion_table) = subscription_data.get::<_, mlua::Table>(subscribtion_name) {
+                if let Ok(subscribtion_table) = subscription_data.get::<mlua::Table>(subscribtion_name) {
                     let mut service_requests: Vec<String> = Vec::new();
 
                     for pair in subscribtion_table.pairs::<mlua::String, mlua::Table>(){
                         let (key, value) = pair.unwrap();
-                        let key_str = key.to_str().unwrap();
-
-                        if requests_list.contains(&key_str){
-                            service_requests.push(key_str.to_string());
+                        let key_string = key.to_string_lossy();
+                        if requests_list.contains(&key_string.as_str()){
+                            service_requests.push(key_string);
                         }
                     }
 
@@ -394,24 +416,31 @@ impl cosmic::Application for AstrumApp {
             services.push(
                 services::live_reloading::live_reload_service_channel(self.config_path.clone())
             );
+            services.push(delay_call_service_channel());
 
-            if let Ok(calls) = subscription_data.get::<_, mlua::Table>("calls") {
+            if let Ok(calls) = subscription_data.get::<mlua::Table>("calls") {
                 let mut service_requests: Vec<String> = Vec::new();
 
                 for pair in calls.pairs::<mlua::String, mlua::Table>(){
                     let (key, value) = pair.unwrap();
 
-                    service_requests.push(key.to_str().unwrap().to_string());
+                    service_requests.push(key.to_string_lossy());
                 }
 
                 services.push(calls::calls_service_channel(service_requests));
             }
-            if let Ok(time_dictionary) = subscription_data.get::<_, mlua::Table>("time") {
+            if let Ok(notification) = subscription_data.get::<mlua::Table>("notifications") {
+                services.push(notifications_service_channel());
+            }
+            if let Ok(time_dictionary) = subscription_data.get::<mlua::Table>("time") {
                 for pair in time_dictionary.pairs::<mlua::Integer, mlua::Table>() {
                     let (key, value) = pair.unwrap();
 
                     services.push(time_service_channel(key as u64));
                 }
+            }
+            if self.keybinds.len() > 0  {
+                services.push(keybinds_service_channel());
             }
 
 

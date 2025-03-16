@@ -64,19 +64,23 @@ function astrum:application()
 		if app.all_messages[signal_name] then
 			app.all_messages[signal_name](signal_data)
 		else
-			print(("[WARNING]: Signal " .. signal_name .. " does not exist!"))
+			print(("[WARNING]: Signal '" .. signal_name .. "' does not exist!"))
 		end
 	end
 
 	app.subscription_logic = function(type, message_name, message_data)
-		print("was requested for subscription ", type)
+		-- print("was requested for subscription ", type)
 		if app.subscription_messages[type] then
-			print("msg name: ", message_name)
-			for key, value in pairs(app.subscription_messages[type]) do
-				print("     the thing: ", key, " and", value)
+			-- print("msg name: ", message_name)
+			-- for key, value in pairs(app.subscription_messages[type]) do
+			-- 	print("     the thing: ", key, " and", value)
+			-- end
+			if type == "keybinds" then
+				app.all_messages[message_name](message_data)
+				return
 			end
 			for _, signal_name in pairs(app.subscription_messages[type][message_name]) do
-				print("sending a request to ", signal_name)
+				-- print("sending a request to ", signal_name)
 				app.all_messages[signal_name](message_data)
 			end
 		else

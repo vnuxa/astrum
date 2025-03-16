@@ -28,12 +28,14 @@ pub fn calls_service_channel(requests: Vec<String>) -> Subscription<AstrumMessag
                 unix_stream
                     .read_to_string(&mut message)
                     .expect("failed at reading the unix listener");
+                info!("got call! {}", message);
                 let mut end_message = (message.clone(), "{}".to_string());
-                if let Some((str1, str2)) = message.split_once(" ") {
+                if let Some((str1, str2)) = message.split_once(":") {
                     end_message = (str1.to_string(), str2.to_string());
                 }
 
                 if requests.contains(&end_message.0) {
+                    println!("!!!!!!!!!!!!!!!!!!!!! it contians call {:?}", requests);
                     output
                         .try_send(
                             AstrumMessages::SubscriptionRequest((

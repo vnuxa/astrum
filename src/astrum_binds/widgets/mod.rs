@@ -24,13 +24,13 @@ mod container;
 
 
 // makes lua bindings for elements into rust ones
-pub fn process_lua_element(
+pub fn process_lua_element<'a>(
     element: mlua::Table
-) -> Option<Element<AstrumMessages>>
+) -> Option<Element<'a, AstrumMessages>>
 {
     let element_name: mlua::String = element.get("widget_name").unwrap();
 
-    match element_name.to_str().unwrap() {
+    match element_name.to_string_lossy().as_str() {
         "text" => Some(make_text_widget(element).into()),
         "button" => Some(make_button_widget(element).into()),
         "centerbox" => Some(make_centerbox_widget(element).into()),

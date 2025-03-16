@@ -5,9 +5,9 @@ use crate::astrum_core::app::main::AstrumMessages;
 use super::process_lua_element;
 
 
-pub fn make_row_widget(
+pub fn make_row_widget<'a>(
     data: mlua::Table
-) -> Row<AstrumMessages>{
+) -> Row<'a, AstrumMessages>{
     let mut widgets = Vec::new();
     let children_table: mlua::Table = data.get("children").unwrap();
 
@@ -23,45 +23,45 @@ pub fn make_row_widget(
     let mut row_widget = Row::with_children(widgets);
 
 
-    if let Ok(width) = data.get::<_, mlua::String>("width") {
-        row_widget = row_widget.width(match width.to_str().unwrap() {
+    if let Ok(width) = data.get::<mlua::String>("width") {
+        row_widget = row_widget.width(match width.to_string_lossy().as_str() {
             "fill" => Length::Fill,
             _ => Length::Shrink, // since shrink is default
         });
 
-    } else if let Ok(width) = data.get::<_, mlua::Table>("width") {
+    } else if let Ok(width) = data.get::<mlua::Table>("width") {
         // covers FillPortion(i32) and Fixed(u32)
         let width_type: mlua::String = width.get(1).unwrap();
         let width_contents: mlua::Number = width.get(2).unwrap();
 
-        row_widget = row_widget.width(match width_type.to_str().unwrap() {
+        row_widget = row_widget.width(match width_type.to_string_lossy().as_str() {
             "fill_portion" => Length::FillPortion(width_contents as u16),
             "fixed" => Length::Fixed(width_contents as f32),
             _ => Length::Shrink
         });
     }
 
-    if let Ok(height) = data.get::<_, mlua::String>("height") {
-        row_widget = row_widget.height(match height.to_str().unwrap() {
+    if let Ok(height) = data.get::<mlua::String>("height") {
+        row_widget = row_widget.height(match height.to_string_lossy().as_str() {
             "fill" => Length::Fill,
             _ => Length::Shrink, // since shrink is default
         });
 
-    } else if let Ok(height) = data.get::<_, mlua::Table>("height") {
+    } else if let Ok(height) = data.get::<mlua::Table>("height") {
         // covers FillPortion(i32) and Fixed(u32)
         let height_type: mlua::String = height.get(1).unwrap();
         let height_contents: mlua::Number = height.get(2).unwrap();
 
-        row_widget = row_widget.height(match height_type.to_str().unwrap() {
+        row_widget = row_widget.height(match height_type.to_string_lossy().as_str() {
             "fill_portion" => Length::FillPortion(height_contents as u16),
             "fixed" => Length::Fixed(height_contents as f32),
             _ => Length::Shrink
         });
     }
 
-    if let Ok(padding) = data.get::<_, mlua::Number>("padding") {
+    if let Ok(padding) = data.get::<mlua::Number>("padding") {
         row_widget = row_widget.padding(padding as f32);
-    } else  if let Ok(padding) = data.get::<_, mlua::Table>("padding") {
+    } else  if let Ok(padding) = data.get::<mlua::Table>("padding") {
         let mut padding_list: Vec<f32> = Vec::new();
         for pair in padding.pairs::<mlua::Number, f32>() {
             let (_key, value): (mlua::Number, f32) = pair.unwrap();
@@ -80,12 +80,12 @@ pub fn make_row_widget(
         };
     }
 
-    if let Ok(spacing) = data.get::<_, mlua::Number>("spacing") {
+    if let Ok(spacing) = data.get::<mlua::Number>("spacing") {
         row_widget = row_widget.spacing(spacing as f32);
     }
 
-    if let Ok(align) = data.get::<_, mlua::String>("align_y") {
-        row_widget = row_widget.align_y(match align.to_str().unwrap() {
+    if let Ok(align) = data.get::<mlua::String>("align_y") {
+        row_widget = row_widget.align_y(match align.to_string_lossy().as_str() {
             "top" => Vertical::Top,
             "center" => Vertical::Center,
             "bottom" => Vertical::Bottom,
@@ -93,7 +93,7 @@ pub fn make_row_widget(
         });
     }
 
-    if let Ok(clip) = data.get::<_, bool>("clip") {
+    if let Ok(clip) = data.get::<bool>("clip") {
         row_widget = row_widget.clip(clip);
     }
 

@@ -6,3 +6,5 @@ pub mod system_tray;
 pub mod calls;
 pub mod live_reloading;
 pub mod greetd;
+pub mod keybinds;
+pub mod notifcations;

@@ -7,10 +7,10 @@ pub fn bind<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table ) -> anyho
     astrum_utils.set(
         "greetd_login",
         lua.create_function(move |_, (username, attempt, command): (mlua::String, mlua::String, mlua::String)| {
-            let output = greetd_log_in(username.to_str().unwrap().to_string(), attempt.to_str().unwrap().to_string(), command.to_str().unwrap().to_string());
+            let output = greetd_log_in(username.to_string_lossy(), attempt.to_string_lossy(), command.to_string_lossy());
             std::result::Result::Ok(output)
-        })?
-    )?;
+        }).unwrap()
+    ).unwrap();
 
     Ok(())
 }

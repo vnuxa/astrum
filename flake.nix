@@ -36,6 +36,7 @@
         fontconfig
         freetype
         libxkbcommon
+        lua-language-server
         # openssl
       ];
       rustToolchain = pkgs.rust-bin.stable.latest.default;
@@ -70,6 +71,7 @@
         nativeBuildInputs = with pkgs; [
           pkg-config
           makeBinaryWrapper
+          lua-language-server
         ];
 
         RUSTFLAGS = map (a: "-C link-arg=${a}") [
