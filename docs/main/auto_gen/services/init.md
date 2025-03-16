@@ -186,7 +186,7 @@
 
 >   `track` → `TrackMetadata|{ empty: boolean }`
 
-see definitions: [`TrackMetadata`](#TrackMetadata) 
+see definitions: [`TrackMetadata`](#trackmetadata) 
 ## Methods:
 
 

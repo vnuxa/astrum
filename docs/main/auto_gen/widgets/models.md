@@ -19,14 +19,14 @@
 >   `child` → `Widget?`
 >    >   A widget that will be displayed within the button 
 
-see definitions: [`Widget`](#Widget) 
+see definitions: [`Widget`](#widget) 
 >   `height` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
 >    >   Sets the height of the widget 
 
 >   `on_press` → `(string|CustomSignal)?`
 >    >   Sends a signal whenever the button is pressed. If a string is provided, it will send no data 
 
-see definitions: [`CustomSignal`](#CustomSignal) 
+see definitions: [`CustomSignal`](#customsignal) 
 >   `padding` → `(number|[number, number, number, number]|[number, number])?`
 
 >   `width` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
@@ -46,17 +46,17 @@ see definitions: [`CustomSignal`](#CustomSignal)
 >   `left_child` → `Widget?`
 >    >   Element to be displayed on the left side of the centerbox 
 
-see definitions: [`Widget`](#Widget) 
+see definitions: [`Widget`](#widget) 
 >   `middle_child` → `Widget?`
 >    >   Element to be displayed in the middle of the centerbox 
 
-see definitions: [`Widget`](#Widget) 
+see definitions: [`Widget`](#widget) 
 >   `padding` → `(number|[number, number, number, number]|[number, number])?`
 
 >   `right_child` → `Widget?`
 >    >   Element to be displayed on the right side of the centerbox 
 
-see definitions: [`Widget`](#Widget) 
+see definitions: [`Widget`](#widget) 
 >   `spacing` → `number?`
 >    >   The spacing of elements in pixels 
 
@@ -75,7 +75,7 @@ see definitions: [`Widget`](#Widget)
 >   `children` → `Widget[]?`
 >    >   List of widgets to be rendered within the `column` 
 
-see definitions: [`Widget`](#Widget) 
+see definitions: [`Widget`](#widget) 
 >   `clip` → `boolean?`
 >    >   Sets whether the contents of the `column` should be clipped on overflow 
 
@@ -114,7 +114,7 @@ see definitions: [`Widget`](#Widget)
 >   `child` → `Widget?`
 >    >   Element to be displayed within the `container` 
 
-see definitions: [`Widget`](#Widget) 
+see definitions: [`Widget`](#widget) 
 >   `height` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
 >    >   Sets the height of the widget 
 
@@ -204,7 +204,7 @@ see definitions: [`Widget`](#Widget)
 >   `children` → `Widget[]?`
 >    >   List of widgets to be rendered within the `row` 
 
-see definitions: [`Widget`](#Widget) 
+see definitions: [`Widget`](#widget) 
 >   `clip` → `boolean?`
 >    >   Sets whether the contents of the `row` should be clipped on overflow 
 
@@ -237,7 +237,7 @@ see definitions: [`Widget`](#Widget)
 >   `on_submit` → `(string|CustomSignal)?`
 >    >   Sends a custom signal when the text input is focused and the enter key is pressed 
 
-see definitions: [`CustomSignal`](#CustomSignal) 
+see definitions: [`CustomSignal`](#customsignal) 
 >   `password` → `boolean?`
 >    >   If the text input should be a secure password input 
 
@@ -264,7 +264,7 @@ see definitions: [`CustomSignal`](#CustomSignal)
 >   `font` → `Font?`
 >    >   The font of the text 
 
-see definitions: [`Font`](./misc.md#Font) 
+see definitions: [`Font`](./misc.md#font) 
 >   `height` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
 >    >   Sets the height of the widget 
 

@@ -8,7 +8,6 @@ pub fn get_definitions(
     allocator: std.mem.Allocator,
     definition_objects: std.StringHashMap(main.DefinitionObject),
     proprety: json.DocField,
-    object_name: []const u8,
     mdfile_name: []const u8,
     mdfile_dir: []const u8,
 ) ![]const u8 {
@@ -38,7 +37,8 @@ pub fn get_definitions(
             };
 
 
-            more_definitions = try std.fmt.allocPrint(allocator, "{s}[`{s}`]({s}#{s}) ", .{ more_definitions, value.name, relative_path orelse "", value.name });
+            var name_buf: [35]u8 = undefined;
+            more_definitions = try std.fmt.allocPrint(allocator, "{s}[`{s}`]({s}#{s}) ", .{ more_definitions, value.name, relative_path orelse "", std.ascii.lowerString(&name_buf, value.name)});
         }
     }
 

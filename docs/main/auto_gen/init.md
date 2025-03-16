@@ -46,11 +46,11 @@
 >   `subscriptions` → `Subscriptions?`
 >    >   Connects to an external processes by sending signals. All of the subscriptions are to be provided in a table 
 
-see definitions: [`Subscriptions`](./subscriptions/init.md#Subscriptions) 
+see definitions: [`Subscriptions`](./subscriptions/init.md#subscriptions) 
 >   `view` → `fun():Widget`
 >    >   Logic that dictates what widgets for the window to render 
 
-see definitions: [`Widget`](./widgets/models.md#Widget) 
+see definitions: [`Widget`](./widgets/models.md#widget) 
 ## Methods:
 
 

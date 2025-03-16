@@ -91,19 +91,19 @@
 ## Propreties:
 >   `hyprland` → `HyprlandSubscription?`
 
-see definitions: [`HyprlandSubscription`](#HyprlandSubscription) 
+see definitions: [`HyprlandSubscription`](#hyprlandsubscription) 
 >   `keybinds` → `table<string, [string|"alt"|"ctrl"|"shift"|"super", string|"alt"|"arrow_down"|"arrow_left"|"arrow_right"...(+34)]>?`
 >    >   List of signal names (the `key` of the table) that will be sent when pressing down the specified modifiers and a character. The first parameter of the value tuple is `modifiers`, which are seperated by commas (i.e. `"shift,super"` would work when `shift` and `super` are being pressed). The 2nd parameter is a single character or lowercase name for the keybind 
 
 >   `mpris` → `MprisSubscription?`
 
-see definitions: [`MprisSubscription`](#MprisSubscription) 
+see definitions: [`MprisSubscription`](#mprissubscription) 
 >   `notifications` → `NotificationSubscription?`
 
-see definitions: [`Notification`](#Notification) [`NotificationSubscription`](#NotificationSubscription) 
+see definitions: [`Notification`](#notification) [`NotificationSubscription`](#notificationsubscription) 
 >   `system_tray` → `SystemTraySubscription?`
 
-see definitions: [`SystemTraySubscription`](#SystemTraySubscription) 
+see definitions: [`SystemTraySubscription`](#systemtraysubscription) 
 >   `time` → `table<number, string>?`
 >    >   Sends a signal whenever a specified amount (the `key` of the table) is passed 
 

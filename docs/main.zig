@@ -15,7 +15,7 @@ pub const DefinitionObject = struct {
 
 pub fn main() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr(`
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    std.debug.print("All testing!!! your {s} are belong to us.\n", .{"codebase"});
 
 
 
@@ -61,7 +61,9 @@ pub fn main() !void {
             // add definition to table of contents
             {
                 const index = content_tables_index.get(file) orelse unreachable;
-                try utils.write_format(mdfile, allocator, "{o}. [`{s}`](#{s}) \n", .{ index, object.defines[0].view,object.defines[0].view });
+                var buf: [50]u8 = undefined;
+
+                try utils.write_format(mdfile, allocator, "{o}. [`{s}`](#{s}) \n", .{ index, object.defines[0].view, std.ascii.lowerString(&buf, object.defines[0].view )});
                 try content_tables_index.put(file, index + 1);
             }
 
@@ -130,7 +132,7 @@ pub fn main() !void {
                             arguments = value.name;
                             is_first = false;
                         } else {
-                            std.debug.print("wow uh we are changign arguments\n", .{});
+                            // std.debug.print("wow uh we are changign arguments\n", .{});
                             arguments = try std.fmt.allocPrint(allocator, "{s}, {s}", .{ arguments, value.name });
                         }
                     }

@@ -162,7 +162,7 @@ pub fn main() !void {
                 }
                 // IMPORTANT: add a see definition!
                 // see if the text contains words of the thing
-                const more_definitions: []const u8 = try utils.get_definitions(allocator, definition_objects, proprety, object_name, mdfile_name, mdfile_dir);
+                const more_definitions: []const u8 = try utils.get_definitions(allocator, definition_objects, proprety, mdfile_name, mdfile_dir);
 
                 _ = try mdfile.write("\n");
 
@@ -220,7 +220,7 @@ pub fn main() !void {
                     }
                 }
                 _ = try mdfile.write("\n");
-                const more_definitions: []const u8 = try utils.get_definitions(allocator, definition_objects, method, object_name, mdfile_name, mdfile_dir);
+                const more_definitions: []const u8 = try utils.get_definitions(allocator, definition_objects, method, mdfile_name, mdfile_dir);
 
                 if ( more_definitions.len != 17) {
                     _ = try mdfile.write("\n");
