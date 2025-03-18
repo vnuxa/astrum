@@ -5,6 +5,7 @@
 ---@field mpris? MprisSubscription
 ---@field system_tray? SystemTraySubscription
 ---@field time? table<number, string> # Sends a signal whenever a specified amount (the `key` of the table) is passed
+---@field calls? table<string, string> # Sends to a signal when the specified call name (in the index) has been sent
 ---@field keybinds? table<string, [Modifier, NamedKeys]> # List of signal names (the `key` of the table) that will be sent when pressing down the specified modifiers and a character. The first parameter of the value tuple is `modifiers`, which are seperated by commas (i.e. `"shift,super"` would work when `shift` and `super` are being pressed). The 2nd parameter is a single character or lowercase name for the keybind
 ---@field notifications? NotificationSubscription
 local subscriptions = {}

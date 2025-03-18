@@ -1,17 +1,19 @@
 since this project is still a work in progress,
 you have to build it from source.
 
-***
+---
 
-
-the [shell.nix](https://github.com/vnuxa/astrum/blob/d270a71bd72846e0e01c6d0cab5afe685496e330/shell.nix) contains all of the dependencies needed
-
-if you use nixos you can just run
+if you use nix you can add this as a nix flake input
+```nix
+inputs = {
+    astrum.url = "github:vnuxa/astrum"
+}
 ```
-nix-shell
-cargo run
+and somewhere in your package list add the following
+```nix
+    astrum.defaultPackage.${pkgs.system}
 ```
 
 
-***
+---
 I also recommend having the [lua language server](https://github.com/LuaLS/lua-language-server) installed in your text editor, since it contains astrum types and descriptions

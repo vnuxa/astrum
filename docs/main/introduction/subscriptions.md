@@ -1,5 +1,5 @@
 Subscriptions are the only way to update your state and view logic after an external event occurs.\
-Subscriptions will trigger *every* window's view and signal logic
+Subscriptions will trigger *every* window's view and signal logic (might change in the future, depending on libcosmic)
 
 ---
 To use a subscription, you must subscribe to a specific service.\
@@ -10,8 +10,6 @@ local state = {
     ---@type HyprlandWorkspaces
     workspaces = {}
 }
--- Tells the application to subscribe to the `Hyprland` service, and to specifically use the `workspaces` signal
-App:subscribe("hyprland", {"workspaces"})
 
 App:window("workspace_example", {
     view = function()
@@ -23,15 +21,19 @@ App:window("workspace_example", {
 
         return row
     end,
+    -- Tells the application to subscribe to the `Hyprland` service
+    subscriptions = {
+        hyprland = {
+            ---Specifies that whenever there is a workspace change, send the following signal that goes by the name of `on_workspace`
+            workspaces = "on_workspace"
+        }
+    }
     signals = {
-        -- The `Hyprland` service sends this specific signal name when you subscribe to `workspaces`
-        hyprland_workspaces = function(signal_data)
+        on_workspace = function(signal_data)
+            -- Signal data is of type `HyprlandWorkspaces`
             state.workspaces = signal_data
         end
     }
 })
 
 ```
-
-Each service has signals which you can subscribe to.\
-In this example, the `Hyprland` service sends `hyprland_workspaces` signal when you subscribe to the `workspaces` signal

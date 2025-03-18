@@ -1,17 +1,19 @@
 # Table of contents
 
-1. [`ButtonModel`](#ButtonModel) 
-2. [`CenterboxModel`](#CenterboxModel) 
-3. [`ColumnModel`](#ColumnModel) 
-4. [`ContainerModel`](#ContainerModel) 
-5. [`CustomSignal`](#CustomSignal) 
-6. [`IconModel`](#IconModel) 
-7. [`ImageModel`](#ImageModel) 
-10. [`RowModel`](#RowModel) 
-11. [`TextInputModel`](#TextInputModel) 
-12. [`TextModel`](#TextModel) 
-13. [`Widget`](#Widget) 
-14. [`WidthHeightWidget`](#WidthHeightWidget) 
+1. [`ButtonModel`](#buttonmodel) 
+2. [`CenterboxModel`](#centerboxmodel) 
+3. [`ColumnModel`](#columnmodel) 
+4. [`ContainerModel`](#containermodel) 
+5. [`CustomSignal`](#customsignal) 
+6. [`IconModel`](#iconmodel) 
+7. [`ImageModel`](#imagemodel) 
+10. [`RowModel`](#rowmodel) 
+11. [`TextInputModel`](#textinputmodel) 
+12. [`TextModel`](#textmodel) 
+13. [`Widget`](#widget) 
+14. [`WidthHeightWidget`](#widthheightwidget) 
+
+[`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/widgets/models.lua)
 
 ---
 # ButtonModel

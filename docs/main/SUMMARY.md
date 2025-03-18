@@ -3,9 +3,12 @@
 - [Introduction](./introduction/main.md)
     - [Installation](./introduction/installation.md)
     - [First widgets](./introduction/first_widgets.md)
-    - [Styling](./introduction/styling.md)
-    - [Subscriptions](./introduction/subscriptions.md)
-    - [test](./widgets/main.md)
+    - [Styling basics](./introduction/styling.md)
+    - [Subscription basics](./introduction/subscriptions.md)
+
+- [Advanced subscriptions](./advanced_subscription/main.md)
+    - [Calls](./advanced_subscription/calls.md)
+    - [Keybinds](./advanced_subscription/keybinds.md)
 
 ---
 # Types
@@ -18,6 +21,6 @@
    - [Animations](./auto_gen/animations/init.md)
    - [Services](./auto_gen/services/init.md)
 
-[Last auto generated: 2025-03-15]()
+[Last auto generated: 2025-03-16]()
 
 ---

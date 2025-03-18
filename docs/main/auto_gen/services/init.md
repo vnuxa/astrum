@@ -1,19 +1,21 @@
 # Table of contents
 
-1. [`AppModel`](#AppModel) 
-2. [`ApplicationsService`](#ApplicationsService) 
-3. [`Greetd`](#Greetd) 
-4. [`HyprlandClient`](#HyprlandClient) 
-5. [`HyprlandWorkspace`](#HyprlandWorkspace) 
-6. [`MprisLoopingChanged`](#MprisLoopingChanged) 
-7. [`MprisOutput`](#MprisOutput) 
-10. [`MprisPlayer`](#MprisPlayer) 
-11. [`MprisService`](#MprisService) 
-12. [`MprisShuffleToggled`](#MprisShuffleToggled) 
-13. [`MprisTrackChanged`](#MprisTrackChanged) 
-14. [`MprisVolumeChanged`](#MprisVolumeChanged) 
-15. [`TimeService`](#TimeService) 
-16. [`TrackMetadata`](#TrackMetadata) 
+1. [`AppModel`](#appmodel) 
+2. [`ApplicationsService`](#applicationsservice) 
+3. [`Greetd`](#greetd) 
+4. [`HyprlandClient`](#hyprlandclient) 
+5. [`HyprlandWorkspace`](#hyprlandworkspace) 
+6. [`MprisLoopingChanged`](#mprisloopingchanged) 
+7. [`MprisOutput`](#mprisoutput) 
+10. [`MprisPlayer`](#mprisplayer) 
+11. [`MprisService`](#mprisservice) 
+12. [`MprisShuffleToggled`](#mprisshuffletoggled) 
+13. [`MprisTrackChanged`](#mpristrackchanged) 
+14. [`MprisVolumeChanged`](#mprisvolumechanged) 
+15. [`TimeService`](#timeservice) 
+16. [`TrackMetadata`](#trackmetadata) 
+
+[`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/services/init.lua)
 
 ---
 # AppModel

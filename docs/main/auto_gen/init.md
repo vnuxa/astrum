@@ -1,8 +1,10 @@
 # Table of contents
 
-1. [`Astrum`](#Astrum) 
-2. [`AstrumApp`](#AstrumApp) 
-3. [`WindowModel`](#WindowModel) 
+1. [`Astrum`](#astrum) 
+2. [`AstrumApp`](#astrumapp) 
+3. [`WindowModel`](#windowmodel) 
+
+[`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/init.lua)
 
 ---
 # Astrum

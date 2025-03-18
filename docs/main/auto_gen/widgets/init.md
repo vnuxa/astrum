@@ -1,6 +1,8 @@
 # Table of contents
 
-1. [`Widgets`](#Widgets) 
+1. [`Widgets`](#widgets) 
+
+[`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/widgets/init.lua)
 
 ---
 # Widgets

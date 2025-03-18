@@ -1,12 +1,14 @@
 # Table of contents
 
-1. [`HyprlandSubscription`](#HyprlandSubscription) 
-2. [`MprisSubscription`](#MprisSubscription) 
-3. [`Notification`](#Notification) 
-4. [`NotificationSubscription`](#NotificationSubscription) 
-5. [`Subscriptions`](#Subscriptions) 
-6. [`SystemTrayItem`](#SystemTrayItem) 
-7. [`SystemTraySubscription`](#SystemTraySubscription) 
+1. [`HyprlandSubscription`](#hyprlandsubscription) 
+2. [`MprisSubscription`](#mprissubscription) 
+3. [`Notification`](#notification) 
+4. [`NotificationSubscription`](#notificationsubscription) 
+5. [`Subscriptions`](#subscriptions) 
+6. [`SystemTrayItem`](#systemtrayitem) 
+7. [`SystemTraySubscription`](#systemtraysubscription) 
+
+[`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/subscriptions/init.lua)
 
 ---
 # HyprlandSubscription
@@ -89,6 +91,9 @@
 ---
 # Subscriptions
 ## Propreties:
+>   `calls` → `table<string, string>?`
+>    >   Sends to a signal when the specified call name (in the index) has been sent 
+
 >   `hyprland` → `HyprlandSubscription?`
 
 see definitions: [`HyprlandSubscription`](#hyprlandsubscription) 

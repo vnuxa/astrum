@@ -1,4 +1,4 @@
-Since astrum depends on `libcosmic`, styling is done within lua and not something like css
+Since astrum depends on `libcosmic`, styling is done within lua and not in another language (css for example)
 
 
 ***

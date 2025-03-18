@@ -1,7 +1,9 @@
 # Table of contents
 
-1. [`MatchUtil`](#MatchUtil) 
-2. [`SwitchUtil`](#SwitchUtil) 
+1. [`MatchUtil`](#matchutil) 
+2. [`SwitchUtil`](#switchutil) 
+
+[`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/utils/init.lua)
 
 ---
 # MatchUtil

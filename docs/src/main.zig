@@ -3,6 +3,7 @@ const std = @import("std");
 const ArrayList = std.ArrayList;
 const json = @import("./json_defines.zig");
 const utils = @import("./utils.zig");
+const base_source_url = "https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/";
 
 //
 // NOTE: maybe add start finish too to this
@@ -15,7 +16,7 @@ pub const DefinitionObject = struct {
 
 pub fn main() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr(`
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    // std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
 
 
 
@@ -61,7 +62,8 @@ pub fn main() !void {
             // add definition to table of contents
             {
                 const index = content_tables_index.get(file) orelse unreachable;
-                try utils.write_format(mdfile, allocator, "{o}. [`{s}`](#{s}) \n", .{ index, object.defines[0].view,object.defines[0].view });
+                var buf: [40]u8 = undefined;
+                try utils.write_format(mdfile, allocator, "{o}. [`{s}`](#{s}) \n", .{ index, object.defines[0].view, std.ascii.lowerString(&buf, object.defines[0].view) });
                 try content_tables_index.put(file, index + 1);
             }
 
@@ -135,6 +137,7 @@ pub fn main() !void {
 
             try mdfile.seekFromEnd(0);
             if (has_first_entry.get(file) orelse false != true) {
+                try utils.write_format(mdfile, allocator, "\n[`source`]({s}{s})\n", .{ base_source_url, file });
                 _ = try mdfile.write("\n---\n");
                 try has_first_entry.put(file, true);
             }

@@ -1,4 +1,5 @@
-use cosmic::{cosmic_theme::palette::{Alpha, Srgba}, iced::{color, font::{Family, Style, Weight}, Font, Length}};
+use cosmic::{cosmic_theme::palette::{Alpha, Srgba}, iced::{color, font::{Family, Style as FontStyle, Weight}, Font, Length}, iced_widget::text::StyleFn, Theme};
+use cosmic::iced_core::widget::text::Style;
 
 use crate::astrum_binds::style::from_colors;
 
@@ -66,10 +67,10 @@ pub fn make_text_widget<'a>(
         });
     }
 
-    if let Ok(style) = data.get::<mlua::Table>("style"){
+    // if let Ok(style) = data.get::<mlua::Table>("style"){
 
         // text_widget = text_widget.color(cosmic::iced::Color { r: 1.0, g: 0.0, b: 0.0, a: 0.0 });
-    }
+    // }
 
     // if let Ok(style) = data.get::<mlua::Table>("style") {
         // text_widget = text_widget.style()
@@ -89,13 +90,16 @@ pub fn make_text_widget<'a>(
 
         // text_widget.color(cosmic::iced_winit::graphics::core::Color::WHITE);
         // text_widget = text_widget.color(from_colors(style.get::<mlua::Table>("text_color").expect("Failed to get text_color for text widget")));
+        // text_widget = text_widget.class((Box::new(move |_theme| Style { color: Some(color!(0x0000ff)) }) as StyleFn<'a, Theme>).into());
+
+        // text_widget = text_widget.class(Box::new(|_theme| color!(0x0000ff)) as StyleFn<'a, Theme>);
         // text_widget = text_widget.color(color!(0x0000ff));
     // }
 
     if let Ok(font_settings) = data.get::<mlua::Table>("font") {
         let mut font_family: Option<Family> = None;
         let mut font_weight: Option<Weight> = None;
-        let mut font_style: Option<Style> = None;
+        let mut font_style: Option<FontStyle> = None;
 
         if let Ok(font_name) = font_settings.get::<mlua::String>("name") {
             // for some reason font name is static???
@@ -120,10 +124,10 @@ pub fn make_text_widget<'a>(
         }
         if let Ok(style) = font_settings.get::<mlua::String>("style") {
             font_style = Some(match style.to_string_lossy().as_str() {
-                "normal" => Style::Normal,
-                "italic" => Style::Italic,
-                "oblique" => Style::Oblique,
-                _ => Style::Normal,
+                "normal" => FontStyle::Normal,
+                "italic" => FontStyle::Italic,
+                "oblique" => FontStyle::Oblique,
+                _ => FontStyle::Normal,
             });
         }
 
