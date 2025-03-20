@@ -3,7 +3,7 @@ const std = @import("std");
 const ArrayList = std.ArrayList;
 const json = @import("./json_defines.zig");
 const utils = @import("./utils.zig");
-const base_source_url = "https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/";
+const base_source_url = "https://github.com/vnuxa/astrum/blob/master/src/lua_library/astrum/types/";
 
 //
 // NOTE: maybe add start finish too to this
