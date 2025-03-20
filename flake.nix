@@ -39,7 +39,7 @@
         lua-language-server
         # openssl
       ];
-      rustToolchain = pkgs.rust-bin.stable.latest.default;
+      rustToolchain = pkgs.rust-bin.beta.latest.default; # beta required due to anyhow requiring cargo above 1.83
       library_path = builtins.foldl' (a: b: "${a}:${b}/lib") "${pkgs.vulkan-loader}/lib" libraries;
       rust_platform = pkgs.makeRustPlatform {
         cargo = rustToolchain;
