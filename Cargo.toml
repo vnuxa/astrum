@@ -12,10 +12,9 @@ hyprland = { git = "https://github.com/MalpenZibo/hyprland-rs", branch="master" 
 # hyprland = "0.3.13"
 mpris = "2.0.1"
 tokio = { version = "1", features = ["full"] }
-ini = "1.3.0"
+freedesktop_entry_parser = "1.3.0"
 walkdir = "2.4.0"
-simple-home-dir = "0.3.5"
-mlua = { version = "0.9.9", features = ["luajit", "unstable"] }
+mlua = { version = "0.10.3", features = ["luajit"] }
 anyhow = "1.0.86"
 lazy_static = "1.5.0"
 clap = { version = "4.5.10", features = ["derive"] }
@@ -23,6 +22,12 @@ notify = "6.1.1"
 lilt = "0.7.0"
 color-print = "0.3.6"
 system-tray = "0.2.0"
+# niri-ipc = "0.1.10"
+greetd_ipc = { version = "0.10.3", features = ["sync-codec"]}
+log = "0.4.22"
+# ftail = "0.2"
+zbus = { version = "4.2.1", features = [ "tokio", "p2p" ] }
+event-listener = "5.4.0"
 
 
 [dependencies.libcosmic]
@@ -32,9 +37,11 @@ features = [
     "tokio",
     "wayland",
     "wgpu", # IMPORTANT: enable when hyprland fixed the vulkan thingy
-    "multi-window"
+    "multi-window",
+    "winit",
+    # "advanced"
 
 ]
 
-[dependencies.niri-ipc]
-path = "./niri_ipc"
+[build-dependencies]
+time = "0.3.37"

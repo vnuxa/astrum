@@ -1,3 +1,7 @@
 /target
 /library/target/
-/niri_ipc/target/
+/docs/.zig-cache/
+/docs/main/book/
+/docs/zig-out
+/result
+/docs/book
