@@ -1,6 +1,6 @@
 use cosmic::{cosmic_theme::palette::{Alpha, Srgba}, iced::{color, font::{Family, Style, Weight}, Font, Length}, iced_core::text::LineHeight, iced_winit::graphics::core::id::Id};
 
-use crate::astrum_core::app::main::AstrumMessages;
+use crate::{astrum_binds::style::text_input::lua_text_input_style, astrum_core::app::main::AstrumMessages};
 
 use super::make_static_str;
 
@@ -31,9 +31,9 @@ pub fn make_text_input_widget<'a>(
     }
 
     if let Ok(on_submit) = data.get::<mlua::String>("on_submit") {
-        text_input_widget = text_input_widget.on_submit(AstrumMessages::Msg((on_submit.to_string_lossy(), "{}".to_string())));
+        text_input_widget = text_input_widget.on_submit(move |_|AstrumMessages::Msg((on_submit.to_string_lossy(), "{}".to_string())));
     } else if let Ok(on_submit) = data.get::<mlua::Table>("on_submit") {
-        text_input_widget = text_input_widget.on_submit(AstrumMessages::Msg(
+        text_input_widget = text_input_widget.on_submit(move |_|AstrumMessages::Msg(
             (
                 on_submit.get::<mlua::String>("signal_name").unwrap().to_string_lossy(),
                 on_submit.get::<mlua::String>("signal_data").unwrap().to_string_lossy(),
@@ -122,13 +122,8 @@ pub fn make_text_input_widget<'a>(
         let mut font_style: Option<Style> = None;
 
         if let Ok(font_name) = font_settings.get::<mlua::String>("name") {
-            // let font_thing = RefCell::new(String::from(font_name.to_string_lossy().as_str()));
-            // let font_thing: Cow<'static, str> = font_name.to_string_lossy();
-
-            // for some reason font name is static???
-            // and its either i leak memory or use unsafe code
             unsafe {
-                font_family = Some(Family::Name(make_static_str(font_name.to_string_lossy().as_str())));
+                font_family = Some(Family::Name(make_static_str(&*font_name.to_str().unwrap())));
             }
         }
         if let Ok(weight) = font_settings.get::<mlua::String>("weight") {
@@ -160,6 +155,10 @@ pub fn make_text_input_widget<'a>(
             style: font_style.unwrap_or_default(),
             ..Default::default()
         });
+    }
+
+    if let Ok(style) = data.get::<mlua::Table>("style") {
+        text_input_widget = text_input_widget.style(lua_text_input_style(style));
     }
 
     text_input_widget

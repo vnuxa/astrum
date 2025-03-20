@@ -101,6 +101,7 @@ pub fn delay_call_service_channel() -> Subscription<AstrumMessages> {
     }))
 }
 
+// must be ran in release mode
 pub fn time_service_channel(requested_rate: u64) -> Subscription<AstrumMessages> {
     time::every(Duration::from_secs(requested_rate)).map(move |_| {
         AstrumMessages::SubscriptionRequest(

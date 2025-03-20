@@ -70,3 +70,20 @@
 ---@alias LineHeight
 ---| [ "relative", number ] # A factor of size of the text
 ---| [ "absolute", number ] # An absolute height in pixels
+
+-- scrollable stufuf
+
+---@alias ScrollableAlignment
+---| '"start"' # Content is aligned to the start of the `Scrollable`
+---| '"end"' # Content is aligned to the end of the `Scrollable`
+
+---@class (exact) ScrollablePropreties # The scrollbars propreties within a `Scrollable`
+---@field width? number # Sets the width of the scrollbar in pixels
+---@field margin? number # Sets the scrollbar margin in pixels
+---@field scrollers_width? number # Sets the width of the scroller in pixels
+---@field anchor? ScrollableAlignment # Sets the alignment of the scrollable
+
+---@alias Direction
+---| [ '"vertical"', ScrollablePropreties ] # Vertical scrolling
+---| [ '"horizontal"', ScrollablePropreties ] # Horizontal scrolling
+---| [ '"both"', { vertical: ScrollablePropreties, horizontal: ScrollablePropreties }] # Both horizontal and vertical scrolling

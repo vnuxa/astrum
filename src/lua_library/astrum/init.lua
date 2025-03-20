@@ -91,4 +91,6 @@ function astrum:application()
 	return app
 end
 
+function astrum:toggle_window(window_name) require("astrum_core_utils").toggle_window_call(window_name) end
+
 return astrum

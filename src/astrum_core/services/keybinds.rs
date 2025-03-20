@@ -96,7 +96,7 @@ fn make_modifiers(key: &String) -> u32 {
 
     let mut modifiers: u32 = 0b000;
     for modifier in key.split(",") {
-        println!("modifier: {:?}", modifier);
+        // println!("modifier: {:?}", modifier);
         match modifier {
             "super" => modifiers += (0b100 << 9),
             "alt" => modifiers += (0b100 << 6),

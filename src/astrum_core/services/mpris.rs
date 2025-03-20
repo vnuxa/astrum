@@ -1,4 +1,4 @@
-use cosmic::{app::Message, iced::{advanced::subscription, stream, Subscription}};
+use cosmic::iced::{advanced::subscription, stream, Subscription};
 use std::time::Duration;
 use mpris::{Metadata, Player, PlayerFinder};
 use mpris::Event;

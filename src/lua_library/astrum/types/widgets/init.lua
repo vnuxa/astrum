@@ -82,4 +82,20 @@ function widgets:icon(icon_name_or_model, extra_model) end
 ---@return Widget
 function widgets:container(model) end
 
+--- An empty amount of space, useful for when you want to fill an area with nothing
+---@param width? Length  # The width of the empty amount of space. Defaults to `"shrink"`
+---@param height? Length # The height of the empty emount of space. Defaults to `"shrink"`
+---@return Widget
+function widgets:space(width, height) end
+
+--- A container that can vertically display an infinite amount of content with a scrollbar
+---@param model ScrollableModel
+---@return Widget
+function widgets:scrollable(model) end
+
+---Emits signals on mouse events over a specified area
+---@param model MouseAreaModel
+---@return Widget
+function widgets:mouse_area(model) end
+
 return widgets

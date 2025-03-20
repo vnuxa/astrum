@@ -2,7 +2,7 @@ use std::process::Command;
 
 use mlua::{Table, Variadic};
 
-// mod windows;
+mod windows;
 mod hyprland;
 // mod niri;
 // mod calls;
@@ -17,7 +17,7 @@ mod calls;
 pub fn add_util_binds<'lua>(lua: &'lua mlua::Lua, mut astrum_utils: &'lua Table) -> anyhow::Result<()> {
     // add all of the different types of bindings
     // most of these relate to services
-    // windows::bind(lua, astrum_utils);
+    windows::bind(lua, astrum_utils);
     hyprland::bind(lua, astrum_utils);
     // niri::bind(lua, astrum_utils);
     // calls::bind(lua, astrum_utils);

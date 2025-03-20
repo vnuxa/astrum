@@ -24,7 +24,7 @@ pub fn make_image_widget<'a>(
     // or maybe an id somehow for system tray
     // wehre system tray makes id's for icons and those get transferred to a compatible format
     let mut path = PathBuf::from("/");
-    for text in data.get::<mlua::String>("content").unwrap().to_string_lossy().split("/") {
+    for text in data.get::<mlua::String>("content").expect("Expected `content` field").to_string_lossy().split("/") {
         if text == "~" {
             path.push(HOME_DIR.to_str().unwrap());
         } else {

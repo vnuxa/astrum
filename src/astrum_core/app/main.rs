@@ -2,9 +2,10 @@ use std::{borrow::Borrow, cell::RefCell, collections::HashMap, io::Read, path::P
 
 use crate::{astrum_core::{animations::any_animation_in_progress, lua_context::make_lua_context, services::{self, calls, hyprland::hyprland_service_channel, keybinds::{keybinds_service_channel, LuaKeybind, ALL_KEYBINDS}, mpris::mpris_service_channel, notifcations::notifications_service_channel, system_tray::system_tray_service_channel, time::{delay_call_service_channel, time_service_channel}}}};
 use color_print::{cprintln, cstr};
-use cosmic::{app::{Message, Settings}, iced::{self, window::frames, Subscription}, Element, Task};
+use cosmic::{app::Settings, iced::{self, window::frames, Subscription}, Element, Task};
 use log::debug;
 use mlua::{Function, Integer, ObjectLike, Table, Value};
+use cosmic::Action;
 
 use super::window::{close_window, make_window_settings, Window};
 
@@ -31,7 +32,8 @@ pub enum AstrumMessages {
     Msg((String, String)), // signal_name and signal_data
     SubscriptionRequest((String, StringOrNum, String)), //subscription_type, subscription_signal (num for time), subscription_data
     LiveReload,
-    AnimationTick
+    AnimationTick,
+    ToggleWindow(String)
 
 }
 
@@ -95,7 +97,7 @@ fn configure_app(
     Option<Table>, // subscription_data,
     Option<Table>, // app_style
     HashMap<String, Window>, // windows
-    Vec<Task<Message<AstrumMessages>>>, // commands
+    Vec<Task<Action<AstrumMessages>>>, // commands
     RefCell<mlua::Lua>,
     Vec<LuaKeybind>, // keybinds
 ) {
@@ -104,7 +106,7 @@ fn configure_app(
     let mut subscription_data: Option<Table> = None;
     let mut app_style: Option<Table> = None;
     let mut windows: HashMap<String, Window> = HashMap::new();
-    let mut commands: Vec<Task<Message<AstrumMessages>>> = Vec::new();
+    let mut commands: Vec<Task<Action<AstrumMessages>>> = Vec::new();
     let mut keybinds: Vec<LuaKeybind> = Vec::new();
 
 
@@ -206,7 +208,7 @@ impl cosmic::Application for AstrumApp {
 
     const APP_ID: &'static str = "astrum_unstable";
 
-    fn init(core: cosmic::app::Core, flags: Self::Flags) -> (AstrumApp, Task<Message<AstrumMessages>>) {
+    fn init(core: cosmic::app::Core, flags: Self::Flags) -> (AstrumApp, Task<Action<AstrumMessages>>) {
         let ( update_logic, subscription_logic, subscription_data, style, windows, commands, lua, keybinds ) = configure_app(flags.0, flags.1);
         (
             Self {
@@ -255,7 +257,7 @@ impl cosmic::Application for AstrumApp {
         "".into()
     }
 
-    fn update(&mut self, message: Self::Message) -> Task<cosmic::app::Message<AstrumMessages>> {
+    fn update(&mut self, message: Self::Message) -> Task<Action<AstrumMessages>> {
         // messagesright now are split into 2
         // user defined view messages
         // and subscription defined view messages
@@ -357,7 +359,14 @@ impl cosmic::Application for AstrumApp {
             AstrumMessages::AnimationTick => {
                 debug!("animation tick!");
                 Task::none()
+            },
+            AstrumMessages::ToggleWindow(name) => {
+               if let Some(window) = self.windows.get_mut(&name) {
+                   return window.toggle();
+               }
+               Task::none()
             }
+
         }
 
     }
@@ -415,6 +424,9 @@ impl cosmic::Application for AstrumApp {
             make_subscribtion("system_tray", vec!["update"], system_tray_service_channel);
             services.push(
                 services::live_reloading::live_reload_service_channel(self.config_path.clone())
+            );
+            services.push(
+                calls::listen_windows_socket()
             );
             services.push(delay_call_service_channel());
 

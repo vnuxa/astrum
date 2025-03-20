@@ -10,6 +10,8 @@ local astrum = {
 	animations = {},
 	---@module "utils"
 	utils = {},
+	---@module "style"
+	style = {},
 }
 
 ---@module "subscriptions"
@@ -25,6 +27,7 @@ local astrum = {
 ---@field exclusive_zone? integer | "ignore" # How much space should the window reserve, set it to `"ignore"` if you want it to ignore other layers
 ---@field keymode? Keymode
 ---@field layer? Layer
+---@field height? number # If provided, manually set the height of the window
 
 ---Makes an astrum application that is to be returned
 function astrum:application()
@@ -38,6 +41,10 @@ function astrum:application()
 
 	return app
 end
+
+---Toggles the visibility of a popup window
+---@param window_name string
+function astrum:toggle_window(window_name) end
 
 ---@alias Keymode
 ---| '"none"' # Keyboard input cannot be recieved

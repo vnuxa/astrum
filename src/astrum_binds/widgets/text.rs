@@ -1,7 +1,7 @@
-use cosmic::{cosmic_theme::palette::{Alpha, Srgba}, iced::{color, font::{Family, Style as FontStyle, Weight}, Font, Length}, iced_widget::text::StyleFn, Theme};
+use cosmic::{cosmic_theme::palette::{Alpha, Srgba}, iced::{color, font::{Family, Style as FontStyle, Weight}, Font, Length}, iced_core::text::LineHeight, iced_widget::text::StyleFn, Theme};
 use cosmic::iced_core::widget::text::Style;
 
-use crate::astrum_binds::style::from_colors;
+use crate::astrum_binds::style::{from_colors, text::lua_text_style};
 
 use super::make_static_str;
 
@@ -67,34 +67,9 @@ pub fn make_text_widget<'a>(
         });
     }
 
-    // if let Ok(style) = data.get::<mlua::Table>("style"){
-
-        // text_widget = text_widget.color(cosmic::iced::Color { r: 1.0, g: 0.0, b: 0.0, a: 0.0 });
-    // }
-
-    // if let Ok(style) = data.get::<mlua::Table>("style") {
-        // text_widget = text_widget.style()
-
-        // cosmic::iced_widget::text::S
-        // text_widget = text_widget.style(cosmic::iced_winit::graphics::core::widget::text::Style )
-        // text_widget = text_widget.style(move |_theme| cosmic::iced_widget::text::Style { color: Some(from_colors(style.get::<mlua::Table>("text_color").unwrap())) });
-        // text_widget = text_widget.style(move |_theme| cosmic::theme::style::Text::Color(color!(0x0000ff)));
-        // text_widget = text_widget.style(move |_theme| cosmic::iced_winit::graphics::core::widget::text::Style { color: Some(cosmic::iced_core::Color::new(1.0, 0.0, 0.0, 1.0).into()) });
-        // text_widget = text_widget.style(move |_theme| cosmic::iced_widget::text::Style {
-        //     color: Some(Alpha {
-        //         color: Srgba::new(171u8, 193, 35, 128),
-        //         alpha: 1.0
-        //     })
-        // });
-        // text_widget.class(class)
-
-        // text_widget.color(cosmic::iced_winit::graphics::core::Color::WHITE);
-        // text_widget = text_widget.color(from_colors(style.get::<mlua::Table>("text_color").expect("Failed to get text_color for text widget")));
-        // text_widget = text_widget.class((Box::new(move |_theme| Style { color: Some(color!(0x0000ff)) }) as StyleFn<'a, Theme>).into());
-
-        // text_widget = text_widget.class(Box::new(|_theme| color!(0x0000ff)) as StyleFn<'a, Theme>);
-        // text_widget = text_widget.color(color!(0x0000ff));
-    // }
+    if let Ok(style) = data.get::<mlua::Table>("style") {
+        text_widget = text_widget.class(lua_text_style(style));
+    }
 
     if let Ok(font_settings) = data.get::<mlua::Table>("font") {
         let mut font_family: Option<Family> = None;
@@ -102,12 +77,11 @@ pub fn make_text_widget<'a>(
         let mut font_style: Option<FontStyle> = None;
 
         if let Ok(font_name) = font_settings.get::<mlua::String>("name") {
-            // for some reason font name is static???
-            // and its either i leak memory or use unsafe code
             unsafe {
-                font_family = Some(Family::Name(make_static_str(font_name.to_string_lossy().as_str())));
+                font_family = Some(Family::Name(make_static_str(&*font_name.to_str().unwrap())));
             }
         }
+        // println!("before weight");
         if let Ok(weight) = font_settings.get::<mlua::String>("weight") {
             font_weight = Some(match weight.to_string_lossy().as_str() {
                 "thin" => Weight::Thin,
@@ -122,9 +96,10 @@ pub fn make_text_widget<'a>(
                 _ => Weight::Normal
             });
         }
+        // println!("post weight");
         if let Ok(style) = font_settings.get::<mlua::String>("style") {
+            // println!("got style: {}", style.to_str().unwrap().to_string());
             font_style = Some(match style.to_string_lossy().as_str() {
-                "normal" => FontStyle::Normal,
                 "italic" => FontStyle::Italic,
                 "oblique" => FontStyle::Oblique,
                 _ => FontStyle::Normal,
@@ -132,7 +107,9 @@ pub fn make_text_widget<'a>(
         }
 
         text_widget = text_widget.font(Font {
-            family: font_family.unwrap_or_default(),
+            // family: Family::Name("EPSON 正楷書体Ｍ"),
+            // family: Family::Name("Torus"),
+            family: font_family.unwrap(),
             weight: font_weight.unwrap_or_default(),
             style: font_style.unwrap_or_default(),
             ..Default::default()
@@ -142,6 +119,23 @@ pub fn make_text_widget<'a>(
         text_widget = text_widget.size(size as f32);
     }
 
+    if let Ok(height) = data.get::<mlua::Number>("line_height") {
+        text_widget = text_widget.line_height(LineHeight::Absolute(cosmic::iced::Pixels((height as f32))));
+    }
+
     text_widget
 
 }
+
+// impl<'a> From<StyleFn<'a, cosmic::Theme>> for cosmic::theme::Text {
+//
+//     fn from(value: StyleFn<'a, cosmic::Theme>) -> Self {
+//         Self::Custom(*value)
+//     }
+// }
+//
+// impl From<cosmic::theme::Text> for StyleFn<'a, Theme> {
+//     fn from(value: cosmic::theme::Text) -> Self {
+//         Box::new(value)
+//     }
+// }

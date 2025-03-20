@@ -1,7 +1,7 @@
 
 use std::{env::home_dir, io::Read, os::unix::net::UnixListener, path::PathBuf};
 
-use cosmic::{app::Message, iced::{advanced::subscription, stream, Subscription}};
+use cosmic::iced::{advanced::subscription, stream, Subscription};
 use notify::{event::ModifyKind, EventKind, Watcher};
 
 use crate::astrum_core::app::main::{AstrumMessages, StringOrNum};

@@ -7,13 +7,19 @@
 
 ---@class TextModel: WidthHeightWidget
 ---@field content? string # The text that should be displayed
+---@field align_x? Horizontal # Sets the horizontal alignment of the text
+---@field align_y? Vertical # Sets the vertical alignment of the text
+---@field height? Length # Sets the height of the text
+---@field line_height? number # Sets the line height in pixels
 ---@field size? number # The font size of the text
 ---@field font? Font # The font of the text
+---@field style? TextAppearance # Sets the appearance of the text
 
 ---@class ButtonModel: WidthHeightWidget
 ---@field child? Widget # A widget that will be displayed within the button
 ---@field padding? Padding
 ---@field on_press? CustomSignal | string # Sends a signal whenever the button is pressed. If a string is provided, it will send no data
+---@field style? ButtonAppearance # Sets the appearance of the button
 
 ---@class TextInputModel
 ---@field value? string # The text of the text input. Needs an external variable paired with `on_input` in order to change
@@ -25,6 +31,7 @@
 ---@field on_input? string  # Runs a signal when some text is typed in the text input, sends `text` in the signal data which contains the new text. Cannot pass through custom signals
 ---@field on_submit? string | CustomSignal # Sends a custom signal when the text input is focused and the enter key is pressed
 ---@field size? number # Sets the text size of the text input
+---@field style? TextInputAppearance # Sets the appearance of the text input
 
 ---@class CustomSignal
 ---@field signal_name string
@@ -76,3 +83,22 @@
 ---@field max_height? number # Maximum height of the `container` in pixels
 ---@field align_x? Horizontal # Sets the alignment of content on the horizontal axis
 ---@field align_y? Vertical # Sets the alignment of content on the vertical axis
+---@field style? ContainerAppearance # Sets the appearance of the container
+
+---@class (exact) ScrollableModel: WidthHeightWidget
+---@field child? Widget # Infinite amount of content to be displayed within the scrollable
+---@field direction? Direction # The direction where the content will be scrolled
+
+---@class (exact) MouseAreaModel
+---@field child Widget # Element that determines the size of the mouse area
+---@field on_press? CustomSignal # Sends a signal when the left mouse button has been pressed over a specified area.
+---@field on_release? CustomSignal # Sends a signal when the left mouse button has been released over a specified area.
+---@field on_drag? CustomSignal # Sends a signal when a drag has been initiated over a specified area.
+---@field on_double_click? CustomSignal # Sends a signal when the left mouse button has been pressed twice over a specified area.
+---@field on_enter? CustomSignal # Sends a signal when the mouse has entered a specified area
+---@field on_exit? CustomSignal # Sends a signal when the mouse has left a specified area
+---@field on_middle_press? CustomSignal # Sends a signal when the middle mouse button has been pressed over a specified area.
+---@field on_scroll? string # Sends to a specified signal name, sends `direction` field in a table that can be either `up` or `down` (e.g. OnScrollSignal)
+
+---@class OnScrollSignal
+---@field direction "up" | "down"

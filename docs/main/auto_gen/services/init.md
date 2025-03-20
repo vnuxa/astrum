@@ -211,7 +211,7 @@ see definitions: [`TrackMetadata`](#trackmetadata)
 >    `duration`: `number`
 >    >   How much time (in seconds) needs to pass until sending the signal 
 
->    `signal`: `CustomSignal`
+>    `signal`: `string|CustomSignal`
 >    >   The signal to send once the specified amount of time has passed 
 
 

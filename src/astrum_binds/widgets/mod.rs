@@ -5,7 +5,10 @@ use container::make_container_widget;
 use cosmic::Element;
 use icon::make_icon_widget;
 use image::make_image_widget;
+use mouse_area::make_mouse_area_widget;
 use row::make_row_widget;
+use scrollable::make_scrollable_widget;
+use space::make_space_widget;
 use text::make_text_widget;
 use text_input::make_text_input_widget;
 
@@ -21,6 +24,9 @@ mod image;
 mod icon;
 mod text_input;
 mod container;
+mod space;
+mod scrollable;
+mod mouse_area;
 
 
 // makes lua bindings for elements into rust ones
@@ -40,6 +46,9 @@ pub fn process_lua_element<'a>(
         "image" => Some(make_image_widget(element).into()),
         "icon" => Some(make_icon_widget(element).into()),
         "text_input" => Some(make_text_input_widget(element).into()),
+        "space" => Some(make_space_widget(element).into()),
+        "scrollable" => Some(make_scrollable_widget(element).into()),
+        "mouse_area" => Some(make_mouse_area_widget(element).into()),
         &_ => None,
     }
 }

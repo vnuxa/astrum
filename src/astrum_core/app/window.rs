@@ -1,4 +1,4 @@
-use cosmic::{app::{command::message, Message}, cctk::sctk::shell::wlr_layer::{Anchor, KeyboardInteractivity, Layer}, iced::window::Id, iced_runtime::platform_specific::wayland::layer_surface::SctkLayerSurfaceSettings, iced_winit::commands::layer_surface::{destroy_layer_surface, get_layer_surface}, Element, Task};
+use cosmic::{cctk::sctk::shell::wlr_layer::{Anchor, KeyboardInteractivity, Layer}, iced::window::Id, iced_runtime::platform_specific::wayland::layer_surface::SctkLayerSurfaceSettings, iced_winit::commands::layer_surface::{destroy_layer_surface, get_layer_surface}, Action, Element, Task};
 use log::debug;
 use mlua::Function;
 
@@ -22,13 +22,14 @@ pub struct WindowSettings {
     pub anchors: Anchor,
     pub exclusion_zone: i32,
     pub keymode: KeyboardInteractivity,
-    pub layer: Option<Layer>
+    pub layer: Option<Layer>,
+    pub height: Option<u32>
 }
 
 impl Window {
-    pub fn init(settings: WindowSettings, window_logic: Function) -> (Self, Task<Message<AstrumMessages>>) {
+    pub fn init(settings: WindowSettings, window_logic: Function) -> (Self, Task<Action<AstrumMessages>>) {
         let mut id: Option<Id> = None;
-        let mut task: Task<Message<AstrumMessages>> = Task::none();
+        let mut task: Task<Action<AstrumMessages>> = Task::none();
         {
             let settings = settings.clone();
             if !settings.popup {
@@ -40,8 +41,13 @@ impl Window {
                     exclusive_zone: settings.exclusion_zone,
                     layer: settings.layer.unwrap_or(Layer::Top),
                     anchor: settings.anchors,
+                    size: if let Some(height) = settings.height {
+                        Some((None, Some(height)))
+                    } else {
+                        None
+                    },
                     // size_limits: Limits::NONE.height(30.0),
-                    size: Some((None, Some(settings.exclusion_zone as u32))), // might have to
+                    // size: Some((None, Some(settings.exclusion_zone as u32))), // might have to
                     // think about popups
                     ..Default::default()
                 });
@@ -78,6 +84,34 @@ impl Window {
     pub fn get_id(&self) -> Option<Id> {
         self.id
     }
+
+    pub fn toggle(&mut self) -> Task<Action<AstrumMessages>> {
+        if self.id.is_none() {
+            self.id = Some(Id::unique());
+            return get_layer_surface(SctkLayerSurfaceSettings {
+                id: self.id.unwrap(),
+                keyboard_interactivity: self.settings.keymode,
+                namespace: self.settings.namespace.clone(),
+                exclusive_zone: self.settings.exclusion_zone,
+                layer: Layer::Overlay,
+                anchor: self.settings.anchors,
+                size: if let Some(height) = self.settings.height {
+                    Some((None, Some(height)))
+                } else {
+                    None
+                },
+                ..Default::default()
+            })
+        } else {
+            if let Some(id) = self.id.take() {
+                destroy_layer_surface(id)
+            } else {
+                Task::none()
+            }
+        }
+
+    }
+
 }
 
 impl Default for WindowSettings {
@@ -88,7 +122,8 @@ impl Default for WindowSettings {
             anchors: Anchor::TOP.union(Anchor::LEFT).union(Anchor::RIGHT),
             exclusion_zone: 32,
             keymode: KeyboardInteractivity::None,
-            layer: None // use default layer
+            layer: None, // use default layer
+            height: None
         }
     }
 }
@@ -149,11 +184,14 @@ pub fn make_window_settings<'a>(
             _ => unimplemented!("Window layer not supported, are you sure its not a typo?")
         });
     }
+    if let Ok(height) = lua_window.get::<mlua::Number>("height") {
+        settings.height = Some(height as u32);
+    }
 
     debug!("output window settings: {:?}", settings);
     settings
 }
 
-pub fn close_window(id: Id) -> Task<Message<AstrumMessages>> {
+pub fn close_window(id: Id) -> Task<Action<AstrumMessages>> {
     destroy_layer_surface(id)
 }

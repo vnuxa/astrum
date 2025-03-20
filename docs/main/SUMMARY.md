@@ -19,8 +19,10 @@
        - [Misc](./auto_gen/widgets/misc.md)
    - [Utils](./auto_gen/utils/init.md)
    - [Animations](./auto_gen/animations/init.md)
+   - [Style](./auto_gen/style/init.md)
+       - [Misc](./auto_gen/style/misc.md)
    - [Services](./auto_gen/services/init.md)
 
-[Last auto generated: 2025-03-16]()
+[Last auto generated: 2025-03-19]()
 
 ---

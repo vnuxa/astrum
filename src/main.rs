@@ -7,7 +7,7 @@ use std::env::{self, home_dir};
 
 use astrum_core::app::main::start_application;
 use clap::Parser;
-use ftail::Ftail;
+// use ftail::Ftail;
 use log::{info, Level, LevelFilter};
 mod astrum_core;
 mod astrum_binds;
@@ -70,9 +70,9 @@ fn main() {
     }
 
     if cli.log_std {
-        Ftail::new()
-            .console(LevelFilter::Debug)
-            .init().unwrap();
+        // Ftail::new()
+        //     .console(LevelFilter::Debug)
+        //     .init().unwrap();
     } else {
         let log_dir = env::var("XDG_RUNTIME_DIR").unwrap() + "/astrum/";
         println!("log dir {}", log_dir);
@@ -81,9 +81,9 @@ fn main() {
             run_command(&format!("mkdir {}", log_dir));
         }
 
-        Ftail::new()
-            .daily_file(&log_dir, LevelFilter::Debug)
-            .init().unwrap();
+        // Ftail::new()
+        //     .daily_file(&log_dir, LevelFilter::Debug)
+        //     .init().unwrap();
     }
 
 

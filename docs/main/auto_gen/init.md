@@ -12,6 +12,10 @@
 ## Methods:
 `:application()` → `AstrumApp`
 
+`:toggle_window(window_name)`
+>    `window_name`: `string`
+
+
 
 
 ---
@@ -35,6 +39,9 @@
 
 >   `exclusive_zone` → `(integer|"ignore")?`
 >    >   How much space should the window reserve, set it to `"ignore"` if you want it to ignore other layers 
+
+>   `height` → `number?`
+>    >   If provided, manually set the height of the window 
 
 >   `is_popup` → `boolean?`
 

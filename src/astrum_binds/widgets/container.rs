@@ -2,7 +2,7 @@ use cosmic::iced::{alignment::{Horizontal, Vertical}, color, font::{Family, Styl
 
 use cosmic::widget::Container;
 use mlua::Number;
-use crate::astrum_core::app::main::AstrumMessages;
+use crate::{astrum_binds::style::container::lua_container_style, astrum_core::app::main::AstrumMessages};
 
 use super::process_lua_element;
 
@@ -132,6 +132,9 @@ pub fn make_container_widget<'a>(
             "bottom" => Vertical::Bottom,
             _ => unimplemented!("Container vertical alignment value not supported")
         });
+    }
+    if let Ok(style) = data.get::<mlua::Table>("style") {
+        container_widget = container_widget.class(lua_container_style(style));
     }
 
     container_widget

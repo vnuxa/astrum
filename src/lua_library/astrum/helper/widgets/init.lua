@@ -49,7 +49,10 @@ function widgets:text(content, model)
 	text.widget_name = "text"
 
 	if default_font then
+		if text.font == nil then text.font = default_font end
+		if default_font.size and text.size == nil then text.size = default_font.size end
 	end
+	-- if default_font then text.font = default_font end
 	return text
 end
 
@@ -136,16 +139,12 @@ function widgets:text_input(content, placeholder, model)
 	else
 		text_input = model or {}
 		text_input.value = content or ""
-		text_input.placeholder = placeholder or ""
+		text_input.value = placeholder
 	end
+	if not text_input.value then text_input.placeholder = "" end
 	text_input.widget_name = "text_input"
 
-	print("got text input thing")
-	for key, value in pairs(text_input) do
-		print("     ", key, " and", value)
-	end
-	if default_font then
-	end
+	if default_font then text_input.font = default_font end
 	return text_input
 end
 
@@ -155,6 +154,26 @@ function widgets:container(model)
 	container.widget_name = "container"
 
 	return container
+end
+
+function widgets:space(width, height)
+	return {
+		widget_name = "space",
+		width = width,
+		height = height,
+	}
+end
+
+function widgets:scrollable(model)
+	model.widget_name = "scrollable"
+
+	return model
+end
+
+function widgets:mouse_area(model)
+	model.widget_name = "mouse_area"
+
+	return model
 end
 
 return widgets

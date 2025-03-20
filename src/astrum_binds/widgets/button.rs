@@ -1,6 +1,6 @@
-use cosmic::iced::{color, font::{Family, Style, Weight}, Font, Length};
+use cosmic::{iced::{color, font::{Family, Style, Weight}, Font, Length}, widget::Button};
 
-use crate::astrum_core::app::main::AstrumMessages;
+use crate::{astrum_binds::style::button::lua_button_style, astrum_core::app::main::AstrumMessages};
 
 use super::process_lua_element;
 
@@ -11,7 +11,7 @@ pub fn make_button_widget<'a>(
 ) -> cosmic::widget::Button<'a, AstrumMessages>
 {
     let widget_child: mlua::Table = data.get("child").unwrap();
-    let mut button_widget = cosmic::widget::Button::new_image(process_lua_element(widget_child).unwrap(), None);
+    let mut button_widget = cosmic::widget::button::custom(process_lua_element(widget_child).unwrap());
 
     // covers Fill and Shrink
     if let Ok(width) = data.get::<mlua::String>("width") {
@@ -60,6 +60,11 @@ pub fn make_button_widget<'a>(
             )
         ));
     }
+
+    if let Ok(style) = data.get::<mlua::Table>("style") {
+        button_widget = button_widget.class(lua_button_style(style));
+    }
+
 
     // ifl
     button_widget

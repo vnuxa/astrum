@@ -44,8 +44,16 @@
 >    >   The params for the shorthand. You do not need this if you provide a model in the first argument 
 
 
+`:mouse_area(model)` → `Widget`
+>    `model`: `MouseAreaModel`
+
+
 `:row(model)` → `table`
 >    `model`: `RowModel?`
+
+
+`:scrollable(model)` → `Widget`
+>    `model`: `ScrollableModel`
 
 
 `:signal(signal_name, signal_data)` → `CustomSignal`
@@ -53,6 +61,14 @@
 
 >    `signal_data`: `table`
 >    >   Data to be sent through the signal 
+
+
+`:space(width, height)` → `Widget`
+>    `width`: `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
+>    >   The width of the empty amount of space. Defaults to `"shrink"` 
+
+>    `height`: `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
+>    >   The height of the empty emount of space. Defaults to `"shrink"` 
 
 
 `:text(content_or_model, extra_model)` → `Widget`

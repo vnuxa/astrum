@@ -3,6 +3,10 @@ use log::{debug, info};
 
 use crate::astrum_binds::widgets::make_static_str;
 
+pub mod text;
+pub mod container;
+pub mod button;
+pub mod text_input;
 
 
 pub fn from_colors(

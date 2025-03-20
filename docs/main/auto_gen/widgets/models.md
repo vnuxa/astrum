@@ -7,11 +7,14 @@
 5. [`CustomSignal`](#customsignal) 
 6. [`IconModel`](#iconmodel) 
 7. [`ImageModel`](#imagemodel) 
-10. [`RowModel`](#rowmodel) 
-11. [`TextInputModel`](#textinputmodel) 
-12. [`TextModel`](#textmodel) 
-13. [`Widget`](#widget) 
-14. [`WidthHeightWidget`](#widthheightwidget) 
+10. [`MouseAreaModel`](#mouseareamodel) 
+11. [`OnScrollSignal`](#onscrollsignal) 
+12. [`RowModel`](#rowmodel) 
+13. [`ScrollableModel`](#scrollablemodel) 
+14. [`TextInputModel`](#textinputmodel) 
+15. [`TextModel`](#textmodel) 
+16. [`Widget`](#widget) 
+17. [`WidthHeightWidget`](#widthheightwidget) 
 
 [`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/widgets/models.lua)
 
@@ -31,6 +34,10 @@ see definitions: [`Widget`](#widget)
 see definitions: [`CustomSignal`](#customsignal) 
 >   `padding` → `(number|[number, number, number, number]|[number, number])?`
 
+>   `style` → `ButtonAppearance?`
+>    >   Sets the appearance of the button 
+
+see definitions: [`ButtonAppearance`](../style/init.md#buttonappearance) 
 >   `width` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
 >    >   Sets the width of the widget 
 
@@ -128,6 +135,10 @@ see definitions: [`Widget`](#widget)
 
 >   `padding` → `(number|[number, number, number, number]|[number, number])?`
 
+>   `style` → `ContainerAppearance?`
+>    >   Sets the appearance of the container 
+
+see definitions: [`ContainerAppearance`](../style/init.md#containerappearance) 
 >   `width` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
 >    >   Sets the width of the widget 
 
@@ -198,6 +209,55 @@ see definitions: [`Widget`](#widget)
 
 
 ---
+# MouseAreaModel
+## Propreties:
+>   `child` → `Widget`
+>    >   Element that determines the size of the mouse area 
+
+see definitions: [`Widget`](#widget) 
+>   `on_double_click` → `CustomSignal?`
+>    >   Sends a signal when the left mouse button has been pressed twice over a specified area. 
+
+see definitions: [`CustomSignal`](#customsignal) 
+>   `on_drag` → `CustomSignal?`
+>    >   Sends a signal when a drag has been initiated over a specified area. 
+
+see definitions: [`CustomSignal`](#customsignal) 
+>   `on_enter` → `CustomSignal?`
+>    >   Sends a signal when the mouse has entered a specified area 
+
+see definitions: [`CustomSignal`](#customsignal) 
+>   `on_exit` → `CustomSignal?`
+>    >   Sends a signal when the mouse has left a specified area 
+
+see definitions: [`CustomSignal`](#customsignal) 
+>   `on_middle_press` → `CustomSignal?`
+>    >   Sends a signal when the middle mouse button has been pressed over a specified area. 
+
+see definitions: [`CustomSignal`](#customsignal) 
+>   `on_press` → `CustomSignal?`
+>    >   Sends a signal when the left mouse button has been pressed over a specified area. 
+
+see definitions: [`CustomSignal`](#customsignal) 
+>   `on_release` → `CustomSignal?`
+>    >   Sends a signal when the left mouse button has been released over a specified area. 
+
+see definitions: [`CustomSignal`](#customsignal) 
+>   `on_scroll` → `string?`
+>    >   Sends to a specified signal name, sends `direction` field in a table that can be either `up` or `down` (e.g. OnScrollSignal) 
+
+## Methods:
+
+
+---
+# OnScrollSignal
+## Propreties:
+>   `direction` → `"down"|"up"`
+
+## Methods:
+
+
+---
 # RowModel
 ## Propreties:
 >   `align_y` → `("bottom"|"center"|"top")?`
@@ -217,6 +277,26 @@ see definitions: [`Widget`](#widget)
 
 >   `spacing` → `number?`
 >    >   The spacing between elements in pixels 
+
+>   `width` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
+>    >   Sets the width of the widget 
+
+## Methods:
+
+
+---
+# ScrollableModel
+## Propreties:
+>   `child` → `Widget?`
+>    >   Infinite amount of content to be displayed within the scrollable 
+
+see definitions: [`Widget`](#widget) 
+>   `direction` → `(["both", { vertical: ScrollablePropreties, horizontal: ScrollablePropreties }]|["horizontal", ScrollablePropreties]|["vertical", ScrollablePropreties])?`
+>    >   The direction where the content will be scrolled 
+
+see definitions: [`ScrollablePropreties`](./misc.md#scrollablepropreties) 
+>   `height` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
+>    >   Sets the height of the widget 
 
 >   `width` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
 >    >   Sets the width of the widget 
@@ -249,6 +329,10 @@ see definitions: [`CustomSignal`](#customsignal)
 >   `size` → `number?`
 >    >   Sets the text size of the text input 
 
+>   `style` → `TextInputAppearance?`
+>    >   Sets the appearance of the text input 
+
+see definitions: [`TextInputAppearance`](../style/init.md#textinputappearance) 
 >   `value` → `string?`
 >    >   The text of the text input. Needs an external variable paired with `on_input` in order to change 
 
@@ -260,6 +344,12 @@ see definitions: [`CustomSignal`](#customsignal)
 ---
 # TextModel
 ## Propreties:
+>   `align_x` → `("center"|"left"|"right")?`
+>    >   Sets the horizontal alignment of the text 
+
+>   `align_y` → `("bottom"|"center"|"top")?`
+>    >   Sets the vertical alignment of the text 
+
 >   `content` → `string?`
 >    >   The text that should be displayed 
 
@@ -268,11 +358,18 @@ see definitions: [`CustomSignal`](#customsignal)
 
 see definitions: [`Font`](./misc.md#font) 
 >   `height` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
->    >   Sets the height of the widget 
+>    >   Sets the height of the text 
+
+>   `line_height` → `number?`
+>    >   Sets the line height in pixels 
 
 >   `size` → `number?`
 >    >   The font size of the text 
 
+>   `style` → `TextAppearance?`
+>    >   Sets the appearance of the text 
+
+see definitions: [`TextAppearance`](../style/init.md#textappearance) 
 >   `width` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
 >    >   Sets the width of the widget 
 
