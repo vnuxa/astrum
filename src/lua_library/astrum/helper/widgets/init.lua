@@ -139,9 +139,9 @@ function widgets:text_input(content, placeholder, model)
 	else
 		text_input = model or {}
 		text_input.value = content or ""
-		text_input.value = placeholder
+		text_input.placeholder = placeholder
 	end
-	if not text_input.value then text_input.placeholder = "" end
+	if text_input.placeholder == nil then text_input.placeholder = "" end
 	text_input.widget_name = "text_input"
 
 	if default_font then text_input.font = default_font end

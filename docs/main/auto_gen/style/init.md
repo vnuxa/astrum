@@ -7,7 +7,7 @@
 5. [`TextInputAppearance`](#textinputappearance) 
 6. [`TextInputStyleSheet`](#textinputstylesheet) 
 
-[`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/style/init.lua)
+[`source`](https://github.com/vnuxa/astrum/blob/master/src/lua_library/astrum/types/style/init.lua)
 
 ---
 # ButtonAppearance

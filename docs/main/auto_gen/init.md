@@ -4,7 +4,7 @@
 2. [`AstrumApp`](#astrumapp) 
 3. [`WindowModel`](#windowmodel) 
 
-[`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/init.lua)
+[`source`](https://github.com/vnuxa/astrum/blob/master/src/lua_library/astrum/types/init.lua)
 
 ---
 # Astrum

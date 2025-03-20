@@ -8,7 +8,7 @@
 6. [`SystemTrayItem`](#systemtrayitem) 
 7. [`SystemTraySubscription`](#systemtraysubscription) 
 
-[`source`](https://github.com/vnuxa/astrum/blob/unstable/src/lua_library/astrum/types/subscriptions/init.lua)
+[`source`](https://github.com/vnuxa/astrum/blob/master/src/lua_library/astrum/types/subscriptions/init.lua)
 
 ---
 # HyprlandSubscription
