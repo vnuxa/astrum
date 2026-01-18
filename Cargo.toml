@@ -2,11 +2,12 @@
 name = "astrum"
 version = "0.1.0"
 edition = "2021"
+# rust-version = "1.85"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hyprland = { git = "https://github.com/MalpenZibo/hyprland-rs", branch="master" }
+hyprland = { git = "https://github.com/hyprland-community/hyprland-rs.git", branch="master" }
 # hyprland = "0.3.13"
 # hyprland =
 # hyprland = "0.3.13"
@@ -26,17 +27,17 @@ system-tray = "0.2.0"
 greetd_ipc = { version = "0.10.3", features = ["sync-codec"]}
 log = "0.4.22"
 # ftail = "0.2"
-zbus = { version = "4.2.1", features = [ "tokio", "p2p" ] }
+zbus = { version = "4.2.1", features = [ "tokio" ] }
 event-listener = "5.4.0"
 
 
 [dependencies.libcosmic]
-git = "https://github.com/pop-os/libcosmic.git"
+git = "https://github.com/pop-os/libcosmic"
 default-features = false
 features = [
     "tokio",
     "wayland",
-    "wgpu", # IMPORTANT: enable when hyprland fixed the vulkan thingy
+    "wgpu",
     "multi-window",
     "winit",
     # "advanced"

@@ -88,6 +88,7 @@ fn main() {
 
 
 
+    // TODO: use xdg config dir
     let config_path: &str = &cli.config
         .unwrap_or("~/.config/astrum/".to_string())
         .replace("~", home_dir().unwrap().to_str().unwrap());

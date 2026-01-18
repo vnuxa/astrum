@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documentation</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    
+    <script defer src="assets/search.js"></script>
+    
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="header-left">
+          <h1 class="site-title"><a href="index.html">astrum wiki</a></h1>
+        </div>
+        <nav class="header-nav">
+          <ul>
+            <li ><a href="options.html">Options</a></li>
+            
+            <li><a href="search.html">Search</a></li>
+            
+          </ul>
+        </nav>
+        
+        <div class="search-container">
+          <input type="text" id="search-input" placeholder="Search..." />
+          <div id="search-results" class="search-results"></div>
+        </div>
+        
+      </header>
+
+      <div class="layout">
+        <div class="sidebar-toggle" aria-label="Toggle sidebar">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+          >
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+          </svg>
+        </div>
+        <nav id="sidebar" class="sidebar">
+          <div class="docs-nav">
+            <h2>Documents</h2>
+            <ul>
+              <li><a href="astrum.html">Documentation</a></li>
+<li><a href="search.html">Search</a></li>
+
+            </ul>
+          </div>
+
+          <div class="toc">
+            <h2>Contents</h2>
+            <ul class="toc-list">
+              <li><a href="#documentation">Documentation</a>
+<ul><li><a href="#installation">Installation</a>
+<li><a href="#styling-basics">Styling basics</a>
+<li><a href="#stylesheets">Stylesheets</a>
+<li><a href="#subscription-basics">Subscription basics</a>
+</ul><li><a href="#advanced-subscriptions">Advanced subscriptions</a>
+<ul><li><a href="#calls">Calls</a>
+<li><a href="#keybinds">Keybinds</a>
+</li></ul></li>
+            </ul>
+          </div>
+        </nav>
+
+        <main class="content">
+          <h1>Documentation</h1>
+<p>astrum is a widgeting system that depends on <a href="https://github.com/pop-os/libcosmic">libcosmic</a>
+it can run on any wayland compositor that supports the <code>layer-shell</code> protocol.</p>
+<p>astrum is made in rust and is configured in lua
+i reccomend using the <a href="https://github.com/LuaLS/lua-language-server">lua language server</a> as that is what i will depend on for types
+and i reccomend getting familiar with the annotation syntax as that is what i will show in documentation</p>
+<h2>Installation</h2>
+<p>since this project is still a work in progress,
+you have to build it from source.</p>
+<hr />
+<p>if you use nix you can add this as a nix flake input</p>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">inputs </span><span style="background-color:#f5f5f5;font-weight:bold;color:#b52a1d;">=</span><span style="color:#323232;"> {
+</span><span style="color:#323232;">    </span><span style="color:#795da3;">astrum</span><span style="color:#323232;">.</span><span style="color:#795da3;">url </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;github:vnuxa/astrum&quot;
+</span><span style="background-color:#f5f5f5;font-weight:bold;color:#b52a1d;">}</span><span style="color:#323232;">
+</span></pre>
+<p>and somewhere in your package list add the following</p>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">    astrum</span><span style="font-weight:bold;color:#a71d5d;">.</span><span style="color:#323232;">defaultPackage</span><span style="font-weight:bold;color:#a71d5d;">.</span><span style="color:#323232;">${pkgs</span><span style="font-weight:bold;color:#a71d5d;">.</span><span style="color:#323232;">system}
+</span></pre>
+<hr />
+<p>I also recommend having the <a href="https://github.com/LuaLS/lua-language-server">lua language server</a> installed in your text editor, since it contains astrum types and descriptions</p>
+<h2>Styling basics</h2>
+<p>Since astrum depends on <code>libcosmic</code>, styling is done within lua and not in another language (css for example)</p>
+<h2>Stylesheets</h2>
+<p>Although the styling is done within lua, there still are stylesheets</p>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">Astrum.style:add_style(</span><span style="color:#183691;">&quot;style_name&quot;</span><span style="color:#323232;">, {
+</span><span style="font-style:italic;color:#969896;">-- style body goes here
+</span><span style="color:#323232;">})
+</span></pre>
+<p>Each widget has its own styling model, though if a widget has multiple styling states (for example buttons <code>on_pressed</code> and <code>on_hovered</code>) there is a <code>default</code> state as well, which overrides the base defaults, if not already specified</p>
+<p>You can use stylesheets within widgets via the <code>get_style</code> function</p>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">Astrum.widgets:text({
+</span><span style="color:#323232;">    </span><span style="color:#183691;">content </span><span style="color:#323232;">= </span><span style="color:#183691;">&quot;hello world!&quot;</span><span style="color:#323232;">,
+</span><span style="color:#323232;">    </span><span style="color:#183691;">style </span><span style="color:#323232;">= Astrum.style:get_style(</span><span style="color:#183691;">&quot;style_name&quot;</span><span style="color:#323232;">)
+</span><span style="color:#323232;">})
+</span></pre>
+<h2>Subscription basics</h2>
+<p>Subscriptions are the only way to update your state and view logic after an external event occurs.<br />
+Subscriptions will trigger <em>every</em> window’s view and signal logic (might change in the future, depending on libcosmic)</p>
+<hr />
+<p>To use a subscription, you must subscribe to a specific service.<br />
+Here is a hyprland workspace changed subscription example:</p>
+<pre style="background-color:#ffffff;">
+<span style="font-weight:bold;color:#a71d5d;">local </span><span style="color:#323232;">state </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">{
+</span><span style="color:#323232;">    </span><span style="font-style:italic;color:#969896;">-- most services have types
+</span><span style="color:#323232;">    </span><span style="font-style:italic;color:#969896;">---@type HyprlandWorkspaces
+</span><span style="color:#323232;">    </span><span style="color:#183691;">workspaces </span><span style="color:#323232;">= {}
+</span><span style="color:#323232;">}
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">App:window(</span><span style="color:#183691;">&quot;workspace_example&quot;</span><span style="color:#323232;">, {
+</span><span style="color:#323232;">    </span><span style="font-weight:bold;color:#795da3;">view </span><span style="color:#323232;">= </span><span style="font-weight:bold;color:#a71d5d;">function</span><span style="color:#323232;">()
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">local </span><span style="color:#323232;">row </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">Widgets:row({})
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">_, workspace </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">pairs</span><span style="color:#323232;">(state.workspaces) </span><span style="font-weight:bold;color:#a71d5d;">do
+</span><span style="color:#323232;">            row:push(Widgets:text(</span><span style="color:#62a35c;">tostring</span><span style="color:#323232;">(workspace.id)))
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">end
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">row
+</span><span style="color:#323232;">    </span><span style="font-weight:bold;color:#a71d5d;">end</span><span style="color:#323232;">,
+</span><span style="color:#323232;">    </span><span style="font-style:italic;color:#969896;">-- Tells the application to subscribe to the `Hyprland` service
+</span><span style="color:#323232;">    </span><span style="color:#183691;">subscriptions </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">        </span><span style="color:#183691;">hyprland </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">            </span><span style="font-style:italic;color:#969896;">---Specifies that whenever there is a workspace change, send the following signal that goes by the name of `on_workspace`
+</span><span style="color:#323232;">            </span><span style="color:#183691;">workspaces </span><span style="color:#323232;">= </span><span style="color:#183691;">&quot;on_workspace&quot;
+</span><span style="color:#323232;">        }
+</span><span style="color:#323232;">    }
+</span><span style="color:#323232;">    </span><span style="color:#183691;">signals </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#795da3;">on_workspace </span><span style="color:#323232;">= </span><span style="font-weight:bold;color:#a71d5d;">function</span><span style="color:#323232;">(signal_data)
+</span><span style="color:#323232;">            </span><span style="font-style:italic;color:#969896;">-- Signal data is of type `HyprlandWorkspaces`
+</span><span style="color:#323232;">            state.workspaces </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">signal_data
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">end
+</span><span style="color:#323232;">    }
+</span><span style="color:#323232;">})
+</span><span style="color:#323232;">
+</span></pre>
+<h1>Advanced subscriptions</h1>
+<p>These subscriptions do not have predefined types that make it easy to understand on how to use it, which is why these will have to be further explained in the documentation</p>
+<h2>Calls</h2>
+<p>Calls is a powerful subscription that allows external proccesses to interact with astrum by sending a call signal.<br />
+Each key in the calls subscription table will be the <code>call_signal</code> and each value will be the name of the signal that will fire when it recieved the call signal</p>
+<pre style="background-color:#ffffff;">
+<span style="font-weight:bold;color:#a71d5d;">local </span><span style="color:#323232;">called_times </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">app:window(</span><span style="color:#183691;">&quot;notification-thing&quot;</span><span style="color:#323232;">, {
+</span><span style="color:#323232;">    </span><span style="font-weight:bold;color:#795da3;">view </span><span style="color:#323232;">= </span><span style="font-weight:bold;color:#a71d5d;">function</span><span style="color:#323232;">()
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">widgets:text(</span><span style="color:#183691;">&quot;recieved call `mycall` &quot;</span><span style="font-weight:bold;color:#a71d5d;">.. </span><span style="color:#323232;">called_times</span><span style="font-weight:bold;color:#a71d5d;">.. </span><span style="color:#183691;">&quot; times&quot;</span><span style="color:#323232;">)
+</span><span style="color:#323232;">    </span><span style="font-weight:bold;color:#a71d5d;">end</span><span style="color:#323232;">,
+</span><span style="color:#323232;">    </span><span style="color:#183691;">subscriptions </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">        </span><span style="color:#183691;">calls </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">            </span><span style="color:#183691;">mycall </span><span style="color:#323232;">= </span><span style="color:#183691;">&quot;on_call&quot;
+</span><span style="color:#323232;">        }
+</span><span style="color:#323232;">    },
+</span><span style="color:#323232;">    </span><span style="color:#183691;">signals </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#795da3;">on_call </span><span style="color:#323232;">= </span><span style="font-weight:bold;color:#a71d5d;">function</span><span style="color:#323232;">(signal_data)
+</span><span style="color:#323232;">            called_times </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">called_times </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">1
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">end
+</span><span style="color:#323232;">    },
+</span><span style="color:#323232;">})
+</span></pre>
+<p>This will display a widget that shows the amount of times that it has recieved the <code>mycall</code> call signal<br />
+To send this call signal, add <code>--call</code> to the options of astrum (i.e. <code>astrum --call mycall</code>)</p>
+<p>You can also send data through the call by adding a <code>:</code> after the call signal name, though note that it has to be in valid lua table</p>
+<pre style="background-color:#ffffff;">
+<span style="font-weight:bold;color:#a71d5d;">local </span><span style="color:#323232;">data </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;&quot;
+</span><span style="color:#323232;">
+</span><span style="color:#323232;">app:window(</span><span style="color:#183691;">&quot;notification-thing&quot;</span><span style="color:#323232;">, {
+</span><span style="color:#323232;">    </span><span style="font-weight:bold;color:#795da3;">view </span><span style="color:#323232;">= </span><span style="font-weight:bold;color:#a71d5d;">function</span><span style="color:#323232;">()
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">widgets:text(</span><span style="color:#183691;">&quot;call `mycall` has sent data: &quot;</span><span style="font-weight:bold;color:#a71d5d;">.. </span><span style="color:#323232;">data)
+</span><span style="color:#323232;">    </span><span style="font-weight:bold;color:#a71d5d;">end</span><span style="color:#323232;">,
+</span><span style="color:#323232;">    </span><span style="color:#183691;">subscriptions </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">        </span><span style="color:#183691;">calls </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">            </span><span style="color:#183691;">mycall </span><span style="color:#323232;">= </span><span style="color:#183691;">&quot;on_call&quot;
+</span><span style="color:#323232;">        }
+</span><span style="color:#323232;">    },
+</span><span style="color:#323232;">    </span><span style="color:#183691;">signals </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#795da3;">on_call </span><span style="color:#323232;">= </span><span style="font-weight:bold;color:#a71d5d;">function</span><span style="color:#323232;">(signal_data)
+</span><span style="color:#323232;">            data </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">signal_data.data
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">end
+</span><span style="color:#323232;">    },
+</span><span style="color:#323232;">})
+</span></pre>
+<p>and executing the resulting command</p>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">astrum --call </span><span style="color:#183691;">&#39;mycall:{data=&quot;test&quot;}&#39;
+</span></pre>
+<p>will result in the window text displaying the following</p>
+<pre><code>    call `mycall` has send data: test
+</code></pre><h2>Keybinds</h2>
+<p>Custom keybinds in astrum are defined through subscriptions<br />
+The index of the keybind susbcription table will be the signal name that it will send to when the specified keys have been pressed.</p>
+<p><br />
+The first parameter of the value table are the modifiers that need to be pressed, seperated by commas.<br />
+The second parameter is a single character or a lowercase name for the keybind (you can see the full list of named keys in the source of the keybind susbcription)</p>
+<p><br />
+An example implementation:</p>
+<pre style="background-color:#ffffff;">
+<span style="color:#323232;">app:window(</span><span style="color:#183691;">&quot;notification-thing&quot;</span><span style="color:#323232;">, {
+</span><span style="color:#323232;">    </span><span style="color:#183691;">keymode </span><span style="color:#323232;">= </span><span style="color:#183691;">&quot;on_demand&quot;</span><span style="color:#323232;">,
+</span><span style="color:#323232;">    </span><span style="color:#183691;">subscriptions </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">        </span><span style="color:#183691;">keybinds </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">            </span><span style="color:#183691;">on_key </span><span style="color:#323232;">= { </span><span style="color:#183691;">&quot;ctrl,shift&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;space&quot;</span><span style="color:#323232;">},
+</span><span style="color:#323232;">            </span><span style="color:#183691;">on_key2 </span><span style="color:#323232;">= { </span><span style="color:#183691;">&quot;ctrl&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;d&quot;</span><span style="color:#323232;">}
+</span><span style="color:#323232;">        }
+</span><span style="color:#323232;">    },
+</span><span style="color:#323232;">    </span><span style="color:#183691;">signals </span><span style="color:#323232;">= {
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#795da3;">on_key </span><span style="color:#323232;">= </span><span style="font-weight:bold;color:#a71d5d;">function</span><span style="color:#323232;">()
+</span><span style="color:#323232;">            </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;ctrl shift and space have been pressed!&quot;</span><span style="color:#323232;">)
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">end</span><span style="color:#323232;">,
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#795da3;">on_key2 </span><span style="color:#323232;">= </span><span style="font-weight:bold;color:#a71d5d;">function</span><span style="color:#323232;">()
+</span><span style="color:#323232;">            </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;ctrl and d have been pressed!&quot;</span><span style="color:#323232;">)
+</span><span style="color:#323232;">        </span><span style="font-weight:bold;color:#a71d5d;">end
+</span><span style="color:#323232;">    },
+</span><span style="color:#323232;">})
+</span></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>keybinds will not work if the keymode is <code>none</code></p>
+</div>
+
+          <div class="footnotes-container">
+            <!-- Footnotes will be appended here -->
+          </div>
+        </main>
+      </div>
+
+      <footer>
+        <p>Generated with ndg</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Sidebar Toggle
+        const sidebarToggle = document.querySelector(".sidebar-toggle");
+        if (sidebarToggle) {
+          sidebarToggle.addEventListener("click", function () {
+            document.body.classList.toggle("sidebar-collapsed");
+
+            // Save state to localStorage
+            const isCollapsed =
+              document.body.classList.contains("sidebar-collapsed");
+            localStorage.setItem("sidebar-collapsed", isCollapsed);
+          });
+
+          // Restore sidebar state from localStorage
+          const isCollapsed =
+            localStorage.getItem("sidebar-collapsed") === "true";
+          if (isCollapsed) {
+            document.body.classList.add("sidebar-collapsed");
+          }
+        }
+
+        // Make headings clickable for anchor links
+        const content = document.querySelector(".content");
+        const headings = content.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        headings.forEach(function (heading) {
+          // Make sure all headings have IDs
+          if (!heading.id) {
+            heading.id = heading.textContent
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/[\s-]+/g, "-")
+              .trim();
+
+            if (!heading.id) {
+              heading.id =
+                "section-" + Math.random().toString(36).substring(2, 9);
+            }
+          }
+
+          // Make the entire heading clickable
+          heading.addEventListener("click", function (e) {
+            const id = this.id;
+            history.pushState(null, null, "#" + id);
+
+            // Scroll with offset
+            const offset =
+              this.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({
+              top: offset,
+              behavior: "smooth",
+            });
+          });
+        });
+
+        // Process footnotes
+        const footnoteContainer = document.querySelector(
+          ".footnotes-container",
+        );
+
+        // Find all footnote references and create a footnotes section
+        const footnoteRefs = content.querySelectorAll('a[href^="#fn"]');
+        if (footnoteRefs.length > 0) {
+          const footnotesDiv = document.createElement("div");
+          footnotesDiv.className = "footnotes";
+
+          const footnotesHeading = document.createElement("h2");
+          footnotesHeading.textContent = "Footnotes";
+          footnotesDiv.appendChild(footnotesHeading);
+
+          const footnotesList = document.createElement("ol");
+          footnoteContainer.appendChild(footnotesDiv);
+          footnotesDiv.appendChild(footnotesList);
+
+          // Add footnotes
+          document.querySelectorAll(".footnote").forEach((footnote) => {
+            const id = footnote.id;
+            const content = footnote.innerHTML;
+
+            const li = document.createElement("li");
+            li.id = id;
+            li.innerHTML = content;
+
+            // Add backlink
+            const backlink = document.createElement("a");
+            backlink.href = "#fnref:" + id.replace("fn:", "");
+            backlink.className = "footnote-backlink";
+            backlink.textContent = "↩";
+            li.appendChild(backlink);
+
+            footnotesList.appendChild(li);
+          });
+        }
+
+        // Handle initial hash navigation
+        function scrollToElement(element) {
+          if (element) {
+            const offset =
+              element.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({
+              top: offset,
+              behavior: "smooth",
+            });
+          }
+        }
+
+        if (window.location.hash) {
+          const targetElement = document.querySelector(window.location.hash);
+          if (targetElement) {
+            setTimeout(() => scrollToElement(targetElement), 0);
+          }
+        }
+      });
+    </script>
+    
+  </body>
+</html>

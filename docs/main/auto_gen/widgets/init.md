@@ -28,6 +28,14 @@
 >    `model`: `ContainerModel`
 
 
+`:context_menu(model_or_child, tree)` → `Widget`
+>    `model_or_child`: `ContextMenuModel|Widget`
+>    >   The model for the context menu or the underlying element for it 
+
+>    `tree`: `TreeWidget[]?`
+>    >   The menu tree that will be displayed when the right mouse button has been pressed on the underlying element 
+
+
 `:icon(icon_name_or_model, extra_model)` → `Widget`
 >    `icon_name_or_model`: `(string|IconModel)?`
 >    >   The icon name (shorthand) or the model for the icon 
@@ -71,6 +79,11 @@
 >    >   The height of the empty emount of space. Defaults to `"shrink"` 
 
 
+`:stack(model_or_children)` → `Widget`
+>    `model_or_children`: `StackModel|Widgets[]`
+>    >   The model for the stack or a list of widgets. The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer 
+
+
 `:text(content_or_model, extra_model)` → `Widget`
 >    `content_or_model`: `(string|TextModel)?`
 >    >   The text to be displayed (shorthand) or the model for the text 
@@ -85,6 +98,14 @@
 >    `placeholder`: `string?`
 
 >    `model`: `TextInputModel?`
+
+
+`:tree(model_or_item, tree)`
+>    `model_or_item`: `TreeWidget|Widget`
+>    >   The model for the tree or the core item of the tree. 
+
+>    `tree`: `TreeWidget[]?`
+>    >   Defines the `tree` field for the model. 
 
 
 

@@ -22,11 +22,11 @@ pub fn parse_desktop_file(desktop_file_path: PathBuf) -> Option<String> {
     if map.has_section("Desktop Entry") {
         let desktop_entry = map.section("Desktop Entry");
 
-        if
-            desktop_entry.has_attr("Exec") &&
-            desktop_entry.has_attr("Icon") &&
-            desktop_entry.has_attr("Name") &&
-            !desktop_entry.has_attr("NoDisplay") // kind of lazy, lmk if this breaks something
+        if desktop_entry.has_attr("Exec")
+            && desktop_entry.has_attr("Icon")
+            && desktop_entry.has_attr("Name")
+            && !desktop_entry.has_attr("NoDisplay")
+        // kind of lazy, lmk if this breaks something
         {
             executable = desktop_entry.attr("Exec").unwrap().to_string();
             icon_path = desktop_entry.attr("Icon").unwrap().to_string();
@@ -37,10 +37,10 @@ pub fn parse_desktop_file(desktop_file_path: PathBuf) -> Option<String> {
         if desktop_entry.has_attr("Comment") {
             description = desktop_entry.attr("Comment").unwrap().to_string();
         }
-    }  else {
+    } else {
         return None;
     }
-    if app_name == "".to_string() || icon_path == "".to_string()  {
+    if app_name == "".to_string() || icon_path == "".to_string() {
         return None;
     }
 
@@ -63,12 +63,14 @@ pub fn parse_desktop_file(desktop_file_path: PathBuf) -> Option<String> {
             })().replace("'", r"\'")
         )
     )
-
 }
 
 pub fn get_all_apps() -> Option<String> {
     let xdg_data_dirs = std::env::var("XDG_DATA_DIRS").unwrap_or("/usr/share".to_string());
-    let xdg_data_dirs: Vec<String> = xdg_data_dirs.split(':').map(|str| format!("{}{}",str, "/applications")).collect();
+    let xdg_data_dirs: Vec<String> = xdg_data_dirs
+        .split(':')
+        .map(|str| format!("{}{}", str, "/applications"))
+        .collect();
     let mut search_dirs: HashSet<String> = xdg_data_dirs.iter().cloned().collect();
     // println!("searching ||| {:?}", search_dirs);
     search_dirs.insert(home_dir()?.to_str().unwrap().to_owned() + "/.local/share/applications");
@@ -98,6 +100,14 @@ pub fn get_all_apps() -> Option<String> {
     }
     apps.push_str("}");
     Some(apps)
+}
+
+pub fn run_command(arguments: String) {
+    Command::new("bash")
+        .arg("-c")
+        .arg(arguments)
+        .spawn()
+        .expect("failed to execute app");
 }
 
 pub fn launch_app(app_path: String) {

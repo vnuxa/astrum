@@ -4,17 +4,20 @@
 2. [`CenterboxModel`](#centerboxmodel) 
 3. [`ColumnModel`](#columnmodel) 
 4. [`ContainerModel`](#containermodel) 
-5. [`CustomSignal`](#customsignal) 
-6. [`IconModel`](#iconmodel) 
-7. [`ImageModel`](#imagemodel) 
-10. [`MouseAreaModel`](#mouseareamodel) 
-11. [`OnScrollSignal`](#onscrollsignal) 
-12. [`RowModel`](#rowmodel) 
-13. [`ScrollableModel`](#scrollablemodel) 
-14. [`TextInputModel`](#textinputmodel) 
-15. [`TextModel`](#textmodel) 
-16. [`Widget`](#widget) 
-17. [`WidthHeightWidget`](#widthheightwidget) 
+5. [`ContextMenuModel`](#contextmenumodel) 
+6. [`CustomSignal`](#customsignal) 
+7. [`IconModel`](#iconmodel) 
+10. [`ImageModel`](#imagemodel) 
+11. [`MouseAreaModel`](#mouseareamodel) 
+12. [`OnScrollSignal`](#onscrollsignal) 
+13. [`RowModel`](#rowmodel) 
+14. [`ScrollableModel`](#scrollablemodel) 
+15. [`StackModel`](#stackmodel) 
+16. [`TextInputModel`](#textinputmodel) 
+17. [`TextModel`](#textmodel) 
+20. [`TreeWidget`](#treewidget) 
+21. [`Widget`](#widget) 
+22. [`WidthHeightWidget`](#widthheightwidget) 
 
 [`source`](https://github.com/vnuxa/astrum/blob/master/src/lua_library/astrum/types/widgets/models.lua)
 
@@ -142,6 +145,20 @@ see definitions: [`ContainerAppearance`](../style/init.md#containerappearance)
 >   `width` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
 >    >   Sets the width of the widget 
 
+## Methods:
+
+
+---
+# ContextMenuModel
+## Propreties:
+>   `child` → `Widget`
+>    >   The underlying element 
+
+see definitions: [`Widget`](#widget) 
+>   `tree` → `TreeWidget[]`
+>    >   The menu tree that will appear when right mouse button has been clicked on the underlying element 
+
+see definitions: [`Widget`](#widget) [`TreeWidget`](#treewidget) 
 ## Methods:
 
 
@@ -305,6 +322,22 @@ see definitions: [`ScrollablePropreties`](./misc.md#scrollablepropreties)
 
 
 ---
+# StackModel
+## Propreties:
+>   `children` → `Widget[]`
+>    >   The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer 
+
+see definitions: [`Widget`](#widget) 
+>   `height` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
+>    >   Sets the height of the widget 
+
+>   `width` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
+>    >   Sets the width of the widget 
+
+## Methods:
+
+
+---
 # TextInputModel
 ## Propreties:
 >   `always_active` → `boolean?`
@@ -372,6 +405,26 @@ see definitions: [`Font`](./misc.md#font)
 see definitions: [`TextAppearance`](../style/init.md#textappearance) 
 >   `width` → `("fill"|"shrink"|["fill_portion", number]|["fixed", number])?`
 >    >   Sets the width of the widget 
+
+## Methods:
+
+
+---
+# TreeWidget
+## Propreties:
+>   `height` → `number?`
+>    >   The height in pixels 
+
+>   `item` → `Widget`
+>    >   The core item for the tree, primarily used when combined with other tree's 
+
+see definitions: [`Widget`](#widget) 
+>   `tree` → `TreeWidget[]?`
+>    >   If `tree` proprety does not exist, then this tree element will be treated as an item, if it does exist then it will be treated as a menu that holds other items or menus 
+
+see definitions: [`Widget`](#widget) [`TreeWidget`](#treewidget) 
+>   `width` → `number?`
+>    >   The width in pixels 
 
 ## Methods:
 

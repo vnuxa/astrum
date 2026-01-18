@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>astrum wiki - Options</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    
+    <script defer src="assets/search.js"></script>
+    
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="header-left">
+          <h1 class="site-title"><a href="index.html">astrum wiki</a></h1>
+        </div>
+        <nav class="header-nav">
+          <ul>
+            <li class="active"><a href="options.html">Options</a></li>
+            
+            <li><a href="search.html">Search</a></li>
+            
+          </ul>
+        </nav>
+        
+        <div class="search-container">
+          <input type="text" id="search-input" placeholder="Search..." />
+          <div id="search-results" class="search-results"></div>
+        </div>
+        
+      </header>
+
+      <div class="layout">
+        <div class="sidebar-toggle" aria-label="Toggle sidebar">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+          >
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+          </svg>
+        </div>
+        <nav id="sidebar" class="sidebar">
+          <div class="docs-nav">
+            <h2>Documents</h2>
+            <ul>
+              <li><a href="astrum.html">Documentation</a></li>
+<li><a href="search.html">Search</a></li>
+
+            </ul>
+          </div>
+
+          <div class="toc">
+            <h2>Contents</h2>
+            <ul class="toc-list">
+  
+  
+
+  
+  
+  <li>
+    <details class="toc-category">
+      <summary title="astrum">
+        <span>astrum</span>
+        <span class="toc-count">3</span>
+      </summary>
+      <ul>
+        
+        <li>
+          <a href="#option-astrum" class="parent-option" title="astrum">
+            astrum
+            
+            <span class="toc-readonly">read-only</span>
+          </a>
+        </li>
+        
+
+        
+        <li>
+          <a href="#option-astrum-widgets" title="astrum.widgets">
+            widgets
+            
+            <span class="toc-readonly">read-only</span>
+          </a>
+        </li>
+        
+        <li>
+          <a href="#option-astrum-widgets:text" title="astrum.widgets:text">
+            widgets:text
+            
+            
+          </a>
+        </li>
+        
+      </ul>
+    </details>
+  </li>
+  
+</ul>
+
+          </div>
+        </nav>
+
+        <main class="content">
+          <h1>astrum wiki Options</h1>
+
+          
+          <div class="search-form">
+            <input
+              type="text"
+              id="options-filter"
+              placeholder="Filter options..."
+            />
+          </div>
+          
+
+          <div class="options-container"><div class="option" id="option-astrum">
+  <h3 class="option-name">
+    <a href="#option-astrum" class="option-anchor">astrum</a>
+    <span class="copy-link" title="Copy link to this option"></span>
+    <span class="copy-feedback">Link copied!</span>
+  </h3>
+  <div class="option-metadata">read-only</div>
+  <div class="option-type">Type: <code>wow</code></div>
+  <div class="option-description"><h5>Modules</h5>
+</div>
+  <div class="option-default">Default: <code></code></div>
+  <div class="option-example">Example: <code>hi</code></div>
+  <div class="option-declared">Declared in: <code><a href="asd" target="_blank">wow</a></code></div>
+</div>
+<div class="option" id="option-astrum-widgets">
+  <h3 class="option-name">
+    <a href="#option-astrum-widgets" class="option-anchor">astrum.widgets</a>
+    <span class="copy-link" title="Copy link to this option"></span>
+    <span class="copy-feedback">Link copied!</span>
+  </h3>
+  <div class="option-metadata">read-only</div>
+  <div class="option-type">Type: <code>asd</code></div>
+  <div class="option-description"></div>
+  <div class="option-example">Example: <code>hi</code></div>
+  <div class="option-declared">Declared in: <code><a href="asd" target="_blank">wow</a></code></div>
+</div>
+<div class="option" id="option-astrum-widgets:text">
+  <h3 class="option-name">
+    <a href="#option-astrum-widgets:text" class="option-anchor">astrum.widgets:text</a>
+    <span class="copy-link" title="Copy link to this option"></span>
+    <span class="copy-feedback">Link copied!</span>
+  </h3>
+  <div class="option-type">Type: <code>function</code></div>
+  <div class="option-description"></div>
+  <div class="option-declared">Declared in: <code>configuration.nix</code></div>
+</div>
+</div>
+
+          <div class="footnotes-container">
+            <!-- Footnotes will be appended here -->
+          </div>
+        </main>
+      </div>
+
+      <footer>
+        <p>Generated with ndg</p>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Sidebar Toggle
+        const sidebarToggle = document.querySelector(".sidebar-toggle");
+        if (sidebarToggle) {
+          sidebarToggle.addEventListener("click", function () {
+            document.body.classList.toggle("sidebar-collapsed");
+
+            // Save state to localStorage
+            const isCollapsed =
+              document.body.classList.contains("sidebar-collapsed");
+            localStorage.setItem("sidebar-collapsed", isCollapsed);
+          });
+
+          // Restore sidebar state from localStorage
+          const isCollapsed =
+            localStorage.getItem("sidebar-collapsed") === "true";
+          if (isCollapsed) {
+            document.body.classList.add("sidebar-collapsed");
+          }
+        }
+
+        // Process footnotes
+        const content = document.querySelector(".content");
+        const footnoteContainer = document.querySelector(
+          ".footnotes-container",
+        );
+
+        // Find all footnote references and create a footnotes section
+        const footnoteRefs = content.querySelectorAll('a[href^="#fn"]');
+        if (footnoteRefs.length > 0) {
+          const footnotesDiv = document.createElement("div");
+          footnotesDiv.className = "footnotes";
+
+          const footnotesHeading = document.createElement("h2");
+          footnotesHeading.textContent = "Footnotes";
+          footnotesDiv.appendChild(footnotesHeading);
+
+          const footnotesList = document.createElement("ol");
+          footnoteContainer.appendChild(footnotesDiv);
+          footnotesDiv.appendChild(footnotesList);
+
+          // Add footnotes
+          document.querySelectorAll(".footnote").forEach((footnote) => {
+            const id = footnote.id;
+            const content = footnote.innerHTML;
+
+            const li = document.createElement("li");
+            li.id = id;
+            li.innerHTML = content;
+
+            // Add backlink
+            const backlink = document.createElement("a");
+            backlink.href = "#fnref:" + id.replace("fn:", "");
+            backlink.className = "footnote-backlink";
+            backlink.textContent = "↩";
+            li.appendChild(backlink);
+
+            footnotesList.appendChild(li);
+          });
+        }
+
+        // Copy link functionality
+        document.querySelectorAll(".copy-link").forEach(function (copyLink) {
+          copyLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Get option ID from parent element
+            const option = copyLink.closest(".option");
+            const optionId = option.id;
+
+            // Create URL with hash
+            const url = new URL(window.location.href);
+            url.hash = optionId;
+
+            // Copy to clipboard
+            navigator.clipboard
+              .writeText(url.toString())
+              .then(function () {
+                // Show feedback
+                const feedback = copyLink.nextElementSibling;
+                feedback.style.display = "inline";
+
+                // Hide after 2 seconds
+                setTimeout(function () {
+                  feedback.style.display = "none";
+                }, 2000);
+              })
+              .catch(function (err) {
+                console.error("Could not copy link: ", err);
+              });
+          });
+        });
+
+        // Highlight option if it's in the URL hash
+        if (window.location.hash) {
+          const targetOption = document.querySelector(window.location.hash);
+          if (targetOption) {
+            // Scroll to the option with some offset
+            setTimeout(function () {
+              window.scrollTo({
+                top: targetOption.offsetTop - 80,
+                behavior: "smooth",
+              });
+            }, 100);
+            // Add highlight class
+            targetOption.classList.add("highlight");
+          }
+        }
+      });
+    </script>
+    
+  </body>
+</html>

@@ -4509,6 +4509,121 @@
                 "deprecated": false,
                 "file": "widgets/models.lua",
                 "finish": [
+                    114,
+                    26
+                ],
+                "start": [
+                    114,
+                    10
+                ],
+                "type": "doc.class",
+                "view": "ContextMenuModel",
+                "visible": "public"
+            }
+        ],
+        "fields": [
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "The underlying element",
+                "extends": {
+                    "finish": [
+                        115,
+                        22
+                    ],
+                    "start": [
+                        115,
+                        16
+                    ],
+                    "type": "doc.type",
+                    "types": [
+                        {
+                            "finish": [
+                                115,
+                                22
+                            ],
+                            "start": [
+                                115,
+                                16
+                            ],
+                            "type": "doc.type.name",
+                            "view": "Widget"
+                        }
+                    ],
+                    "view": "Widget"
+                },
+                "file": "widgets/models.lua",
+                "finish": [
+                    115,
+                    22
+                ],
+                "name": "child",
+                "rawdesc": "The underlying element",
+                "start": [
+                    115,
+                    10
+                ],
+                "type": "doc.field",
+                "view": "Widget",
+                "visible": "public"
+            },
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "The menu tree that will appear when right mouse button has been clicked on the underlying element",
+                "extends": {
+                    "finish": [
+                        116,
+                        27
+                    ],
+                    "start": [
+                        116,
+                        15
+                    ],
+                    "type": "doc.type",
+                    "types": [
+                        {
+                            "finish": [
+                                116,
+                                27
+                            ],
+                            "start": [
+                                116,
+                                15
+                            ],
+                            "type": "doc.type.array",
+                            "view": "TreeWidget[]"
+                        }
+                    ],
+                    "view": "TreeWidget[]"
+                },
+                "file": "widgets/models.lua",
+                "finish": [
+                    116,
+                    27
+                ],
+                "name": "tree",
+                "rawdesc": "The menu tree that will appear when right mouse button has been clicked on the underlying element",
+                "start": [
+                    116,
+                    10
+                ],
+                "type": "doc.field",
+                "view": "TreeWidget[]",
+                "visible": "public"
+            }
+        ],
+        "name": "ContextMenuModel",
+        "type": "type",
+        "view": "ContextMenuModel"
+    },
+    {
+        "defines": [
+            {
+                "async": false,
+                "deprecated": false,
+                "file": "widgets/models.lua",
+                "finish": [
                     35,
                     22
                 ],
@@ -7854,11 +7969,11 @@
                 "file": "widgets/models.lua",
                 "finish": [
                     91,
-                    32
+                    24
                 ],
                 "start": [
                     91,
-                    18
+                    10
                 ],
                 "type": "doc.class",
                 "view": "MouseAreaModel",
@@ -10670,11 +10785,11 @@
                     {
                         "finish": [
                             87,
-                            52
+                            44
                         ],
                         "start": [
                             87,
-                            35
+                            27
                         ],
                         "type": "doc.extends.name",
                         "view": "WidthHeightWidget"
@@ -10683,11 +10798,11 @@
                 "file": "widgets/models.lua",
                 "finish": [
                     87,
-                    52
+                    44
                 ],
                 "start": [
                     87,
-                    18
+                    10
                 ],
                 "type": "doc.class",
                 "view": "ScrollableModel",
@@ -11244,6 +11359,180 @@
         "name": "Shadow",
         "type": "type",
         "view": "Shadow"
+    },
+    {
+        "defines": [
+            {
+                "async": false,
+                "deprecated": false,
+                "extends": [
+                    {
+                        "finish": [
+                            105,
+                            39
+                        ],
+                        "start": [
+                            105,
+                            22
+                        ],
+                        "type": "doc.extends.name",
+                        "view": "WidthHeightWidget"
+                    }
+                ],
+                "file": "widgets/models.lua",
+                "finish": [
+                    105,
+                    39
+                ],
+                "start": [
+                    105,
+                    10
+                ],
+                "type": "doc.class",
+                "view": "StackModel",
+                "visible": "public"
+            }
+        ],
+        "fields": [
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer",
+                "extends": {
+                    "finish": [
+                        106,
+                        27
+                    ],
+                    "start": [
+                        106,
+                        19
+                    ],
+                    "type": "doc.type",
+                    "types": [
+                        {
+                            "finish": [
+                                106,
+                                27
+                            ],
+                            "start": [
+                                106,
+                                19
+                            ],
+                            "type": "doc.type.array",
+                            "view": "Widget[]"
+                        }
+                    ],
+                    "view": "Widget[]"
+                },
+                "file": "widgets/models.lua",
+                "finish": [
+                    106,
+                    27
+                ],
+                "name": "children",
+                "rawdesc": "The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer",
+                "start": [
+                    106,
+                    10
+                ],
+                "type": "doc.field",
+                "view": "Widget[]",
+                "visible": "public"
+            },
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "Sets the height of the widget",
+                "extends": {
+                    "finish": [
+                        5,
+                        24
+                    ],
+                    "start": [
+                        5,
+                        18
+                    ],
+                    "type": "doc.type",
+                    "types": [
+                        {
+                            "finish": [
+                                5,
+                                24
+                            ],
+                            "start": [
+                                5,
+                                18
+                            ],
+                            "type": "doc.type.name",
+                            "view": "\"fill\"|\"shrink\"|[\"fill_portion\", number]|[\"fixed\", number]"
+                        }
+                    ],
+                    "view": "(\"fill\"|\"shrink\"|[\"fill_portion\", number]|[\"fixed\", number])?"
+                },
+                "file": "widgets/models.lua",
+                "finish": [
+                    5,
+                    24
+                ],
+                "name": "height",
+                "rawdesc": "Sets the height of the widget",
+                "start": [
+                    5,
+                    10
+                ],
+                "type": "doc.field",
+                "view": "(\"fill\"|\"shrink\"|[\"fill_portion\", number]|[\"fixed\", number])?",
+                "visible": "public"
+            },
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "Sets the width of the widget",
+                "extends": {
+                    "finish": [
+                        4,
+                        23
+                    ],
+                    "start": [
+                        4,
+                        17
+                    ],
+                    "type": "doc.type",
+                    "types": [
+                        {
+                            "finish": [
+                                4,
+                                23
+                            ],
+                            "start": [
+                                4,
+                                17
+                            ],
+                            "type": "doc.type.name",
+                            "view": "\"fill\"|\"shrink\"|[\"fill_portion\", number]|[\"fixed\", number]"
+                        }
+                    ],
+                    "view": "(\"fill\"|\"shrink\"|[\"fill_portion\", number]|[\"fixed\", number])?"
+                },
+                "file": "widgets/models.lua",
+                "finish": [
+                    4,
+                    23
+                ],
+                "name": "width",
+                "rawdesc": "Sets the width of the widget",
+                "start": [
+                    4,
+                    10
+                ],
+                "type": "doc.field",
+                "view": "(\"fill\"|\"shrink\"|[\"fill_portion\", number]|[\"fixed\", number])?",
+                "visible": "public"
+            }
+        ],
+        "name": "StackModel",
+        "type": "type",
+        "view": "StackModel"
     },
     {
         "defines": [
@@ -14734,6 +15023,211 @@
             {
                 "async": false,
                 "deprecated": false,
+                "file": "widgets/models.lua",
+                "finish": [
+                    108,
+                    20
+                ],
+                "start": [
+                    108,
+                    10
+                ],
+                "type": "doc.class",
+                "view": "TreeWidget",
+                "visible": "public"
+            }
+        ],
+        "fields": [
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "The height in pixels",
+                "extends": {
+                    "finish": [
+                        111,
+                        24
+                    ],
+                    "start": [
+                        111,
+                        18
+                    ],
+                    "type": "doc.type",
+                    "types": [
+                        {
+                            "finish": [
+                                111,
+                                24
+                            ],
+                            "start": [
+                                111,
+                                18
+                            ],
+                            "type": "doc.type.name",
+                            "view": "number"
+                        }
+                    ],
+                    "view": "number?"
+                },
+                "file": "widgets/models.lua",
+                "finish": [
+                    111,
+                    24
+                ],
+                "name": "height",
+                "rawdesc": "The height in pixels",
+                "start": [
+                    111,
+                    10
+                ],
+                "type": "doc.field",
+                "view": "number?",
+                "visible": "public"
+            },
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "The core item for the tree, primarily used when combined with other tree's",
+                "extends": {
+                    "finish": [
+                        109,
+                        21
+                    ],
+                    "start": [
+                        109,
+                        15
+                    ],
+                    "type": "doc.type",
+                    "types": [
+                        {
+                            "finish": [
+                                109,
+                                21
+                            ],
+                            "start": [
+                                109,
+                                15
+                            ],
+                            "type": "doc.type.name",
+                            "view": "Widget"
+                        }
+                    ],
+                    "view": "Widget"
+                },
+                "file": "widgets/models.lua",
+                "finish": [
+                    109,
+                    21
+                ],
+                "name": "item",
+                "rawdesc": "The core item for the tree, primarily used when combined with other tree's",
+                "start": [
+                    109,
+                    10
+                ],
+                "type": "doc.field",
+                "view": "Widget",
+                "visible": "public"
+            },
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "If `tree` proprety does not exist, then this tree element will be treated as an item, if it does exist then it will be treated as a menu that holds other items or menus",
+                "extends": {
+                    "finish": [
+                        110,
+                        28
+                    ],
+                    "start": [
+                        110,
+                        16
+                    ],
+                    "type": "doc.type",
+                    "types": [
+                        {
+                            "finish": [
+                                110,
+                                28
+                            ],
+                            "start": [
+                                110,
+                                16
+                            ],
+                            "type": "doc.type.array",
+                            "view": "TreeWidget[]"
+                        }
+                    ],
+                    "view": "TreeWidget[]?"
+                },
+                "file": "widgets/models.lua",
+                "finish": [
+                    110,
+                    28
+                ],
+                "name": "tree",
+                "rawdesc": "If `tree` proprety does not exist, then this tree element will be treated as an item, if it does exist then it will be treated as a menu that holds other items or menus",
+                "start": [
+                    110,
+                    10
+                ],
+                "type": "doc.field",
+                "view": "TreeWidget[]?",
+                "visible": "public"
+            },
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "The width in pixels",
+                "extends": {
+                    "finish": [
+                        112,
+                        24
+                    ],
+                    "start": [
+                        112,
+                        18
+                    ],
+                    "type": "doc.type",
+                    "types": [
+                        {
+                            "finish": [
+                                112,
+                                24
+                            ],
+                            "start": [
+                                112,
+                                18
+                            ],
+                            "type": "doc.type.name",
+                            "view": "number"
+                        }
+                    ],
+                    "view": "number?"
+                },
+                "file": "widgets/models.lua",
+                "finish": [
+                    112,
+                    24
+                ],
+                "name": "width",
+                "rawdesc": "The width in pixels",
+                "start": [
+                    112,
+                    10
+                ],
+                "type": "doc.field",
+                "view": "number?",
+                "visible": "public"
+            }
+        ],
+        "name": "TreeWidget",
+        "type": "type",
+        "view": "TreeWidget"
+    },
+    {
+        "defines": [
+            {
+                "async": false,
+                "deprecated": false,
                 "file": "style/misc.lua",
                 "finish": [
                     17,
@@ -15233,6 +15727,90 @@
                 "rawdesc": " A container that can be decorated or used for alignment",
                 "start": [
                     82,
+                    9
+                ],
+                "type": "setmethod",
+                "view": "function",
+                "visible": "public"
+            },
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "A menu that appears on an element uppon user interraction, such as a right-click mouse operation.\n\n@*param* `model_or_child` — The model for the context menu or the underlying element for it\n\n@*param* `tree` — The menu tree that will be displayed when the right mouse button has been pressed on the underlying element",
+                "extends": {
+                    "args": [
+                        {
+                            "finish": [
+                                118,
+                                8
+                            ],
+                            "name": "self",
+                            "start": [
+                                118,
+                                8
+                            ],
+                            "type": "self",
+                            "view": "Widgets"
+                        },
+                        {
+                            "desc": "The model for the context menu or the underlying element for it",
+                            "finish": [
+                                118,
+                                44
+                            ],
+                            "name": "model_or_child",
+                            "rawdesc": "The model for the context menu or the underlying element for it",
+                            "start": [
+                                118,
+                                30
+                            ],
+                            "type": "local",
+                            "view": "ContextMenuModel|Widget"
+                        },
+                        {
+                            "desc": "The menu tree that will be displayed when the right mouse button has been pressed on the underlying element",
+                            "finish": [
+                                118,
+                                50
+                            ],
+                            "name": "tree",
+                            "rawdesc": "The menu tree that will be displayed when the right mouse button has been pressed on the underlying element",
+                            "start": [
+                                118,
+                                46
+                            ],
+                            "type": "local",
+                            "view": "TreeWidget[]?"
+                        }
+                    ],
+                    "desc": "A menu that appears on an element uppon user interraction, such as a right-click mouse operation.\n\n@*param* `model_or_child` — The model for the context menu or the underlying element for it\n\n@*param* `tree` — The menu tree that will be displayed when the right mouse button has been pressed on the underlying element",
+                    "finish": [
+                        118,
+                        55
+                    ],
+                    "rawdesc": "A menu that appears on an element uppon user interraction, such as a right-click mouse operation.",
+                    "returns": [
+                        {
+                            "type": "function.return",
+                            "view": "Widget"
+                        }
+                    ],
+                    "start": [
+                        118,
+                        0
+                    ],
+                    "type": "function",
+                    "view": "(method) Widgets:context_menu(model_or_child: ContextMenuModel|Widget, tree?: TreeWidget[])\n  -> Widget"
+                },
+                "file": "widgets/init.lua",
+                "finish": [
+                    118,
+                    29
+                ],
+                "name": "context_menu",
+                "rawdesc": "A menu that appears on an element uppon user interraction, such as a right-click mouse operation.",
+                "start": [
+                    118,
                     9
                 ],
                 "type": "setmethod",
@@ -15777,6 +16355,75 @@
             {
                 "async": false,
                 "deprecated": false,
+                "desc": " A container that displays children on top of each other.\n\n@*param* `model_or_children` — The model for the stack or a list of widgets. The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer",
+                "extends": {
+                    "args": [
+                        {
+                            "finish": [
+                                103,
+                                8
+                            ],
+                            "name": "self",
+                            "start": [
+                                103,
+                                8
+                            ],
+                            "type": "self",
+                            "view": "Widgets"
+                        },
+                        {
+                            "desc": "The model for the stack or a list of widgets. The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer",
+                            "finish": [
+                                103,
+                                40
+                            ],
+                            "name": "model_or_children",
+                            "rawdesc": "The model for the stack or a list of widgets. The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer",
+                            "start": [
+                                103,
+                                23
+                            ],
+                            "type": "local",
+                            "view": "StackModel|Widgets[]"
+                        }
+                    ],
+                    "desc": " A container that displays children on top of each other.\n\n@*param* `model_or_children` — The model for the stack or a list of widgets. The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer",
+                    "finish": [
+                        112,
+                        3
+                    ],
+                    "rawdesc": " A container that displays children on top of each other.",
+                    "returns": [
+                        {
+                            "type": "function.return",
+                            "view": "Widget"
+                        }
+                    ],
+                    "start": [
+                        103,
+                        0
+                    ],
+                    "type": "function",
+                    "view": "(method) Widgets:stack(model_or_children: StackModel|Widgets[])\n  -> Widget"
+                },
+                "file": "widgets/init.lua",
+                "finish": [
+                    103,
+                    22
+                ],
+                "name": "stack",
+                "rawdesc": " A container that displays children on top of each other.",
+                "start": [
+                    103,
+                    9
+                ],
+                "type": "setmethod",
+                "view": "function",
+                "visible": "public"
+            },
+            {
+                "async": false,
+                "deprecated": false,
                 "desc": "A widget that holds text\n\n@*param* `content_or_model` — The text to be displayed (shorthand) or the model for the text\n\n@*param* `extra_model` — Extra params for the shorthand. You do not need this if you provide a model in the first argument",
                 "extends": {
                     "args": [
@@ -15945,6 +16592,84 @@
                 "rawdesc": " A field which can be filled with text.",
                 "start": [
                     28,
+                    9
+                ],
+                "type": "setmethod",
+                "view": "function",
+                "visible": "public"
+            },
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "A tree can either be an item for a menu or a menu that holds other items or menus, depending if the `tree` field is active. It itself is not a widget and should only be used within other widgets\n\n@*param* `model_or_item` — The model for the tree or the core item of the tree.\n\n@*param* `tree` — Defines the `tree` field for the model.",
+                "extends": {
+                    "args": [
+                        {
+                            "finish": [
+                                123,
+                                8
+                            ],
+                            "name": "self",
+                            "start": [
+                                123,
+                                8
+                            ],
+                            "type": "self",
+                            "view": "Widgets"
+                        },
+                        {
+                            "desc": "The model for the tree or the core item of the tree.",
+                            "finish": [
+                                123,
+                                35
+                            ],
+                            "name": "model_or_item",
+                            "rawdesc": "The model for the tree or the core item of the tree.",
+                            "start": [
+                                123,
+                                22
+                            ],
+                            "type": "local",
+                            "view": "TreeWidget|Widget"
+                        },
+                        {
+                            "desc": "Defines the `tree` field for the model.",
+                            "finish": [
+                                123,
+                                41
+                            ],
+                            "name": "tree",
+                            "rawdesc": "Defines the `tree` field for the model.",
+                            "start": [
+                                123,
+                                37
+                            ],
+                            "type": "local",
+                            "view": "TreeWidget[]?"
+                        }
+                    ],
+                    "desc": "A tree can either be an item for a menu or a menu that holds other items or menus, depending if the `tree` field is active. It itself is not a widget and should only be used within other widgets\n\n@*param* `model_or_item` — The model for the tree or the core item of the tree.\n\n@*param* `tree` — Defines the `tree` field for the model.",
+                    "finish": [
+                        123,
+                        46
+                    ],
+                    "rawdesc": "A tree can either be an item for a menu or a menu that holds other items or menus, depending if the `tree` field is active. It itself is not a widget and should only be used within other widgets",
+                    "start": [
+                        123,
+                        0
+                    ],
+                    "type": "function",
+                    "view": "(method) Widgets:tree(model_or_item: TreeWidget|Widget, tree?: TreeWidget[])"
+                },
+                "file": "widgets/init.lua",
+                "finish": [
+                    123,
+                    21
+                ],
+                "name": "tree",
+                "rawdesc": "A tree can either be an item for a menu or a menu that holds other items or menus, depending if the `tree` field is active. It itself is not a widget and should only be used within other widgets",
+                "start": [
+                    123,
                     9
                 ],
                 "type": "setmethod",
@@ -16574,6 +17299,32 @@
                 "async": false,
                 "deprecated": false,
                 "desc": "\nA global variable (not a function) that holds the global environment (see [§2.2](command:extension.lua.doc?[\"en-us/54/manual.html/2.2\"])). Lua itself does not use this variable; changing its value does not affect any environment, nor vice versa.\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-_G\"])\n",
+                "file": "[FORIEGN]file:///home/vnuxa/.cache/lua-language-server/meta/Lua%205.4%20en-us%20utf8/basic.lua",
+                "finish": [
+                    69,
+                    12
+                ],
+                "rawdesc": "\nA global variable (not a function) that holds the global environment (see [§2.2](command:extension.lua.doc?[\"en-us/54/manual.html/2.2\"])). Lua itself does not use this variable; changing its value does not affect any environment, nor vice versa.\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-_G\"])\n",
+                "start": [
+                    69,
+                    10
+                ],
+                "type": "doc.class",
+                "view": "_G",
+                "visible": "public"
+            }
+        ],
+        "fields": [],
+        "name": "_G",
+        "type": "type",
+        "view": "_G"
+    },
+    {
+        "defines": [
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "\nA global variable (not a function) that holds the global environment (see [§2.2](command:extension.lua.doc?[\"en-us/54/manual.html/2.2\"])). Lua itself does not use this variable; changing its value does not affect any environment, nor vice versa.\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-_G\"])\n",
                 "extends": {
                     "desc": "\nA global variable (not a function) that holds the global environment (see [§2.2](command:extension.lua.doc?[\"en-us/54/manual.html/2.2\"])). Lua itself does not use this variable; changing its value does not affect any environment, nor vice versa.\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-_G\"])\n",
                     "finish": [
@@ -16606,32 +17357,6 @@
         "name": "_G",
         "type": "variable",
         "view": "unknown"
-    },
-    {
-        "defines": [
-            {
-                "async": false,
-                "deprecated": false,
-                "desc": "\nA global variable (not a function) that holds the global environment (see [§2.2](command:extension.lua.doc?[\"en-us/54/manual.html/2.2\"])). Lua itself does not use this variable; changing its value does not affect any environment, nor vice versa.\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-_G\"])\n",
-                "file": "[FORIEGN]file:///home/vnuxa/.cache/lua-language-server/meta/Lua%205.4%20en-us%20utf8/basic.lua",
-                "finish": [
-                    69,
-                    12
-                ],
-                "rawdesc": "\nA global variable (not a function) that holds the global environment (see [§2.2](command:extension.lua.doc?[\"en-us/54/manual.html/2.2\"])). Lua itself does not use this variable; changing its value does not affect any environment, nor vice versa.\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-_G\"])\n",
-                "start": [
-                    69,
-                    10
-                ],
-                "type": "doc.class",
-                "view": "_G",
-                "visible": "public"
-            }
-        ],
-        "fields": [],
-        "name": "_G",
-        "type": "type",
-        "view": "_G"
     },
     {
         "defines": [
@@ -37577,45 +38302,6 @@
             {
                 "async": false,
                 "deprecated": false,
-                "desc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-string\"])\n",
-                "extends": {
-                    "desc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-string\"])\n",
-                    "finish": [
-                        8,
-                        11
-                    ],
-                    "rawdesc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-string\"])\n",
-                    "start": [
-                        8,
-                        9
-                    ],
-                    "type": "table",
-                    "view": "stringlib"
-                },
-                "file": "[FORIEGN]file:///home/vnuxa/.cache/lua-language-server/meta/Lua%205.4%20en-us%20utf8/string.lua",
-                "finish": [
-                    8,
-                    6
-                ],
-                "rawdesc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-string\"])\n",
-                "start": [
-                    8,
-                    0
-                ],
-                "type": "setglobal",
-                "view": "stringlib",
-                "visible": "public"
-            }
-        ],
-        "name": "string",
-        "type": "variable",
-        "view": "unknown"
-    },
-    {
-        "defines": [
-            {
-                "async": false,
-                "deprecated": false,
                 "extends": [
                     {
                         "desc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-string\"])\n",
@@ -38905,6 +39591,45 @@
         "name": "string",
         "type": "type",
         "view": "string"
+    },
+    {
+        "defines": [
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-string\"])\n",
+                "extends": {
+                    "desc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-string\"])\n",
+                    "finish": [
+                        8,
+                        11
+                    ],
+                    "rawdesc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-string\"])\n",
+                    "start": [
+                        8,
+                        9
+                    ],
+                    "type": "table",
+                    "view": "stringlib"
+                },
+                "file": "[FORIEGN]file:///home/vnuxa/.cache/lua-language-server/meta/Lua%205.4%20en-us%20utf8/string.lua",
+                "finish": [
+                    8,
+                    6
+                ],
+                "rawdesc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-string\"])\n",
+                "start": [
+                    8,
+                    0
+                ],
+                "type": "setglobal",
+                "view": "stringlib",
+                "visible": "public"
+            }
+        ],
+        "name": "string",
+        "type": "variable",
+        "view": "unknown"
     },
     {
         "defines": [
@@ -41565,45 +42290,6 @@
             {
                 "async": false,
                 "deprecated": false,
-                "desc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-table\"])\n",
-                "extends": {
-                    "desc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-table\"])\n",
-                    "finish": [
-                        8,
-                        10
-                    ],
-                    "rawdesc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-table\"])\n",
-                    "start": [
-                        8,
-                        8
-                    ],
-                    "type": "table",
-                    "view": "tablelib"
-                },
-                "file": "[FORIEGN]file:///home/vnuxa/.cache/lua-language-server/meta/Lua%205.4%20en-us%20utf8/table.lua",
-                "finish": [
-                    8,
-                    5
-                ],
-                "rawdesc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-table\"])\n",
-                "start": [
-                    8,
-                    0
-                ],
-                "type": "setglobal",
-                "view": "tablelib",
-                "visible": "public"
-            }
-        ],
-        "name": "table",
-        "type": "variable",
-        "view": "unknown"
-    },
-    {
-        "defines": [
-            {
-                "async": false,
-                "deprecated": false,
                 "extends": [
                     {
                         "fields": [
@@ -41676,6 +42362,45 @@
         "name": "table",
         "type": "type",
         "view": "table"
+    },
+    {
+        "defines": [
+            {
+                "async": false,
+                "deprecated": false,
+                "desc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-table\"])\n",
+                "extends": {
+                    "desc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-table\"])\n",
+                    "finish": [
+                        8,
+                        10
+                    ],
+                    "rawdesc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-table\"])\n",
+                    "start": [
+                        8,
+                        8
+                    ],
+                    "type": "table",
+                    "view": "tablelib"
+                },
+                "file": "[FORIEGN]file:///home/vnuxa/.cache/lua-language-server/meta/Lua%205.4%20en-us%20utf8/table.lua",
+                "finish": [
+                    8,
+                    5
+                ],
+                "rawdesc": "\n\n\n[View documents](command:extension.lua.doc?[\"en-us/54/manual.html/pdf-table\"])\n",
+                "start": [
+                    8,
+                    0
+                ],
+                "type": "setglobal",
+                "view": "tablelib",
+                "visible": "public"
+            }
+        ],
+        "name": "table",
+        "type": "variable",
+        "view": "unknown"
     },
     {
         "defines": [

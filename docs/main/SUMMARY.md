@@ -5,6 +5,7 @@
     - [First widgets](./introduction/first_widgets.md)
     - [Styling basics](./introduction/styling.md)
     - [Subscription basics](./introduction/subscriptions.md)
+    - [Animations](./introduction/animations.md)
 
 - [Advanced subscriptions](./advanced_subscription/main.md)
     - [Calls](./advanced_subscription/calls.md)
@@ -23,6 +24,6 @@
        - [Misc](./auto_gen/style/misc.md)
    - [Services](./auto_gen/services/init.md)
 
-[Last auto generated: 2025-03-19]()
+[Last auto generated: 2025-03-26]()
 
 ---

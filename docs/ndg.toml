@@ -1,0 +1,55 @@
+# NDG Configuration File
+
+# Input directory containing markdown files
+input_dir = "test"
+
+# Output directory for generated documentation
+output_dir = "ndg_output"
+
+# Path to options.json file (optional)
+module_options = "options.json"
+
+# Title for the documentation
+title = "astrum wiki"
+
+# Footer text for the documentation
+# TODO: pass the footer through a cli flag
+
+# footer_text = "Generated with ndg on "
+
+# Number of threads to use for parallel processing (defaults to number of CPU cores)
+# jobs = 4
+
+# Template customization
+# Path to custom template file
+# template_path = "templates/custom.html"
+
+# Path to template directory containing all template files
+# template_dir = "templates"
+
+# Path to custom stylesheet
+# stylesheet_path = "assets/custom.css"
+
+# Paths to custom JavaScript files
+# script_paths = ["assets/custom.js", "assets/search.js"]
+
+# Directory containing additional assets
+# assets_dir = "assets"
+
+# Path to manpage URL mappings JSON file
+# manpage_urls_path = "manpage-urls.json"
+
+# Whether to generate anchors for headings
+generate_anchors = true
+
+# Whether to generate a search index
+generate_search = true
+
+# Depth of parent categories in options TOC
+options_toc_depth = 1
+
+# Whether to enable syntax highlighting for code blocks
+highlight_code = true
+
+# GitHub revision for linking to source files (defaults to 'local')
+revision = "main"

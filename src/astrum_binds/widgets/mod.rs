@@ -2,15 +2,19 @@ use button::make_button_widget;
 use centerbox::make_centerbox_widget;
 use column::make_column_widget;
 use container::make_container_widget;
+// use context_menu::make_context_menu_widget;
 use cosmic::Element;
 use icon::make_icon_widget;
 use image::make_image_widget;
+// use menu::make_menu_widget;
 use mouse_area::make_mouse_area_widget;
 use row::make_row_widget;
 use scrollable::make_scrollable_widget;
 use space::make_space_widget;
+use stack::make_stack_widget;
 use text::make_text_widget;
 use text_input::make_text_input_widget;
+// use tree::make_tree_widget;
 
 use crate::astrum_core::app::main::AstrumMessages;
 
@@ -27,6 +31,11 @@ mod container;
 mod space;
 mod scrollable;
 mod mouse_area;
+mod stack;
+// mod menu;
+// mod tree;
+// mod context_menu;
+// mod slider;
 
 
 // makes lua bindings for elements into rust ones
@@ -49,6 +58,10 @@ pub fn process_lua_element<'a>(
         "space" => Some(make_space_widget(element).into()),
         "scrollable" => Some(make_scrollable_widget(element).into()),
         "mouse_area" => Some(make_mouse_area_widget(element).into()),
+        "stack" => Some(make_stack_widget(element).into()),
+        // "tree" => Some(make_tree_widget(element).into()),
+        // "context_menu" => Some(make_context_menu_widget(element).into()),
+        // "menu" => Some(make_menu_widget(element).into()),
         &_ => None,
     }
 }

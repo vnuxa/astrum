@@ -176,4 +176,61 @@ function widgets:mouse_area(model)
 	return model
 end
 
+function widgets:stack(model_or_children)
+	local stack = {}
+	if model_or_children.children == nil then
+		stack.children = model_or_children
+	else
+		stack = model_or_children
+	end
+
+	function stack:push(child) table.insert(stack.children, child) end
+
+	stack.widget_name = "stack"
+	return stack
+end
+
+function widgets:context_menu(model_or_child, tree)
+	local context
+	if type(model_or_child) == "table" and model_or_child.widget_name == nil then
+		print("using the first optioni for context menu")
+		context = model_or_child
+	else
+		print("using the second option for context menu")
+		context = {
+			child = model_or_child,
+			tree = tree,
+		}
+	end
+	context.widget_name = "context_menu"
+	print("the item type is: ", context.child.widget_name)
+	print("tree should have ", #tree, "amoint of items")
+
+	return context
+end
+
+function widgets:tree(model_or_item, children)
+	local tree
+	if type(model_or_item) == "table" and model_or_item.widget_name == nil then
+		print("i think model is provided")
+		tree = model_or_item
+	else
+		print("using 2nd pair where itme is provided, model type: ", type(model_or_item))
+		tree = {
+			item = model_or_item,
+			children = children,
+		}
+	end
+	tree.widget_name = "tree"
+
+	return tree
+end
+
+function widgets:menu(tree)
+	return {
+		widget_name = "menu",
+		children = tree,
+	}
+end
+
 return widgets

@@ -85,11 +85,11 @@
 ---@field align_y? Vertical # Sets the alignment of content on the vertical axis
 ---@field style? ContainerAppearance # Sets the appearance of the container
 
----@class (exact) ScrollableModel: WidthHeightWidget
+---@class ScrollableModel: WidthHeightWidget
 ---@field child? Widget # Infinite amount of content to be displayed within the scrollable
 ---@field direction? Direction # The direction where the content will be scrolled
 
----@class (exact) MouseAreaModel
+---@class MouseAreaModel
 ---@field child Widget # Element that determines the size of the mouse area
 ---@field on_press? CustomSignal # Sends a signal when the left mouse button has been pressed over a specified area.
 ---@field on_release? CustomSignal # Sends a signal when the left mouse button has been released over a specified area.
@@ -102,3 +102,16 @@
 
 ---@class OnScrollSignal
 ---@field direction "up" | "down"
+
+---@class StackModel: WidthHeightWidget
+---@field children Widget[] # The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer
+
+---@class TreeWidget
+---@field item Widget # The core item for the tree, primarily used when combined with other tree's
+---@field tree? TreeWidget[] # If `tree` proprety does not exist, then this tree element will be treated as an item, if it does exist then it will be treated as a menu that holds other items or menus
+---@field height? number # The height in pixels
+---@field width ? number # The width in pixels
+
+---@class ContextMenuModel
+---@field child Widget # The underlying element
+---@field tree TreeWidget[] # The menu tree that will appear when right mouse button has been clicked on the underlying element

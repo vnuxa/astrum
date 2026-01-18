@@ -1,0 +1,57 @@
+{
+
+    "astrum": {
+        "type": "wow",
+        "defaultText": "",
+        "description": "##### Modules",
+        "default": "what",
+        "declarations": [
+            {
+                "name": "wow",
+                "url": "asd"
+
+            }
+        ],
+        "readOnly": true,
+        "example": "hi",
+        "propreties": { 
+            "widgets": {
+                "methods": {
+                    ":button": "hello im button"
+                        
+                }
+            }
+        }
+            
+    },
+    "astrum.widgets": {
+        "type": "asd",
+        "description": {
+            
+        },
+        "declarations": [
+            {
+                "name": "wow",
+                "url": "asd"
+
+            }
+        ],
+        "readOnly": true,
+        "example": "hi",
+        "propreties": { 
+            "widgets": {
+                "methods": {
+                    ":button": "hello im button"
+                        
+                }
+            }
+        }
+            
+    },
+    "astrum.widgets:text": {
+        "type": "function",
+        "description": ""
+    }
+
+
+}

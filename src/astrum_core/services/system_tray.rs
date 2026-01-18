@@ -17,7 +17,7 @@ fn items_to_table(items: MutexGuard<HashMap<String, (StatusNotifierItem, Option<
     let mut builder_string = "{".to_string();
 
     for (str_id, obj) in items.iter() {
-        let (item, menu) = obj;
+        let (item, _) = obj;
         let mut builder_table = "{".to_string();
         // println!("item: {:?}", item);
 

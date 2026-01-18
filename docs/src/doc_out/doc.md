@@ -815,6 +815,29 @@ Sets the width of the widget
 
 ---
 
+# ContextMenuModel
+
+## child
+
+
+```lua
+Widget
+```
+
+The underlying element
+
+## tree
+
+
+```lua
+TreeWidget[]
+```
+
+The menu tree that will appear when right mouse button has been clicked on the underlying element
+
+
+---
+
 # CustomSignal
 
 ## signal_data
@@ -1929,6 +1952,38 @@ The offset of the shadow
 
 ---
 
+# StackModel
+
+## children
+
+
+```lua
+Widget[]
+```
+
+The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer
+
+## height
+
+
+```lua
+("fill"|"shrink"|["fill_portion", number]|["fixed", number])?
+```
+
+Sets the height of the widget
+
+## width
+
+
+```lua
+("fill"|"shrink"|["fill_portion", number]|["fixed", number])?
+```
+
+Sets the width of the widget
+
+
+---
+
 # Subscriptions
 
 ## calls
@@ -2519,6 +2574,47 @@ The title of the song playing
 
 ---
 
+# TreeWidget
+
+## height
+
+
+```lua
+number?
+```
+
+The height in pixels
+
+## item
+
+
+```lua
+Widget
+```
+
+The core item for the tree, primarily used when combined with other tree's
+
+## tree
+
+
+```lua
+TreeWidget[]?
+```
+
+If `tree` proprety does not exist, then this tree element will be treated as an item, if it does exist then it will be treated as a menu that holds other items or menus
+
+## width
+
+
+```lua
+number?
+```
+
+The width in pixels
+
+
+---
+
 # Vector
 
 ## x
@@ -2604,6 +2700,20 @@ A container that distributes content horizontally
 ```
 
  A container that can be decorated or used for alignment
+
+## context_menu
+
+
+```lua
+(method) Widgets:context_menu(model_or_child: ContextMenuModel|Widget, tree?: TreeWidget[])
+  -> Widget
+```
+
+A menu that appears on an element uppon user interraction, such as a right-click mouse operation.
+
+@*param* `model_or_child` — The model for the context menu or the underlying element for it
+
+@*param* `tree` — The menu tree that will be displayed when the right mouse button has been pressed on the underlying element
 
 ## icon
 
@@ -2699,6 +2809,18 @@ height:
     | "shrink" -- Fill the least amount of space
 ```
 
+## stack
+
+
+```lua
+(method) Widgets:stack(model_or_children: StackModel|Widgets[])
+  -> Widget
+```
+
+ A container that displays children on top of each other.
+
+@*param* `model_or_children` — The model for the stack or a list of widgets. The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer
+
 ## text
 
 
@@ -2722,6 +2844,19 @@ A widget that holds text
 ```
 
  A field which can be filled with text.
+
+## tree
+
+
+```lua
+(method) Widgets:tree(model_or_item: TreeWidget|Widget, tree?: TreeWidget[])
+```
+
+A tree can either be an item for a menu or a menu that holds other items or menus, depending if the `tree` field is active. It itself is not a widget and should only be used within other widgets
+
+@*param* `model_or_item` — The model for the tree or the core item of the tree.
+
+@*param* `tree` — Defines the `tree` field for the model.
 
 
 ---
@@ -2835,14 +2970,14 @@ Logic that dictates what widgets for the window to render
 # _G
 
 
-```lua
-_G
-```
-
-
 ---
 
 # _G
+
+
+```lua
+_G
+```
 
 
 ---
@@ -6475,16 +6610,6 @@ function setmetatable(table: table, metatable?: table|metatable)
 
 # string
 
-
-```lua
-stringlib
-```
-
-
----
-
-# string
-
 ## byte
 
 
@@ -6725,6 +6850,16 @@ function string.upper(s: string|number)
 Returns a copy of this string with all lowercase letters changed to uppercase.
 
 [View documents](command:extension.lua.doc?["en-us/54/manual.html/pdf-string.upper"])
+
+
+---
+
+# string
+
+
+```lua
+stringlib
+```
 
 
 ---
@@ -7169,14 +7304,14 @@ Returns a copy of this string with all lowercase letters changed to uppercase.
 # table
 
 
-```lua
-tablelib
-```
-
-
 ---
 
 # table
+
+
+```lua
+tablelib
+```
 
 
 ---

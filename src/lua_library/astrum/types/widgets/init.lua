@@ -98,4 +98,29 @@ function widgets:scrollable(model) end
 ---@return Widget
 function widgets:mouse_area(model) end
 
+--- A container that displays children on top of each other.
+---@param model_or_children StackModel | Widgets[] # The model for the stack or a list of widgets. The first element of this list will determine the intrinsic size of the stack, every other element will be rendered on top; on its own layer
+---@return Widget
+function widgets:stack(model_or_children)
+	local stack = {}
+	stack.class_name = "stack"
+
+	---Adds a widget to the `stack` widget
+	---@param widget Widget
+	function stack:push(widget) end
+
+	return stack
+end
+
+---A menu that appears on an element uppon user interraction, such as a right-click mouse operation.
+---@param model_or_child ContextMenuModel | Widget # The model for the context menu or the underlying element for it
+---@param tree? TreeWidget[] # The menu tree that will be displayed when the right mouse button has been pressed on the underlying element
+---@return Widget
+function widgets:context_menu(model_or_child, tree) end
+
+---A tree can either be an item for a menu or a menu that holds other items or menus, depending if the `tree` field is active. It itself is not a widget and should only be used within other widgets
+---@param model_or_item TreeWidget | Widget # The model for the tree or the core item of the tree.
+---@param tree? TreeWidget[] # Defines the `tree` field for the model.
+function widgets:tree(model_or_item, tree) end
+
 return widgets

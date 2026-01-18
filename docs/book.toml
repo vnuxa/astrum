@@ -1,9 +1,0 @@
-[book]
-authors = ["vnuxa"]
-language = "en"
-multilingual = false
-src = "main"
-title = "astrum wiki"
-
-[output.html]
-git-repository-url = "https://github.com/vnuxa/astrum"
